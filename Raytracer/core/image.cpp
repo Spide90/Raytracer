@@ -1,6 +1,6 @@
 #include <core/assert.h>
 #include <core/image.h>
-#include <core/float4.h>
+//#include <core/float4.h>
 
 #ifdef _WIN32
 #include <windows.h>
