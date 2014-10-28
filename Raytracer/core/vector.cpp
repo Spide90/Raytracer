@@ -61,7 +61,7 @@ Vector operator/(const Vector& vector, float scalar) {
 }
 
 Vector cross(const Vector& vectorA, const Vector& vectorB) {
-	return Vector(vectorA.y * vectorB.z - vectorA.z - vectorB.y,
+	return Vector(vectorA.y * vectorB.z - vectorA.z * vectorB.y,
 			vectorA.z * vectorB.x - vectorA.x * vectorB.z,
 			vectorA.x * vectorB.y - vectorA.y * vectorB.x);
 }

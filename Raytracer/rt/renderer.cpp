@@ -123,8 +123,9 @@ void Renderer::test_render2(Image& image) {
 	uint height = image.height();
 	for (uint y = 0; y < height; y++) {
 		for (uint x = 0; x < width; x++) {
-			float pointX = 2 * ((x + 0.5) / x ) - 1;
-			float pointY = 2 * ((y + 0.5) / y ) - 1;
+			float pointX = 2 * ((x + 0.5) / width ) - 1;
+			float pointY = 2 * ((y + 0.5) / height ) - 1;
+			//printf("x: %f, y: %f", pointX, pointY);
 			image(x, y) = a2computeColor(camera->getPrimaryRay(pointX, pointY));
 		}
 	}

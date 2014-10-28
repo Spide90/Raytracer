@@ -7,21 +7,27 @@
 #include <rt/cameras/orthographic.h>
 #include <rt/ray.h>
 #include <core/point.h>
+#include <core/vector.h>
+
+#include <stdio.h>
 
 namespace rt {
 
 OrthographicCamera::OrthographicCamera(
         const Point& center,
-        const Vector& forward,
-        const Vector& up,
+        const Vector& forw,
+        const Vector& upVector,
         float scaleX,
         float scaleY
-        ) : center(center), forward(forward), up(up), scaleX(scaleX), scaleY(scaleY){
+        ) : center(center), scaleX(scaleX), scaleY(scaleY) {
+	forward = forw.normalize();
+	up = upVector.normalize();
+	imageX = (up * (dot(up, forward)) - cross(up, forward)).normalize() * scaleX;
+	imageY = cross(forward, imageX).normalize() * scaleY;
 }
 
 Ray OrthographicCamera::getPrimaryRay(float x, float y) const {
-	//TODO fix me
-	return Ray(center, forward);
+	return Ray(center + (y * imageY)  + (x * imageX), forward);
 }
 
 }
