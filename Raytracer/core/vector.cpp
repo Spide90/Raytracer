@@ -24,8 +24,7 @@ Vector Vector::operator-(const Vector& otherVector) const {
 }
 
 Vector Vector::normalize() const {
-	Vector v = Vector(x, y, z);
-	return (1 / length()) * (*this);
+	return (*this)/length();
 }
 
 Vector Vector::operator-() const {

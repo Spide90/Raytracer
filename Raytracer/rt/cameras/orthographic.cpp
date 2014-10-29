@@ -8,6 +8,7 @@
 #include <rt/ray.h>
 #include <core/point.h>
 #include <core/vector.h>
+#include <math.h>
 
 #include <stdio.h>
 
@@ -21,9 +22,9 @@ OrthographicCamera::OrthographicCamera(
         float scaleY
         ) : center(center), scaleX(scaleX), scaleY(scaleY) {
 	forward = forw.normalize();
-	up = upVector.normalize();
-	imageX = (up * (dot(up, forward)) - cross(up, forward)).normalize() * scaleX;
-	imageY = cross(forward, imageX).normalize() * scaleY;
+	up = upVector;
+	imageX = (up * (dot(up, forward)) - cross(forward, up)).normalize() * 0.5 * scaleX;
+	imageY = cross(imageX, forward).normalize() * 0.5 * scaleY;
 }
 
 Ray OrthographicCamera::getPrimaryRay(float x, float y) const {

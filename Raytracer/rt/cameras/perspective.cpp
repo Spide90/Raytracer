@@ -8,23 +8,25 @@
 #include <rt/ray.h>
 #include <math.h>
 
+#include <stdio.h>
+
 namespace rt {
 
 PerspectiveCamera::PerspectiveCamera(const Point& center, const Vector& forw,
-		const Vector& upVector, float verticalOpeningAngle,
-		float horizonalOpeningAngle) :
-		center(center), verticalOpeningAngle(verticalOpeningAngle), horizontalOpeningAngle(
-				horizontalOpeningAngle) {
+		const Vector& upVector, float verticalAngle, float horizontalAngle) :
+		center(center), verticalOpeningAngle(verticalAngle), horizontalOpeningAngle(
+				horizontalAngle) {
 	forward = forw;
 	up = upVector;
-	imageX = (up * (dot(up, forward)) - cross(up, forward)).normalize() * 0.5 * horizonalOpeningAngle;
-	imageY = cross(forward, imageX).normalize() * 0.5 * verticalOpeningAngle;
+	imageY = (forward - ( dot(forward, forward) / dot(forward, up) ) * up ).normalize() * forward.length() * tan(0.5 * verticalOpeningAngle);
+	imageX = cross(imageY, forward).normalize() * forward.length()* tan(0.5 * horizontalOpeningAngle);
 
+//	imageX = cross(forward, up).normalize() * tan(0.5 * horizontalOpeningAngle);
+//	imageY = cross(forward, imageX).normalize() * tan(0.5 * verticalOpeningAngle);
 }
 
 Ray PerspectiveCamera::getPrimaryRay(float x, float y) const {
-	//TODO implement me
-	return Ray(center, forward + x * imageX + y * imageY);
+	return Ray(center, (forward + (x * imageX) + (y * imageY)).normalize());
 }
 
 }
