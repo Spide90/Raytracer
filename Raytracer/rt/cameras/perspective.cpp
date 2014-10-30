@@ -12,14 +12,14 @@
 
 namespace rt {
 
-PerspectiveCamera::PerspectiveCamera(const Point& center, const Vector& forw,
-		const Vector& upVector, float verticalAngle, float horizontalAngle) :
-		center(center), verticalOpeningAngle(verticalAngle), horizontalOpeningAngle(
-				horizontalAngle) {
+PerspectiveCamera::PerspectiveCamera(const Point& center, const Vector& forw, const Vector& upVector, float verticalAngle,
+		float horizontalAngle) :
+		center(center), verticalOpeningAngle(verticalAngle), horizontalOpeningAngle(horizontalAngle) {
 	forward = forw;
 	up = upVector;
-	imageY = (forward - ( dot(forward, forward) / dot(forward, up) ) * up ).normalize() * forward.length() * tan(0.5 * verticalOpeningAngle);
-	imageX = cross(imageY, forward).normalize() * forward.length()* tan(0.5 * horizontalOpeningAngle);
+	imageY = (forward - (dot(forward, forward) / dot(forward, up)) * up).normalize() * forward.length()
+			* tan(0.5 * verticalOpeningAngle);
+	imageX = cross(imageY, forward).normalize() * forward.length() * tan(0.5 * horizontalOpeningAngle);
 
 //	imageX = cross(forward, up).normalize() * tan(0.5 * horizontalOpeningAngle);
 //	imageY = cross(forward, imageX).normalize() * tan(0.5 * verticalOpeningAngle);

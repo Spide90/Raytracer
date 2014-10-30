@@ -14,21 +14,19 @@
 
 namespace rt {
 
-OrthographicCamera::OrthographicCamera(
-        const Point& center,
-        const Vector& forw,
-        const Vector& upVector,
-        float scaleX,
-        float scaleY
-        ) : center(center), scaleX(scaleX), scaleY(scaleY) {
+OrthographicCamera::OrthographicCamera(const Point& center, const Vector& forw, const Vector& upVector, float scaleX,
+		float scaleY) :
+		center(center), scaleX(scaleX), scaleY(scaleY) {
 	forward = forw.normalize();
 	up = upVector;
-	imageX = (up * (dot(up, forward)) - cross(forward, up)).normalize() * 0.5 * scaleX;
-	imageY = cross(imageX, forward).normalize() * 0.5 * scaleY;
+	imageY = (forward - (dot(forward, forward) / dot(forward, up)) * up).normalize() * forward.length() * 0.5 * scaleY;
+	imageX = cross(imageY, forward).normalize() * forward.length() * 0.5 * scaleX;
+//	imageX = (up * (dot(up, forward)) - cross(forward, up)).normalize() * 0.5 * scaleX;
+//	imageY = cross(imageX, forward).normalize() * 0.5 * scaleY;
 }
 
 Ray OrthographicCamera::getPrimaryRay(float x, float y) const {
-	return Ray(center + (y * imageY)  + (x * imageX), forward);
+	return Ray(center + (y * imageY) + (x * imageX), forward);
 }
 
 }
