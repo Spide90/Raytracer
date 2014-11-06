@@ -29,17 +29,17 @@ BBox Sphere::getBounds() const {
 Intersection Sphere::intersect(const Ray& ray, float previousBestDistance) const {
 	float radius2 = radius * radius;
 	Vector l = center - ray.o;
-	float tca = dot(l, ray.d);
-	if (tca < 0) {
+	float angle = dot(l, ray.d);
+/*	if (tca < 0) {
 		return Intersection::failure();
-	}
-	float d2 = dot(l, l) - tca * tca;
+	}*/
+	float d2 = dot(l, l) - angle * angle;
 	if (d2 > radius2) {
 		return Intersection::failure();
 	}
 	float thc = sqrtf(radius2 - d2);
-	float t0 = tca - thc;
-	float t1 = tca + thc;
+	float t0 = angle - thc;
+	float t1 = angle + thc;
 	float t = min(t0, t1);
 	if (t < previousBestDistance) {
 		return Intersection(t, ray, this, ((ray.o + ray.d * t) - center).normalize(), ray.o + ray.d * t);
