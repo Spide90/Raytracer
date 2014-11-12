@@ -33,6 +33,7 @@ void Renderer::setSamples(uint samples) {
 }
 
 void Renderer::render(Image& image) {
+	std::cout << "start rendering image\n";
 	uint width = image.width();
 	uint height = image.height();
 	for (uint y = 0; y < height; y++) {
@@ -43,6 +44,7 @@ void Renderer::render(Image& image) {
 			image(x, y) = integrator->getRadiance(ray);
 		}
 	}
+	std::cout << "image complete\n";
 
 }
 void Renderer::test_render1(Image& image) {

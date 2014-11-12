@@ -22,11 +22,12 @@ InfinitePlane::InfinitePlane(const Point& origin, const Vector& normal, CoordMap
 }
 
 BBox InfinitePlane::getBounds() const {
+	return BBox::full();
 }
 
 Intersection InfinitePlane::intersect(const Ray& ray, float previousBestDistance) const {
-	float t = -(dot(ray.o - origin, normalVector)) / dot(ray.d, normalVector);
-	if (t < previousBestDistance && t >= 0) {
+	float t = -(dot(ray.o - origin, normalVector) / dot(ray.d, normalVector));
+	if (t < previousBestDistance && t > 0) {
 		Point localPoint = ray.o + ray.d * t;
 		return Intersection(t, ray, this, normalVector, localPoint);
 	}

@@ -10,7 +10,9 @@
 #include <core/vector.h>
 #include <math.h>
 #include <rt/intersection.h>
+#include <rt/solids/infiniteplane.h>
 #include <rt/bbox.h>
+
 
 #include <stdio.h>
 
@@ -24,6 +26,7 @@ AABox::AABox(const Point& corner1, const Point& corner2, CoordMapper* texMapper,
 }
 
 BBox AABox::getBounds() const {
+	return BBox(corner1, corner2);
 }
 
 Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const {
@@ -52,19 +55,6 @@ Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const 
 		tFarY = (corner1.y - ray.o.y) / ray.d.y;
 	}
 
-	if ((tNearX > tFarY) || (tNearY > tFarX)) {
-		return Intersection::failure();
-	}
-
-	bool yFirst = false;
-	if (tNearY > tNearX) {
-		tNearX = tNearY;
-		yFirst = true;
-	}
-	if (tFarY < tFarX) {
-		tFarX = tFarY;
-	}
-
 	float tNearZ, tFarZ;
 	if (ray.d.z >= 0) {
 		//ray from back to front
@@ -76,33 +66,25 @@ Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const 
 		tFarZ = (corner1.z - ray.o.z) / ray.d.z;
 	}
 
-	if ((tNearX > tFarZ) || (tNearZ > tFarX)) {
-		return Intersection::failure();
-	}
+	float nearMax = std::max( { tNearX, tNearY, tNearZ });
+	float farMin = std::min( { tFarX, tFarY, tFarZ });
 
-	bool zFirst = false;
-	if (tNearZ > tNearX) {
-		tNearX = tNearZ;
-		zFirst = true;
-	}
-	if (tFarZ < tFarX) {
-		tFarX = tFarZ;
-	}
-	if (tNearX < previousBestDistance) {
+	if (nearMax < farMin) {
 		Vector normalVector;
-		if (zFirst) {
-			normalVector = Vector(0, 0, 1);
-		} else {
-			if (yFirst) {
-				normalVector = Vector(0, 1, 0);
-			} else {
-				normalVector = Vector(1, 0, 0);
-			}
+		if (nearMax == tNearX) {
+			normalVector = Vector(1, 0, 0);
 		}
-		return Intersection(dot(Vector(tNearX, tNearY, tNearZ), ray.d), ray, this, normalVector, ray.o + ray.d);
-	} else {
-		return Intersection::failure();
+		if (nearMax == tNearY) {
+			normalVector = Vector(0, 1, 0);
+		}
+		if (nearMax == tNearZ) {
+			normalVector = Vector(0, 0, 1);
+		}
+		if (nearMax < previousBestDistance) {
+			return Intersection(nearMax, ray, this, normalVector, ray.o + nearMax * ray.d);
+		}
 	}
+	return Intersection::failure();
 
 }
 

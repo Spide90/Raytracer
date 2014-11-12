@@ -22,7 +22,16 @@ Quad::Quad(const Point& v1, const Vector& span1, const Vector& span2, CoordMappe
 }
 
 BBox Quad::getBounds() const {
-
+	Point edge1 = origin;
+	Point edge2 = origin + span1;
+	Point edge3 = origin + span2;
+	Point edge4 = origin + span1 + span2;
+	Triangle triangle = Triangle(edge1, edge2, edge4, nullptr, nullptr);
+	BBox box = triangle.getBounds();
+	triangle = Triangle(edge1, edge3, edge4, nullptr, nullptr);
+	BBox box2 = triangle.getBounds();
+	box.extend(box2);
+	return box;
 }
 
 Intersection Quad::intersect(const Ray& ray, float previousBestDistance) const {

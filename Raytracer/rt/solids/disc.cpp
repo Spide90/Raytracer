@@ -12,6 +12,8 @@
 #include <rt/solids/infiniteplane.h>
 #include <core/point.h>
 
+#include <math.h>
+
 namespace rt {
 
 Disc::Disc(const Point& center, const Vector& normal, float radius, CoordMapper* texMapper, Material* material) :
@@ -19,7 +21,15 @@ Disc::Disc(const Point& center, const Vector& normal, float radius, CoordMapper*
 }
 
 BBox Disc::getBounds() const {
+	float minX = cosf(pi/2 - acosf(dot(normalVector, Vector(-1, 0, 0)))) * radius;
+	float minY = cosf(pi/2 - acosf(dot(normalVector, Vector(0, 1, 0)))) * radius;
+	float minZ = cosf(pi/2 - acosf(dot(normalVector, Vector(0, 0, -1)))) * radius;
 
+	float maxX = cosf(pi/2 - acosf(dot(normalVector, Vector(1, 0, 0)))) * radius;
+	float maxY = cosf(pi/2 - acosf(dot(normalVector, Vector(0, -1, 0)))) * radius;
+	float maxZ = cosf(pi/2 - acosf(dot(normalVector, Vector(0, 0, -1)))) * radius;
+
+	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 
 Intersection Disc::intersect(const Ray& ray, float previousBestDistance) const {

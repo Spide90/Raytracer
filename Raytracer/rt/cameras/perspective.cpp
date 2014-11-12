@@ -17,15 +17,19 @@ PerspectiveCamera::PerspectiveCamera(const Point& center, const Vector& forw, co
 		center(center), verticalOpeningAngle(verticalAngle), horizontalOpeningAngle(horizontalAngle) {
 	forward = forw;
 	up = upVector;
-//	imageY = (forward - (dot(forward, forward) / dot(forward, up)) * up).normalize() * forward.length()
-//			* tan(0.5 * verticalOpeningAngle);
-//	imageX = cross(imageY, forward).normalize() * forward.length() * tan(0.5 * horizontalOpeningAngle);
-	imageX = cross(forward, up).normalize() * tan(0.5 * horizontalOpeningAngle);
-	imageY = cross(forward, imageX).normalize() * tan(0.5 * verticalOpeningAngle);
+	if (dot(forward, up) != 0) {
+		imageY = -(forward - (dot(forward, forward) / dot(forward, up)) * up).normalize() * forward.length()
+				* tan(0.5 * verticalOpeningAngle);
+		imageX = cross(imageY, forward).normalize() * forward.length() * tan(0.5 * horizontalOpeningAngle);
+	} else {
+		imageX = cross(forward, up).normalize() * tan(0.5 * horizontalOpeningAngle);
+		imageY = cross(forward, imageX).normalize() * tan(0.5 * verticalOpeningAngle);
+	}
 }
 
 Ray PerspectiveCamera::getPrimaryRay(float x, float y) const {
 	Ray ray(center, (forward + (x * imageX) + (y * imageY)).normalize());
+	//LOG_DEBUG("ray direction: " << ray.d.x << ", " << ray.d.y << ", " << ray.d.z)
 	return ray;
 }
 
