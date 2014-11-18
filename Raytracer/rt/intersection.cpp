@@ -10,6 +10,7 @@
 #include <core/vector.h>
 #include <rt/solids/solid.h>
 #include <rt/ray.h>
+#include <float.h>
 
 namespace rt {
 
@@ -26,11 +27,12 @@ Vector Intersection::normal() const {
 }
 
 Point Intersection::local() const {
-	//TODO implement me
+	return point;
 }
 
 Intersection Intersection::failure() {
 	Intersection intersection = Intersection();
+	intersection.distance = FLT_MAX;
 	intersection.intersected = false;
 	return intersection;
 }

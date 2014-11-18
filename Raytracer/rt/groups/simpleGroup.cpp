@@ -41,11 +41,18 @@ void SimpleGroup::add(Primitive* p) {
 }
 
 void SimpleGroup::setMaterial(Material* m) {
+	for (int i = 0; i < primitives.size(); i++) {
+		primitives[i]->setMaterial(m);
+	}
 
 }
 
 void SimpleGroup::setCoordMapper(CoordMapper* cm) {
 
+}
+
+Point SimpleGroup::getCenterPoint() {
+	return Point(0, 0, 0);
 }
 
 }

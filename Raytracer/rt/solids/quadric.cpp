@@ -71,5 +71,10 @@ float Quadric::getArea() const {
 	return 0;
 }
 
+Point Quadric::getCenterPoint() {
+	//TODO
+	return Point(0, 0, 0);
+}
+
 }
 

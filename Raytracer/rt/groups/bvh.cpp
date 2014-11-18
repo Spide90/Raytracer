@@ -5,30 +5,43 @@
  *      Author: chris
  */
 
+#include <core/macros.h>
+#include <core/point.h>
 #include <rt/groups/bvh.h>
-#include <vector>
 #include <rt/intersection.h>
-#include <rt/groups/group.h>
-#include <rt/bbox.h>
-#include <rt/groups/BVHInnerNode.h>
-#include <float.h>
 #include <math.h>
+#include <iostream>
+#include <utility>
+#include <rt/solids/solid.h>
 
 namespace rt {
 
-#define MAX_PRIMITIVES 5
+/**
+ * max primitives per leaf
+ */
+#define MAX_PRIMITIVES 3
+
+/**
+ * number of bins for SAH
+ */
+#define BIN_COUNT 16
+
+/**
+ * float correction
+ */
+#define EPSILON 0.001
+
+/*
+ * in case i forget to ask this question in the email:
+ * Did we receive any points for environment camera and/or fisheye camera ?
+ */
 
 BVH::BVH() {
 	leftChild = nullptr;
 	rightChild = nullptr;
 
-	float minX = FLT_MAX;
-	float minY = FLT_MAX;
-	float minZ = FLT_MAX;
-
-	float maxX = FLT_MIN;
-	float maxY = FLT_MIN;
-	float maxZ = FLT_MIN;
+	boundingBox = BBox::empty();
+	totalArea = 0;
 }
 
 BBox BVH::getBounds() const {
@@ -36,58 +49,91 @@ BBox BVH::getBounds() const {
 }
 
 Intersection BVH::intersect(const Ray& ray, float previousBestDistance) const {
-	LOG_DEBUG("Intersection begin")
-	std::cout << "intersection begin!\n";
 	Intersection bestIntersection = Intersection::failure();
 	float bestDistance = previousBestDistance;
-
+	Intersection leftIntersection = Intersection::failure();
 	if (leftChild != nullptr) {
 		std::pair<float, float> leftBoxIntersection = leftChild->getBounds().intersect(ray);
-		if (leftBoxIntersection.second > leftBoxIntersection.first) {
-			if ((leftBoxIntersection.first < previousBestDistance) && (leftBoxIntersection.first < bestDistance)) {
-				LOG_DEBUG("better intersection found in left child!")
-				bestIntersection = leftChild->intersect(ray, bestDistance);
-			}
+		if ((leftBoxIntersection.first <= leftBoxIntersection.second) && (leftBoxIntersection.first < bestDistance)) {
+			leftIntersection = leftChild->intersect(ray, bestDistance);
 		}
 	}
+	Intersection rightIntersection = Intersection::failure();
 	if (rightChild != nullptr) {
 		std::pair<float, float> rightBoxIntersection = rightChild->getBounds().intersect(ray);
-		if (rightBoxIntersection.second < rightBoxIntersection.first) {
-			if ((rightBoxIntersection.first < previousBestDistance) && (rightBoxIntersection.first < bestDistance)) {
-				LOG_DEBUG("better intersection found in right child!")
-				bestIntersection = rightChild->intersect(ray, bestDistance);
+		if ((rightBoxIntersection.first <= rightBoxIntersection.second) && (rightBoxIntersection.first < bestDistance)) {
+			rightIntersection = rightChild->intersect(ray, bestDistance);
+		}
+	}
+	if (leftIntersection && rightIntersection) {
+		bestIntersection = leftIntersection.distance < rightIntersection.distance ? leftIntersection : rightIntersection;
+	} else {
+		if (leftIntersection) {
+			bestIntersection = leftIntersection;
+		}
+		if (rightIntersection) {
+			bestIntersection = rightIntersection;
+		}
+	}
+	if ((leftChild == nullptr) && (rightChild == nullptr)) {
+		for (int i = 0; i < primitives.size(); i++) {
+			Intersection intersection = primitives[i]->intersect(ray, bestDistance);
+			if (intersection) {
+				bestIntersection = intersection;
+				bestDistance = intersection.distance;
 			}
 		}
 	}
-
-	for (int i = 0; i < primitives.size(); i++) {
-		Intersection intersection = primitives[i]->intersect(ray, bestDistance);
-		if (intersection) {
-			bestIntersection = intersection;
-			bestDistance = intersection.distance;
-		}
-	}
-
-	LOG_DEBUG("best intersection distance: " << bestDistance)
 	return bestIntersection;
 }
 
 void BVH::rebuildIndex() {
-	LOG_DEBUG("building index... current elements: " << primitives.size())
 	if (primitives.size() > MAX_PRIMITIVES) {
-		if (leftChild == nullptr) {
-			LOG_DEBUG("creating left child")
-			leftChild = new BVH();
+		float lengthX = boundingBox.max.x - boundingBox.min.x;
+		float lengthY = boundingBox.max.y - boundingBox.min.y;
+		float lengthZ = boundingBox.max.z - boundingBox.min.z;
+
+		if (lengthX >= lengthY && lengthX >= lengthZ) {
+			longestAxisLength = lengthX;
+			longestAxis = X;	// X
 		}
-		if (rightChild == nullptr) {
-			LOG_DEBUG("creating right child")
-			rightChild = new BVH();
+		if (lengthY >= lengthX && lengthY >= lengthZ) {
+			longestAxisLength = lengthY;
+			longestAxis = Y;	// Y
 		}
-		bool lower = false;
-		LOG_DEBUG("everyday i'm shuffling!")
+		if (lengthZ >= lengthX && lengthZ >= lengthY) {
+			longestAxisLength = lengthZ;
+			longestAxis = Z;	// Z
+		}
+
+		//float bestSplitPosition = findBestSplitPosition();
+
+		//LOG_DEBUG("best split at: " << bestSplitPosition)
+
+		float longestAxisSplit;
+		switch (longestAxis) {
+		case X:
+			longestAxisSplit = (boundingBox.min.x + boundingBox.max.x) / 2;
+			//longestAxisSplit = boundingBox.min.x + (longestAxisLength * bestSplitPosition);
+			break;
+		case Y:
+			longestAxisSplit = (boundingBox.min.y + boundingBox.max.y) / 2;
+			//longestAxisSplit = boundingBox.min.y + (longestAxisLength * bestSplitPosition);
+			break;
+		case Z:
+			longestAxisSplit = (boundingBox.min.z + boundingBox.max.z) / 2;
+			//longestAxisSplit = boundingBox.min.z + (longestAxisLength * bestSplitPosition);
+			break;
+		default:
+			break;
+		}
+
 		while (primitives.size() > 0) {
+			bool lower = false;
+			bool equal = false;
 			Primitive* primitive = primitives.back();
 			primitives.pop_back();
+
 			BBox primitiveBox = primitive->getBounds();
 			float boxMiddleX;
 			float boxMiddleY;
@@ -96,46 +142,133 @@ void BVH::rebuildIndex() {
 			switch (longestAxis) {
 			case X:
 				boxMiddleX = (primitiveBox.max.x + primitiveBox.min.x) / 2;
-				lower = boxMiddleX < longestAxisLength;
+				equal = boxMiddleX == longestAxisSplit;
+				//equal = ((boxMiddleX - boundingBox.min.x) / longestAxisLength) == bestSplitPosition;
+				//LOG_DEBUG("X: " << boxMiddleX << " < " << longestAxisSplit)
+				//lower = ((boxMiddleX - boundingBox.min.x) / longestAxisLength) < bestSplitPosition;
+				lower = boxMiddleX < longestAxisSplit;
 				break;
 			case Y:
 				boxMiddleY = (primitiveBox.max.y + primitiveBox.min.y) / 2;
-				lower = boxMiddleY < longestAxisLength;
+				equal = boxMiddleY == longestAxisSplit;
+				//equal = ((boxMiddleY - boundingBox.min.y) / longestAxisLength) == bestSplitPosition;
+				//LOG_DEBUG("Y: " << boxMiddleY << " < " << longestAxisSplit)
+				lower = boxMiddleY < longestAxisSplit;
+				//lower = ((boxMiddleY - boundingBox.min.y) / longestAxisLength) < bestSplitPosition;
 				break;
 			case Z:
 				boxMiddleZ = (primitiveBox.max.z + primitiveBox.min.z) / 2;
-				lower = boxMiddleZ < longestAxisLength;
+				equal = boxMiddleZ == longestAxisSplit;
+				//equal = ((boxMiddleZ - boundingBox.min.z) / longestAxisLength) == bestSplitPosition;
+				//LOG_DEBUG("Z: " << boxMiddleZ << " < " << longestAxisSplit)
+				//lower = ((boxMiddleZ - boundingBox.min.z) / longestAxisLength) < bestSplitPosition;
+				lower = boxMiddleZ < longestAxisSplit;
 				break;
 			default:
 				break;
 			}
-
-			if (lower) {
-				LOG_DEBUG("putting primitive to left")
-				leftChild->add(primitive);
+			//LOG_DEBUG("bestSplitPosition = " << bestSplitPosition)
+			if (equal) {
+				if (leftChild == nullptr) {
+					leftChild = new BVH();
+				}
+				if (rightChild == nullptr) {
+					rightChild = new BVH();
+				}
+				if (leftChild->primitives.size() < rightChild->primitives.size()) {
+					//LOG_DEBUG("equal put to left")
+					leftChild->add(primitive);
+				} else {
+					//LOG_DEBUG("equal put to right")
+					rightChild->add(primitive);
+				}
 			} else {
-				LOG_DEBUG("putting primitive to right")
-				rightChild->add(primitive);
+				if (lower) {
+					if (leftChild == nullptr) {
+						leftChild = new BVH();
+					}
+					//LOG_DEBUG("put to left")
+					leftChild->add(primitive);
+				} else {
+					if (rightChild == nullptr) {
+						rightChild = new BVH();
+					}
+					//LOG_DEBUG("put to right")
+					rightChild->add(primitive);
+				}
 			}
 		}
-		LOG_DEBUG("shuffle done... elements now" << primitives.size())
 	}
-
-	boundingBox = BBox::empty();
 	if (leftChild != nullptr) {
-		LOG_DEBUG("rebuilding left child index")
 		leftChild->rebuildIndex();
-		boundingBox.extend(leftChild->getBounds());
 	}
 	if (rightChild != nullptr) {
-		LOG_DEBUG("rebuilding right child index")
 		rightChild->rebuildIndex();
-		boundingBox.extend(rightChild->getBounds());
 	}
-	LOG_DEBUG("building bounding box of current node")
-	for (int i = 0; i < primitives.size(); ++i) {
-		boundingBox.extend(primitives[i]->getBounds());
+
+}
+
+float BVH::findBestSplitPosition() {
+	float bins[BIN_COUNT];
+	int elementCount[BIN_COUNT];
+	for (int i = 0; i < BIN_COUNT; i++) {
+		bins[i] = 0;
+		elementCount[i] = 0;
 	}
+	for (int i = 0; i < primitives.size(); i++) {
+		BBox primitiveBox = primitives[i]->getBounds();
+		float boxMiddleX;
+		float boxMiddleY;
+		float boxMiddleZ;
+		int binNumber;
+		switch (longestAxis) {
+		case X:
+			//boxMiddleX = (primitiveBox.max.x + primitiveBox.min.x) / 2;
+			boxMiddleX = primitives[i]->getCenterPoint().x;
+			binNumber = roundf(((boxMiddleX - boundingBox.min.x) / longestAxisLength) * (BIN_COUNT - 1));
+			//LOG_DEBUG("put to bin number: " << binNumber)
+			bins[binNumber] += primitiveBox.getArea();
+			break;
+		case Y:
+			//boxMiddleY = (primitiveBox.max.y + primitiveBox.min.y) / 2;
+			boxMiddleY = primitives[i]->getCenterPoint().y;
+			binNumber = roundf(((boxMiddleY - boundingBox.min.y) / longestAxisLength) * (BIN_COUNT - 1));
+			//LOG_DEBUG("put to bin number: " << binNumber)
+			bins[binNumber] += primitiveBox.getArea();
+			break;
+		case Z:
+			//boxMiddleZ = (primitiveBox.max.z + primitiveBox.min.z) / 2;
+			boxMiddleZ = primitives[i]->getCenterPoint().z;
+			binNumber = roundf(((boxMiddleZ - boundingBox.min.z) / longestAxisLength) * (BIN_COUNT - 1));
+			//LOG_DEBUG("put to bin number: " << binNumber)
+			bins[binNumber] += primitiveBox.getArea();
+			break;
+		default:
+			break;
+		}
+		elementCount[binNumber]++;
+	}
+	float bestSplit = 0;
+	float bestResult = FLT_MAX;
+	for (int i = 1; i < BIN_COUNT; i++) {
+		float surfaceAreaLeft = 0;
+		int elementCountLeft = 0;
+		for (int j = 0; j < i; j++) {
+			surfaceAreaLeft += bins[j];
+			elementCountLeft += elementCount[j];
+		}
+		float leftSplit = (surfaceAreaLeft / totalArea) * elementCountLeft;
+		float rightSplit = ((totalArea - surfaceAreaLeft) / totalArea) * (primitives.size() - elementCountLeft);
+		if ((leftSplit + rightSplit) < bestResult) {
+			bestSplit = i;
+			bestResult = leftSplit + rightSplit;
+			LOG_DEBUG("better split at " << bestSplit)
+			LOG_DEBUG(
+					"elementCountLeft " << elementCountLeft << " total: " << primitives.size() << " result: " << (leftSplit + rightSplit))
+		}
+	}
+	LOG_DEBUG("best split" << bestSplit)
+	return (bestSplit / BIN_COUNT);
 }
 
 BVH::~BVH() {
@@ -144,58 +277,22 @@ BVH::~BVH() {
 
 void BVH::add(Primitive* p) {
 	primitives.push_back(p);
-
-	BBox box = p->getBounds();
-	float boxMiddleX = (box.max.x + box.min.x) / 2;
-	float boxMiddleY = (box.max.y + box.min.y) / 2;
-	float boxMiddleZ = (box.max.z + box.min.z) / 2;
-
-	minX = minX > boxMiddleX ? boxMiddleX : minX;
-	minY = minY > boxMiddleY ? boxMiddleY : minY;
-	minZ = minY > boxMiddleZ ? boxMiddleZ : minZ;
-
-	maxX = maxX < boxMiddleX ? boxMiddleX : maxX;
-	maxY = maxY < boxMiddleY ? boxMiddleY : maxY;
-	maxZ = maxZ < boxMiddleZ ? boxMiddleZ : maxZ;
-	/*
-	 minX = minX > box.min.x ? box.min.x : minX;
-	 minY = minY > box.min.y ? box.min.y : minY;
-	 minZ = minY > box.min.z ? box.min.z : minZ;
-
-	 maxX = maxX < box.max.x ? box.max.z : maxX;
-	 maxY = maxY < box.max.y ? box.max.z : maxY;
-	 maxZ = maxZ < box.max.z ? box.max.z : maxZ;
-	 */
-	float lengthX = (maxX + minX) / 2;
-	float lengthY = (maxY + minY) / 2;
-	float lengthZ = (maxZ + minZ) / 2;
-	if (lengthX >= lengthZ) {
-		if (lengthX >= lengthY) {
-			longestAxisLength = lengthX;
-			longestAxis = X;
-		} else {
-			if (lengthZ >= lengthY) {
-				longestAxisLength = lengthZ;
-				longestAxis = Z;
-			}
-		}
-	} else {
-		if (lengthY >= lengthZ) {
-			longestAxisLength = lengthY;
-			longestAxis = Y;
-		} else {
-			longestAxisLength = lengthZ;
-			longestAxis = Z;
-		}
-	}
+	boundingBox.extend(p->getBounds());
+	totalArea += p->getBounds().getArea();
 }
 
 void BVH::setMaterial(Material* m) {
-
+	for (int i = 0; i < primitives.size(); i++) {
+		primitives[i]->setMaterial(m);
+	}
 }
 
 void BVH::setCoordMapper(CoordMapper* cm) {
 
+}
+
+Point BVH::getCenterPoint() {
+	return Point(boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y, boundingBox.max.z - boundingBox.min.z);
 }
 
 }

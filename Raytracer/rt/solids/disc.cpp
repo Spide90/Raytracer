@@ -52,5 +52,9 @@ float Disc::getArea() const {
 	return pi * radius * radius;
 }
 
+Point Disc::getCenterPoint() {
+	return center;
+}
+
 }
 

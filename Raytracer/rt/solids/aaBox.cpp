@@ -97,5 +97,9 @@ float AABox::getArea() const {
 			+ 2 * fabs(corner1.z - corner2.z) * fabs(corner1.y - corner2.y);
 }
 
+Point AABox::getCenterPoint() {
+	return Point(corner2.x - corner1.x, corner2.y - corner1.y, corner2.z - corner1.z);
+}
+
 }
 

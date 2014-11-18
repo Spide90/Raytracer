@@ -20,6 +20,7 @@ public:
     virtual float getArea() const = 0;
     virtual void setMaterial(Material* m) { material = m; }
     virtual void setCoordMapper(CoordMapper* cm) { texMapper = cm; }
+    virtual Point getCenterPoint() = 0;
 };
 
 }

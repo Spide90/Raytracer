@@ -17,6 +17,7 @@ public:
     virtual void add(Primitive* p);
     virtual void setMaterial(Material* m);
     virtual void setCoordMapper(CoordMapper* cm);
+    virtual Point getCenterPoint();
 };
 
 }

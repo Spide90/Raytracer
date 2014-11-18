@@ -17,6 +17,7 @@ public:
 	BVH* leftChild;
 	BVH* rightChild;
 	BBox boundingBox;
+	float totalArea;
 
     BVH();
     virtual BBox getBounds() const;
@@ -26,12 +27,14 @@ public:
     virtual void add(Primitive* p);
     virtual void setMaterial(Material* m);
     virtual void setCoordMapper(CoordMapper* cm);
+    virtual Point getCenterPoint();
+    float findBestSplitPosition();
+
 
 private:
     enum Axis{
     	X,Y,Z
     };
-    float minX, minY, minZ, maxX, maxY, maxZ;
     float longestAxisLength;
     Axis longestAxis;
 };

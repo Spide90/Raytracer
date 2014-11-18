@@ -42,5 +42,9 @@ float InfinitePlane::getArea() const {
 	return FLT_MAX;
 }
 
+Point InfinitePlane::getCenterPoint() {
+	return origin;
+}
+
 }
 

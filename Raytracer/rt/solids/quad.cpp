@@ -57,5 +57,9 @@ float Quad::getArea() const {
 	return span1.length() * span2.length();
 }
 
+Point Quad::getCenterPoint() {
+	return origin + (0.5 * span1) + (0.5 * span2);
+}
+
 }
 

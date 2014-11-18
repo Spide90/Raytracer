@@ -8,20 +8,19 @@
 #include <rt/bbox.h>
 #include <float.h>
 #include <rt/ray.h>
+#include <math.h>
 
 #include <algorithm>
 #include <utility>
 
-#include <stdio.h>
-
 namespace rt {
 
 BBox BBox::empty() {
-	return BBox(Point(1, 1, 1), Point(0, 0, 0));
+	return BBox(Point(FLT_MAX, FLT_MAX, FLT_MAX), Point(-FLT_MAX, -FLT_MAX, -FLT_MAX));
 }
 
 BBox BBox::full() {
-	return BBox(Point(FLT_MIN, FLT_MIN, FLT_MIN), Point(FLT_MAX, FLT_MAX, FLT_MAX));
+	return BBox(Point(-FLT_MAX, -FLT_MAX, -FLT_MAX), Point(FLT_MAX, FLT_MAX, FLT_MAX));
 }
 
 void BBox::extend(const Point& point) {
@@ -92,6 +91,12 @@ std::pair<float, float> BBox::intersect(const Ray& ray) const {
 bool BBox::isUnbound() {
 	return (min.x == FLT_MIN && max.x == FLT_MAX) || (min.y == FLT_MIN && max.y == FLT_MAX)
 			|| (min.z == FLT_MIN && max.z == FLT_MAX);
+}
+
+float BBox::getArea() {
+	return 2 * fabs(max.x - min.x) * fabs(max.y - min.y)
+				+ 2 * fabs(max.y - min.y) * fabs(max.z - min.z)
+				+ 2 * fabs(max.z - min.z) * fabs(max.y - min.y);
 }
 
 }

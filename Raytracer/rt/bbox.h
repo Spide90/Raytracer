@@ -26,6 +26,8 @@ public:
     std::pair<float,float> intersect(const Ray& ray) const;
 
     bool isUnbound();
+
+    float getArea();
 };
 
 }

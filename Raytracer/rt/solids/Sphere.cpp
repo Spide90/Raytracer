@@ -63,5 +63,9 @@ float Sphere::getArea() const {
 	return 4 * pi * radius * radius;
 }
 
+Point Sphere::getCenterPoint() {
+	return center;
+}
+
 }
 
