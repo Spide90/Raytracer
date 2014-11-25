@@ -18,7 +18,7 @@ namespace rt {
 
 Quadric::Quadric(const float a, float b, float c, float d, float e, float f, float g, float h, float i, float j,
 		CoordMapper* texMapper, Material* material) :
-		a(a), b(b), c(c), d(d), e(e), f(f), g(g), h(h), i(i), j(j) {
+		a(a), b(b), c(c), d(d), e(e), f(f), g(g), h(h), i(i), j(j), Solid(texMapper, material) {
 
 }
 

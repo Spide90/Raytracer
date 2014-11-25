@@ -17,7 +17,7 @@
 namespace rt {
 
 Disc::Disc(const Point& center, const Vector& normal, float radius, CoordMapper* texMapper, Material* material) :
-		center(center), normalVector(normal), radius(radius) {
+		center(center), normalVector(normal), radius(radius), Solid(texMapper, material) {
 }
 
 BBox Disc::getBounds() const {
@@ -41,6 +41,7 @@ Intersection Disc::intersect(const Ray& ray, float previousBestDistance) const {
 			return Intersection::failure();
 		}
 	}
+	Intersection.solid = this;
 	return Intersection;
 }
 

@@ -10,16 +10,17 @@
 #include <rt/textures/texture.h>
 #include <math.h>
 
-
 namespace rt {
-
 
 DummyMaterial::DummyMaterial() {
 }
 
 RGBColor DummyMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
-	float cosine = dot(inDir, normal);
+	float cosine = fabs(dot(inDir.normalize(), normal));
+	if (cosine == 0) {
+		LOG_DEBUG("problem")
+	}
 	return RGBColor(cosine, cosine, cosine);
 }
 
@@ -27,9 +28,9 @@ RGBColor DummyMaterial::getEmission(const Point& texPoint, const Vector& normal,
 	return RGBColor(0, 0, 0);
 }
 
-/*SampleReflectance DummyMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
+Material::SampleReflectance DummyMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
 
-}*/
+}
 
 }
 

@@ -22,7 +22,7 @@ namespace rt {
 #define MIN_CORNER(corner1, corner2) corner1.x < corner2.x ? corner1 : corner2
 
 AABox::AABox(const Point& corner1, const Point& corner2, CoordMapper* texMapper, Material* material) :
-		corner1(MIN_CORNER(corner1, corner2)), corner2(MAX_CORNER(corner1, corner2)) {
+		corner1(MIN_CORNER(corner1, corner2)), corner2(MAX_CORNER(corner1, corner2)), Solid(texMapper, material){
 }
 
 BBox AABox::getBounds() const {

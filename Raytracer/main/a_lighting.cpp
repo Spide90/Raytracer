@@ -14,8 +14,11 @@
 #include <rt/lights/pointlight.h>
 #include <rt/lights/spotlight.h>
 #include <rt/lights/directional.h>
+#include <rt/lights/projective.h>
 
 #include <rt/integrators/raytrace.h>
+#include <rt/integrators/casting.h>
+
 
 using namespace rt;
 
@@ -103,6 +106,39 @@ void renderCornellboxB(float scale, const char* filename) {
     engine.render(img);
     img.writePNG(filename);
 }
+
+void renderCornellboxC(float scale, const char* filename) {
+    Image img(400, 400);
+    World world;
+    SimpleGroup* scene = new SimpleGroup();
+    world.scene = scene;
+
+    PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
+
+    DummyMaterial* mat = new DummyMaterial();
+
+    scene->add(new Quad(Point(000.f,000.f,000.f)*scale, Vector(550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, mat)); //floor
+    scene->add(new Quad(Point(550.f,550.f,000.f)*scale, Vector(-550.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, nullptr, mat)); //ceiling
+    scene->add(new Quad(Point(000.f,000.f,560.f)*scale, Vector(550.f,000.f,000.f)*scale, Vector(000.f,550.f,000.f)*scale, nullptr, mat)); //back wall
+    scene->add(new Quad(Point(000.f,000.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, Vector(000.f,550.f,000.f)*scale, nullptr, mat)); //right wall
+    scene->add(new Quad(Point(550.f,550.f,000.f)*scale, Vector(000.f,000.f,560.f)*scale, Vector(000.f,-550.f,000.f)*scale, nullptr, mat)); //left wall
+
+    //short box
+    makeBox(scene, Point(082.f, 000.1f, 225.f)*scale, Vector(158.f, 000.f, 047.f)*scale, Vector(048.f, 000.f, -160.f)*scale, Vector(000.f, 165.f, 000.f)*scale, nullptr, mat);
+
+    //tall box
+    makeBox(scene, Point(265.f, 000.1f, 296.f)*scale, Vector(158.f, 000.f, -049.f)*scale, Vector(049.f, 000.f, 160.f)*scale, Vector(000.f, 330.f, 000.f)*scale, nullptr, mat);
+
+    //point light
+    world.light.push_back(new ProjectiveLight(Point(288*scale,529.99f*scale,279.5f*scale), RGBColor::rep(40000.0f*scale*scale)));
+
+    RayTracingIntegrator integrator(&world);
+
+    Renderer engine(&cam, &integrator);
+    engine.render(img);
+    img.writePNG(filename);
+}
+
 }
 
 void a_lighting() {
@@ -110,4 +146,5 @@ void a_lighting() {
     renderCornellboxA(0.01f, "a4-2.png");
     renderCornellboxB(0.001f, "a4-3.png");
     renderCornellboxB(0.01f, "a4-4.png");
+	renderCornellboxC(0.001f, "a4-5.png");
 }

@@ -17,7 +17,7 @@
 namespace rt {
 
 Quad::Quad(const Point& v1, const Vector& span1, const Vector& span2, CoordMapper* texMapper, Material* material) :
-		origin(v1), span1(span1), span2(span2) {
+		origin(v1), span1(span1), span2(span2), Solid(texMapper, material) {
 
 }
 
@@ -43,9 +43,11 @@ Intersection Quad::intersect(const Ray& ray, float previousBestDistance) const {
 	Triangle triangle = Triangle(edge1, edge2, edge4, nullptr, nullptr);
 	intersection = triangle.intersect(ray, previousBestDistance);
 	if (!intersection) {
-		triangle = Triangle(edge1, edge3, edge4, nullptr, nullptr);
+		triangle = Triangle(edge1, edge4, edge3, nullptr, nullptr);
 		intersection = triangle.intersect(ray, previousBestDistance);
 	}
+	//intersection.point = Point(intersection.point.x - origin.x, intersection.point.y - origin.y, intersection.point.z - origin.z);
+	intersection.solid = this;
 	return intersection;
 }
 

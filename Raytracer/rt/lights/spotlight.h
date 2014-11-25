@@ -4,11 +4,20 @@
 #include <core/scalar.h>
 #include <core/vector.h>
 #include <rt/lights/light.h>
+#include <core/point.h>
+#include <core/color.h>
 
 namespace rt {
 
 class SpotLight : public Light {
 public:
+
+	Point position;
+	Vector direction;
+	float angle;
+	float exp;
+	RGBColor intensitiy;
+
 	SpotLight() {}
 	SpotLight(const Point& position, const Vector& direction, float angle, float exp, const RGBColor& intensity);
     virtual LightHit getLightHit(const Point& p) const;

@@ -11,28 +11,31 @@
 #include <rt/intersection.h>
 #include <rt/world.h>
 #include <rt/lights/light.h>
+#include <rt/solids/solid.h>
+#include <rt/materials/material.h>
 
 namespace rt {
+
+#define EPSILON 0.00001
 
 RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);
 	if (intersection) {
-		RGBColor color;
+		RGBColor color = RGBColor(0, 0, 0);
 		for (int i = 0; i < world->light.size(); i++) {
 			LightHit shadowRay = world->light[i]->getLightHit(intersection.local());
-			if (fabs(dot(intersection.normalVector, shadowRay.direction)) < pi/2) {
-				Ray shadow = Ray(intersection.local(), shadowRay.direction);
+			if (dot(intersection.normalVector, shadowRay.direction) > 0) {
+				Ray shadow = Ray(intersection.local() + EPSILON * shadowRay.direction, shadowRay.direction);
 				Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 				if (!shadowRayIntersection) {
-					color = color + world->light[i]->getIntensity(shadowRay);
-				} else {
-					//obstacle between light source and hitpoint
+					RGBColor reflectance = intersection.solid->material->getReflectance(intersection.local(),
+							intersection.normalVector, -ray.d, shadowRay.direction);
+					RGBColor intensity = world->light[i]->getIntensity(shadowRay);
+					RGBColor lightSourceColor = (reflectance * intensity);
+					color = color + lightSourceColor;
 				}
-			} else {
-				//wrong side
 			}
 		}
-
 		return color;
 	} else {
 		return RGBColor(0, 0, 0);

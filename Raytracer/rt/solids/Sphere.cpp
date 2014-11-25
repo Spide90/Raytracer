@@ -18,7 +18,7 @@
 namespace rt {
 
 Sphere::Sphere(const Point& center, float radius, CoordMapper* texMapper, Material* material) :
-		center(center), radius(radius) {
+		center(center), radius(radius), Solid(texMapper, material) {
 
 }
 

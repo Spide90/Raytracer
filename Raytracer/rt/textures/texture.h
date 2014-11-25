@@ -1,17 +1,19 @@
-/*
- * texture.h
- *
- *  Created on: 18.11.2014
- *      Author: chris
- */
+#ifndef CG1RAYTRACER_TEXTURES_TEXTURE_HEADER
+#define CG1RAYTRACER_TEXTURES_TEXTURE_HEADER
 
-#ifndef RT_TEXTURES_TEXTURE_H_
-#define RT_TEXTURES_TEXTURE_H_
+namespace rt {
 
-class BBox {
+class RGBColor;
+class Point;
 
+class Texture {
+public:
+    virtual RGBColor getColor(const Point& coord) = 0;
+    virtual RGBColor getColorDX(const Point& coord) = 0;
+    virtual RGBColor getColorDY(const Point& coord) = 0;
+    virtual ~Texture() {};
 };
 
+}
 
-
-#endif /* RT_TEXTURES_TEXTURE_H_ */
+#endif
