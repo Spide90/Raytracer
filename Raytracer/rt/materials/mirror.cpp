@@ -7,6 +7,7 @@
 
 #include <rt/materials/mirror.h>
 #include <rt/materials/material.h>
+#include <core/vector.h>
 
 namespace rt {
 
@@ -30,11 +31,12 @@ RGBColor MirrorMaterial::getEmission(const Point& texPoint, const Vector& normal
 }
 
 Material::SampleReflectance MirrorMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-
+	Vector dir = 2*dot(outDir,normal)*normal - outDir;
+	Material::SampleReflectance(dir, this->getReflectance(texPoint, normal, outDir, dir));
 }
 
 Material::Sampling MirrorMaterial::useSampling() const {
-
+	return SAMPLING_ALL;
 }
 
 }
