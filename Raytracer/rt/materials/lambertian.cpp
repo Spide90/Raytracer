@@ -33,7 +33,7 @@ Material::SampleReflectance LambertianMaterial::getSampleReflectance(const Point
 }
 
 Material::Sampling LambertianMaterial::useSampling() const {
-
+	return SAMPLING_NOT_NEEDED;
 }
 
 }
