@@ -14,23 +14,24 @@
 namespace rt {
 
 ConstantTexture::ConstantTexture() {
-
+	color = RGBColor(255,20,147).clamp();
 }
 
-ConstantTexture::ConstantTexture(const RGBColor& color) {
-
+ConstantTexture::ConstantTexture(const RGBColor& color):color(color) {
 }
 
 RGBColor ConstantTexture::getColor(const Point& coord) {
-
+	return color;
 }
 
 RGBColor ConstantTexture::getColorDX(const Point& coord) {
-
+	// TODO
+	return RGBColor(0,0,0);
 }
 
 RGBColor ConstantTexture::getColorDY(const Point& coord) {
-
+	// TODO
+	return RGBColor(0,0,0);
 }
 
 }
