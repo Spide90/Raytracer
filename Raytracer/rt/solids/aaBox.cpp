@@ -66,8 +66,10 @@ Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const 
 		tFarZ = (corner1.z - ray.o.z) / ray.d.z;
 	}
 
-	float nearMax = std::max( { tNearX, tNearY, tNearZ });
-	float farMin = std::min( { tFarX, tFarY, tFarZ });
+	float help = std::max(tNearX, tNearY);
+	float nearMax = std::max( help, tNearZ);
+	help = std::min(tFarX, tFarY);
+	float farMin = std::min( help, tFarZ);
 
 	if (nearMax < farMin) {
 		Vector normalVector;

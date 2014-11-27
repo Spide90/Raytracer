@@ -81,9 +81,10 @@ std::pair<float, float> BBox::intersect(const Ray& ray) const {
 		tNearZ = (max.z - ray.o.z) / ray.d.z;
 		tFarZ = (min.z - ray.o.z) / ray.d.z;
 	}
-
-	float nearMax = std::max( { tNearX, tNearY, tNearZ });
-	float farMin = std::min( { tFarX, tFarY, tFarZ });
+	float help = std::max(tNearX, tNearY);
+	float nearMax = std::max( help, tNearZ);
+	help = std::min(tFarX, tFarY);
+	float farMin = std::min( help, tFarZ);
 
 	return std::make_pair(nearMax, farMin);
 }
