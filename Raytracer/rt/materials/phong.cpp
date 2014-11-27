@@ -29,7 +29,7 @@ RGBColor PhongMaterial::getEmission(const Point& texPoint, const Vector& normal,
 
 Material::SampleReflectance PhongMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
-	return Material::SampleReflectance(normal, RGBColor(0,0,0));
+	return Material::SampleReflectance(normal, RGBColor(0, 0, 0));
 }
 
 Material::Sampling PhongMaterial::useSampling() const {

@@ -18,7 +18,7 @@ ConstantTexture::ConstantTexture() {
 }
 
 ConstantTexture::ConstantTexture(const RGBColor& color) :
-		color(color) {
+		color(color.clamp()) {
 }
 
 RGBColor ConstantTexture::getColor(const Point& coord) {
@@ -27,12 +27,12 @@ RGBColor ConstantTexture::getColor(const Point& coord) {
 
 RGBColor ConstantTexture::getColorDX(const Point& coord) {
 	// TODO
-	return RGBColor(0, 0, 0);
+	return RGBColor(255, 20, 147).clamp();
 }
 
 RGBColor ConstantTexture::getColorDY(const Point& coord) {
 	// TODO
-	return RGBColor(0, 0, 0);
+	return RGBColor(255, 20, 147).clamp();
 }
 
 }
