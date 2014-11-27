@@ -8,8 +8,6 @@
 #include <rt/materials/phong.h>
 #include <rt/materials/material.h>
 #include <rt/textures/texture.h>
-#include <core/vector.h>
-#include <math.h>
 
 namespace rt {
 

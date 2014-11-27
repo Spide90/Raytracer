@@ -8,6 +8,7 @@ namespace rt {
 
 class PhongMaterial : public Material {
 public:
+
 	Texture *specular;
 	float exponent;
 
