@@ -21,12 +21,13 @@ RGBColor PhongMaterial::getReflectance(const Point& texPoint, const Vector& norm
 	//Vector H = (inDir + outDir) / (inDir + outDir).length();
 	Vector RI = (2*dot(inDir, normal)*normal - inDir).normalize();
 	//float refl = powf(dot(H, normal), exponent) / (M_PI);
+	Vector RI = 2 * dot(inDir, normal) * normal - inDir;
 	float refl = powf(dot(RI, outDir), exponent);// / (2 * M_PI);
 	return (specular->getColor(texPoint)) * refl;
 }
 
 RGBColor PhongMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-	return RGBColor(0,0,0);
+	return RGBColor(0, 0, 0);
 }
 
 Material::SampleReflectance PhongMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
