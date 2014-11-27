@@ -64,13 +64,6 @@ void a7prepMaterials1(Material** materials) {
 	materials[3] = new LambertianMaterial(blacktex, whitetex);
 
 	materials[4] = new LambertianMaterial(blacktex, whitetex);
-	/*materials[0] = new DummyMaterial();
-	 materials[1] = new DummyMaterial();
-	 materials[2] = new DummyMaterial();
-
-	 materials[3] = new DummyMaterial();
-
-	 materials[4] = new DummyMaterial();*/
 }
 
 void a7prepMaterials2(Material** materials) {
@@ -164,10 +157,10 @@ void a_materials() {
 	initTextures();
 	a7prepMaterials1(materials);
 	a7renderCornellbox(0.001f, "a5-1.png", materials);
-	/*a7prepMaterials2(materials);
+	a7prepMaterials2(materials);
 	a7renderCornellbox(0.001f, "a5-2.png", materials);
 	a7prepMaterials3(materials);
-	a7renderCornellbox(0.001f, "a5-3.png", materials);*/
+	a7renderCornellbox(0.001f, "a5-3.png", materials);
 	delete[] materials;
 }
 
