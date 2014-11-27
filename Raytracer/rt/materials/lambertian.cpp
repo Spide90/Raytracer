@@ -13,7 +13,7 @@
 
 namespace rt {
 
-LambertianMaterial::LambertianMaterial(Texture* emission, Texture* diffuse):emission(emission), diffuse(diffuse) {
+LambertianMaterial::LambertianMaterial(Texture* emission, Texture* diffuse) : emission(emission), diffuse(diffuse) {
 
 }
 

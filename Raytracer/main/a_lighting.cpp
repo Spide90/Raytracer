@@ -19,6 +19,8 @@
 #include <rt/integrators/raytrace.h>
 #include <rt/integrators/casting.h>
 
+#include <rt/solids/sphere.h>
+
 
 using namespace rt;
 
