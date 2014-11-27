@@ -24,22 +24,33 @@ RGBColor CombineMaterial::getReflectance(const Point& texPoint, const Vector& no
 		const Vector& inDir) const {
 	RGBColor color = RGBColor(0, 0, 0);
 	for (int i = 0; i < materials.size(); i++) {
-		color = color + materials[i].first->getReflectance(texPoint, normal, outDir, inDir) * materials[i].second;
+		if (materials[i].first->useSampling() != SAMPLING_ALL) {
+			color = color + materials[i].first->getReflectance(texPoint, normal, outDir, inDir) * materials[i].second;
+		}
 	}
-
+	return color;
 }
 
 RGBColor CombineMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-
+	RGBColor color = RGBColor(0, 0, 0);
+	for (int i = 0; i < materials.size(); i++) {
+		color = color + materials[i].first->getEmission(texPoint, normal, outDir) * materials[i].second;
+	}
+	return color;
 }
 
 Material::SampleReflectance CombineMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
+	for (int i = 0; i < materials.size(); i++) {
+		if (materials[i].first->useSampling() == SAMPLING_ALL) {
+			return materials[i].first->getSampleReflectance(texPoint, normal, outDir);
+		}
+	}
 
 }
 
 Material::Sampling CombineMaterial::useSampling() const {
-
+	return SAMPLING_SECONDARY;
 }
 
 }

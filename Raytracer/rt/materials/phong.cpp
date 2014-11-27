@@ -18,13 +18,13 @@ PhongMaterial::PhongMaterial(Texture* specular, float exponent): specular(specul
 
 RGBColor PhongMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
-	Vector RI = 2*dot(inDir.normalize(), normal)*normal - inDir;
-	float refl = powf(dot(RI, outDir), exponent) / 2 * M_PI;
-	return (specular->getColor(texPoint))*refl;
+	Vector RI = 2 * dot(inDir, normal) * normal - inDir;
+	float refl = powf(dot(RI, outDir), exponent);// / (2 * M_PI);
+	return (specular->getColor(texPoint)) * refl;
 }
 
 RGBColor PhongMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-	return RGBColor(0,0,0);
+	return RGBColor(0, 0, 0);
 }
 
 Material::SampleReflectance PhongMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
