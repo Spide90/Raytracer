@@ -57,7 +57,7 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 		default:
 			break;
 		}
-		LOG_DEBUG("color " << color.r << ", " << color.g << ", " << color.b)
+
 		return color;
 	} else {
 		return RGBColor(0, 0, 0);

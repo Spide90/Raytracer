@@ -24,7 +24,7 @@ RGBColor LambertianMaterial::getReflectance(const Point& texPoint, const Vector&
 }
 
 RGBColor LambertianMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-	return emission->getColor(texPoint) / M_PI;
+	return emission->getColor(texPoint);
 }
 
 Material::SampleReflectance LambertianMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
