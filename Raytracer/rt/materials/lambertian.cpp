@@ -19,7 +19,8 @@ LambertianMaterial::LambertianMaterial(Texture* emission, Texture* diffuse):emis
 
 RGBColor LambertianMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
-	return diffuse->getColor(texPoint) * fabs(dot(inDir.normalize(), normal)) / M_PI;
+	RGBColor color = diffuse->getColor(texPoint) * dot(inDir.normalize(), normal) / M_PI;
+	return color;
 }
 
 RGBColor LambertianMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
