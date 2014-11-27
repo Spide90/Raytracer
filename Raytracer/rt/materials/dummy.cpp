@@ -29,7 +29,7 @@ RGBColor DummyMaterial::getEmission(const Point& texPoint, const Vector& normal,
 }
 
 Material::SampleReflectance DummyMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
-	Material::SampleReflectance(normal, RGBColor(0,0,0));
+	return Material::SampleReflectance(normal, RGBColor(0,0,0));
 }
 
 }
