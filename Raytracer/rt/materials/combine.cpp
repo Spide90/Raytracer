@@ -22,6 +22,10 @@ void CombineMaterial::add(Material* material, float weight) {
 
 RGBColor CombineMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
+	RGBColor color = RGBColor(0, 0, 0);
+	for (int i = 0; i < materials.size(); i++) {
+		color = color + materials[i].first->getReflectance(texPoint, normal, outDir, inDir) * materials[i].second;
+	}
 
 }
 

@@ -15,11 +15,9 @@
 #include <rt/world.h>
 #include <rt/materials/material.h>
 
-
 namespace rt {
 
-
-#define EPSILON 0.00001
+#define EPSILON 0.000001
 
 RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);
@@ -47,9 +45,10 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			}
 			break;
 		case Material::SAMPLING_ALL:
-			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector, -intersection.ray.d);
+			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
+					-intersection.ray.d);
 			sampleRay = Ray(intersection.local(), sample.direction);
-			color = color + sample.reflectance + getRadiance(sampleRay);
+			color = getRadiance(sampleRay);
 			break;
 		case Material::SAMPLING_SECONDARY:
 			LOG_DEBUG("not yet implemented")

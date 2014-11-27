@@ -145,7 +145,6 @@ void a7renderCornellbox(float scale, const char* filename, Material** materials)
 					RGBColor(5000.0f * scale * scale, 30000.0f * scale * scale, 5000.0f * scale * scale)));
 
 	RecursiveRayTracingIntegrator integrator(&world);
-//RayTracingIntegrator integrator(&world);
 
 	Renderer engine(&cam, &integrator);
 	engine.render(img);
