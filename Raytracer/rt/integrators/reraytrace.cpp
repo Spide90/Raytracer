@@ -47,7 +47,7 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 		case Material::SAMPLING_ALL:
 			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
 					-intersection.ray.d);
-			sampleRay = Ray(intersection.local(), sample.direction);
+			sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
 			color = getRadiance(sampleRay);
 			break;
 		case Material::SAMPLING_SECONDARY:
