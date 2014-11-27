@@ -9,6 +9,9 @@ namespace rt {
 
 class CombineMaterial : public Material {
 public:
+
+	std::vector<std::pair<Material*, float>> materials;
+
     CombineMaterial();
     void add(Material* material, float weight);
     virtual RGBColor getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir, const Vector& inDir) const;

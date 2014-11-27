@@ -18,9 +18,6 @@ DummyMaterial::DummyMaterial() {
 RGBColor DummyMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
 	float cosine = fabs(dot(inDir.normalize(), normal));
-	if (cosine == 0) {
-		LOG_DEBUG("problem")
-	}
 	return RGBColor(cosine, cosine, cosine);
 }
 

@@ -17,7 +17,7 @@ CombineMaterial::CombineMaterial() {
 }
 
 void CombineMaterial::add(Material* material, float weight) {
-
+	materials.push_back(std::make_pair(material, weight));
 }
 
 RGBColor CombineMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,

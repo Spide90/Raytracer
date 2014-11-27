@@ -11,9 +11,10 @@
 
 namespace rt {
 
-PhongMaterial::PhongMaterial(Texture* specular, float exponent) {
+PhongMaterial::PhongMaterial(Texture* specular, float exponent) : texture(specular), exp(exponent) {
 
 }
+
 RGBColor PhongMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
 

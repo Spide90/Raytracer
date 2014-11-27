@@ -8,6 +8,10 @@ namespace rt {
 
 class PhongMaterial : public Material {
 public:
+
+	Texture* texture;
+	float exp;
+
     PhongMaterial(Texture* specular, float exponent);
     virtual RGBColor getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir, const Vector& inDir) const;
     virtual RGBColor getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const;
