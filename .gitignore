@@ -6,6 +6,10 @@
 
 .settings/
 
+*.png
+
+build/
+
 # Precompiled Headers
 *.gch
 *.pch
