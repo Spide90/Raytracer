@@ -99,7 +99,7 @@ void a7prepMaterials4(Material** materials) {
 	materials[1] = new LambertianMaterial(blacktex, redtex);
 	materials[2] = new LambertianMaterial(blacktex, greentex);
 
-	materials[3] = new CookTorranceMaterial(redtex, 0.3);
+	materials[3] = new CookTorranceMaterial(redtex, 0.3, 0.7, 0.4);
 
 	materials[4] = new LambertianMaterial(blacktex, whitetex);
 }

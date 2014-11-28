@@ -14,11 +14,10 @@
 
 namespace rt {
 
-#define FRESNEL_NORMAL 0.75
-#define ROUGHNESS 0.4
-
-CookTorranceMaterial::CookTorranceMaterial(Texture* texture, float diffuseFraction) :
-		texture(texture), diffuseFraction(diffuseFraction) {
+CookTorranceMaterial::CookTorranceMaterial(Texture* texture, float diffuseFraction, float fresnelReflectance,
+		float roughnessFraction) :
+		texture(texture), diffuseFraction(diffuseFraction), fresnelReflectance(fresnelReflectance), roughnessFraction(
+				roughnessFraction) {
 
 }
 
@@ -33,14 +32,16 @@ RGBColor CookTorranceMaterial::getReflectance(const Point& texPoint, const Vecto
 	float angleNormalOutDir = std::max(dot(normal, outDir), 0.f);
 	float angleOutDirHalf = std::max(dot(outDir, halfVector), 0.f);
 
-	float fresnel = FRESNEL_NORMAL + (1 - FRESNEL_NORMAL) * powf(1 - angleNormalHalf, 5);
+	float fresnel = fresnelReflectance + (1 - fresnelReflectance) * powf(1 - angleNormalHalf, 5);
 
-	float roughness = 1.f / (4.f * ROUGHNESS * ROUGHNESS * powf(angleNormalHalf, 4))
-			* exp((angleNormalHalf * angleNormalHalf - 1) / (ROUGHNESS * ROUGHNESS * angleNormalHalf * angleNormalHalf));
+	float roughness = 1.f / (4.f * roughnessFraction * roughnessFraction * powf(angleNormalHalf, 4))
+			* exp(
+					(angleNormalHalf * angleNormalHalf - 1)
+							/ (roughnessFraction * roughnessFraction * angleNormalHalf * angleNormalHalf));
 
-	float geometricalAttenuiation = std::min(1.f, std::min((2 * angleNormalHalf * angleNormalOutDir) / angleNormalHalf,
-			(2 * angleNormalHalf * angleNormalInDir) / angleNormalHalf)
-	);
+	float geometricalAttenuiation = std::min(1.f,
+			std::min((2 * angleNormalHalf * angleNormalOutDir) / angleNormalHalf,
+					(2 * angleNormalHalf * angleNormalInDir) / angleNormalHalf));
 
 	RGBColor specular = (1 - diffuseFraction) * texture->getColor(texPoint) * (fresnel + roughness + geometricalAttenuiation)
 			/ (angleNormalOutDir * angleNormalOutDir * M_PI);
