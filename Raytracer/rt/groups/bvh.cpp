@@ -262,12 +262,8 @@ float BVH::findBestSplitPosition() {
 		if ((leftSplit + rightSplit) < bestResult) {
 			bestSplit = i;
 			bestResult = leftSplit + rightSplit;
-			LOG_DEBUG("better split at " << bestSplit)
-			LOG_DEBUG(
-					"elementCountLeft " << elementCountLeft << " total: " << primitives.size() << " result: " << (leftSplit + rightSplit))
 		}
 	}
-	LOG_DEBUG("best split" << bestSplit)
 	return (bestSplit / BIN_COUNT);
 }
 

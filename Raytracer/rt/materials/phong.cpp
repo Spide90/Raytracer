@@ -12,17 +12,19 @@
 
 namespace rt {
 
-PhongMaterial::PhongMaterial(Texture* specular, float exponent): specular(specular), exponent(exponent) {
+PhongMaterial::PhongMaterial(Texture* specular, float exponent) :
+		specular(specular), exponent(exponent) {
 
 }
 
 RGBColor PhongMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
 	//Vector H = (inDir + outDir) / (inDir + outDir).length();
-	Vector RI = (2*dot(inDir.normalize(), normal)*normal - inDir.normalize()).normalize();
+	//Vector RI = (2*dot(inDir.normalize(), normal)*normal - inDir.normalize()).normalize();
 	//float refl = powf(dot(H, normal), exponent) / (M_PI);
-	float refl = powf(dot(RI, outDir.normalize()), exponent);// / (2 * M_PI * dot(inDir.normalize(), normal));
-	return (specular->getColor(texPoint)) * refl;
+	Vector RI = 2 * dot(inDir, normal) * normal - inDir;
+	float refl = powf(std::max(dot(RI, outDir), 0.f), exponent) * ((exponent + 2) / (2 * M_PI));
+	return (specular->getColor(texPoint)) * refl * fabs(dot(inDir, normal));
 }
 
 RGBColor PhongMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {

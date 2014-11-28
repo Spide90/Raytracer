@@ -11,6 +11,7 @@ class RGBColor;
 
 class RecursiveRayTracingIntegrator : public Integrator {
 public:
+
     RecursiveRayTracingIntegrator(World* world) : Integrator(world) {}
     virtual RGBColor getRadiance(const Ray& ray) const;
 };
