@@ -43,7 +43,7 @@ RGBColor CookTorranceMaterial::getReflectance(const Point& texPoint, const Vecto
 			std::min((2 * angleNormalHalf * angleNormalOutDir) / angleNormalHalf,
 					(2 * angleNormalHalf * angleNormalInDir) / angleNormalHalf));
 
-	RGBColor specular = (1 - diffuseFraction) * texture->getColor(texPoint) * (fresnel + roughness + geometricalAttenuiation)
+	RGBColor specular = (1 - diffuseFraction) * texture->getColor(texPoint) * fabs(dot(inDir, normal)) * (fresnel + roughness + geometricalAttenuiation)
 			/ (angleNormalOutDir * angleNormalOutDir * M_PI);
 
 	return diffuseColor + specular;
