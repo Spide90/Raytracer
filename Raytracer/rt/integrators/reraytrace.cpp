@@ -18,6 +18,9 @@
 namespace rt {
 
 #define EPSILON 0.000001
+#define MAX_RECURSION_DEPTH 6
+
+int recursionDepth = 0;
 
 RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);
@@ -48,7 +51,13 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
 					-intersection.ray.d);
 			sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
-			color = getRadiance(sampleRay);
+			if (recursionDepth > MAX_RECURSION_DEPTH) {
+				recursionDepth = 0;
+			} else {
+				recursionDepth++;
+				color = color + getRadiance(sampleRay) * sample.reflectance;
+			}
+
 			break;
 		case Material::SAMPLING_SECONDARY:
 			for (int i = 0; i < world->light.size(); i++) {
@@ -69,13 +78,20 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			}
 			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
 					-intersection.ray.d);
-			sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
-			color = color + getRadiance(sampleRay);
+			if (sample.direction != Vector(0, 0, 1) && sample.reflectance != RGBColor(0.f, 0.f, 0.f)) {
+				sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
+				if (recursionDepth > MAX_RECURSION_DEPTH) {
+					recursionDepth = 0;
+				} else {
+					recursionDepth++;
+					color = color + getRadiance(sampleRay) * sample.reflectance;
+				}
+			}
 			break;
 		default:
 			break;
 		}
-
+		recursionDepth = 0;
 		return color;
 	} else {
 		return RGBColor(0, 0, 0);

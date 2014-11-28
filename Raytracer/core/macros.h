@@ -16,7 +16,7 @@
 /**
  * print debug message, due to the standard out arguments use << as concatination!
  */
-#define LOG_DEBUG(message) if (DEBUG) std::cout << message << "\n";
+#define LOG_DEBUG(message) if (DEBUG) std::cout << message << "\n"
 
 
 #endif

@@ -42,7 +42,6 @@ void SimpleGroup::add(Primitive* p) {
 
 void SimpleGroup::setMaterial(Material* m) {
 	for (int i = 0; i < primitives.size(); i++) {
-		LOG_DEBUG("set material")
 		primitives[i]->setMaterial(m);
 	}
 
