@@ -19,10 +19,9 @@ PhongMaterial::PhongMaterial(Texture* specular, float exponent): specular(specul
 RGBColor PhongMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
 	//Vector H = (inDir + outDir) / (inDir + outDir).length();
-	Vector RI = (2*dot(inDir, normal)*normal - inDir).normalize();
+	Vector RI = (2*dot(inDir.normalize(), normal)*normal - inDir.normalize()).normalize();
 	//float refl = powf(dot(H, normal), exponent) / (M_PI);
-	Vector RI = 2 * dot(inDir, normal) * normal - inDir;
-	float refl = powf(dot(RI, outDir), exponent);// / (2 * M_PI);
+	float refl = powf(dot(RI, outDir.normalize()), exponent);// / (2 * M_PI * dot(inDir.normalize(), normal));
 	return (specular->getColor(texPoint)) * refl;
 }
 
