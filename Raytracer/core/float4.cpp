@@ -11,7 +11,10 @@ namespace rt {
     float& Float4::operator[](int idx) {}
     float Float4::operator[](int idx) const {}
 
-    Float4 Float4::operator+(const Float4& b) const {}
+    Float4 Float4::operator+(const Float4& b) const {
+    	return (x + b.x, y + b.y, z + b.z, w + b.w);
+    }
+
     Float4 Float4::operator-(const Float4& b) const {}
     Float4 Float4::operator*(const Float4& b) const {}
     Float4 Float4::operator/(const Float4& b) const {}
@@ -32,5 +35,3 @@ Float4 min(const Float4& a, const Float4& b) {}
 Float4 max(const Float4& a, const Float4& b) {}
 
 }
-
-#endif
