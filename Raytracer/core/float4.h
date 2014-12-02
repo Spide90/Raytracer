@@ -10,6 +10,7 @@ class Vector;
 
 class ALIGN(16) Float4 {
 public:
+	float x, y, z, w;
 
     Float4() {}
     Float4(float x, float y, float z, float w);
