@@ -9,11 +9,12 @@
 
 
 namespace rt {
-	RGBColor black;
-	RGBColor white;
 
     class PerlinTexture : public Texture {
     public:
+    	RGBColor black;
+    	RGBColor white;
+
         PerlinTexture(const RGBColor& white, const RGBColor& black);
         void addOctave(float amplitude, float frequency);
         virtual RGBColor getColor(const Point& coord);
