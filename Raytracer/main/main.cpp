@@ -10,6 +10,8 @@ void a_lighting();
 
 void a_materials();
 
+void a_textures();
+
 void a_mappers();
 
 #define TEST_CAMERA false
@@ -17,7 +19,8 @@ void a_mappers();
 #define TEST_INDEX false
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
-#define TEST_MAPPERS true
+#define TEST_TEXTURES true
+#define TEST_MAPPERS false
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -44,6 +47,11 @@ int main(int argc, char* argv[]) {
 		std::cout << "starting material tests\n";
 		a_materials();
 		std::cout << "material tests finished\n";
+	}
+	if (TEST_TEXTURES) {
+		std::cout << "starting textures tests\n";
+		a_textures();
+		std::cout << "mapper tests finished\n";
 	}
 	if (TEST_MAPPERS) {
 		std::cout << "starting mapper tests\n";

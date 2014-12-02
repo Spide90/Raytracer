@@ -62,15 +62,15 @@ namespace {
         CheckerboardTexture* checkerboardTex = new CheckerboardTexture(RGBColor(1.0f,0.9f,0.7f), RGBColor(0.2f,0.2f,0.0f));
         FlatMaterial* checkerboard = new FlatMaterial(checkerboardTex);
 
-        PerlinTexture* perlinTex = new PerlinTexture(RGBColor(1.0f,1.0f,0.9f), RGBColor(0.5f,0.5f,1.0f));
+        /*PerlinTexture* perlinTex = new PerlinTexture(RGBColor(1.0f,1.0f,0.9f), RGBColor(0.5f,0.5f,1.0f));
         perlinTex->addOctave(0.5f, 5.0f);
         perlinTex->addOctave(0.25f, 10.0f);
         perlinTex->addOctave(0.125f, 20.0f);
         perlinTex->addOctave(0.125f, 40.0f);
-        FlatMaterial* perlin = new FlatMaterial(perlinTex);
+        FlatMaterial* perlin = new FlatMaterial(perlinTex);*/
 
         scene->add(new InfinitePlane(Point(0.0f,0.0f,-0.018f), Vector(0.01f, 0.0f, 1.0f), nullptr, checkerboard));
-        scene->add(new InfinitePlane(Point(0.0f,0.0f,-0.02f), Vector(-0.01f, 0.0f, 1.0f), nullptr, perlin));
+        //scene->add(new InfinitePlane(Point(0.0f,0.0f,-0.02f), Vector(-0.01f, 0.0f, 1.0f), nullptr, perlin));
 
         return scene;
     }
@@ -89,13 +89,13 @@ void a_textures() {
     engine.render(img);
     img.writePNG("tx-1.png");
 
-    world.scene = imageTexturesBorder();
+    /*world.scene = imageTexturesBorder();
     engine.render(img);
     img.writePNG("tx-2.png");
 
     world.scene = imageTexturesInterpolate();
     engine.render(img);
-    img.writePNG("tx-3.png");
+    img.writePNG("tx-3.png");*/
 
 }
 
