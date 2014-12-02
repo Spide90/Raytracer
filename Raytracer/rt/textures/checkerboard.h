@@ -7,11 +7,12 @@
 #include <core/color.h>
 
 namespace rt {
-	RGBColor black;
-	RGBColor white;
 
     class CheckerboardTexture : public Texture {
     public:
+    	RGBColor black;
+    	RGBColor white;
+
         CheckerboardTexture(const RGBColor& white, const RGBColor& black);
         virtual RGBColor getColor(const Point& coord);
         virtual RGBColor getColorDX(const Point& coord);
