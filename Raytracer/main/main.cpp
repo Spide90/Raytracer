@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	if (TEST_TEXTURES) {
 		std::cout << "starting textures tests\n";
 		a_textures();
-		std::cout << "mapper tests finished\n";
+		std::cout << "textures tests finished\n";
 	}
 	if (TEST_MAPPERS) {
 		std::cout << "starting mapper tests\n";

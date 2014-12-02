@@ -37,7 +37,7 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 				}
 			}
 		}
-		return color + emission;
+		return (color + emission);
 	} else {
 		return RGBColor(0, 0, 0);
 	}
