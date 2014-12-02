@@ -1,4 +1,6 @@
 #include <core/macros.h>
+#include <core/float4.h>
+#include <math.h>
 
 namespace rt {
 
@@ -8,30 +10,80 @@ namespace rt {
     Float4::Float4(const Point& p) : x(p.x), y(p.y), z(p.z), w(1){}
     Float4::Float4(const Vector& v) : x(v.x), y(v.y), z(v.z), w(1){}
 
-    float& Float4::operator[](int idx) {}
-    float Float4::operator[](int idx) const {}
-
-    Float4 Float4::operator+(const Float4& b) const {
-    	return (x + b.x, y + b.y, z + b.z, w + b.w);
+    float& Float4::operator[](int idx) {
+    	switch (idx) {
+			case 0: return *x;
+				break;
+			case 1: return *y;
+				break;
+			case 2: return *z;
+				break;
+			case 3: return *z;
+				break;
+			default:
+				break;
+		}
+    }
+    float Float4::operator[](int idx) const {
+    	switch (idx) {
+			case 0: return x;
+				break;
+			case 1: return y;
+				break;
+			case 2: return z;
+				break;
+			case 3: return z;
+				break;
+			default:
+				break;
+		}
     }
 
-    Float4 Float4::operator-(const Float4& b) const {}
-    Float4 Float4::operator*(const Float4& b) const {}
-    Float4 Float4::operator/(const Float4& b) const {}
+    Float4 Float4::operator+(const Float4& b) const {
+    	return Float4(x + b.x, y + b.y, z + b.z, w + b.w);
+    }
+    Float4 Float4::operator-(const Float4& b) const {
+    	return Float4(x - b.x, y - b.y, z - b.z, w - b.w);
+    }
+    Float4 Float4::operator*(const Float4& b) const {
+    	return Float4(x * b.x, y * b.y, z * b.z, w * b.w);
+    }
+    Float4 Float4::operator/(const Float4& b) const {
+    	return Float4(x / b.x, y / b.y, z / b.z, w / b.w);
+    }
 
 
-    Float4 Float4::operator-() const {}
+    Float4 Float4::operator-() const {
+    	return Float4(-x, -y, -z, -w);
+    }
 
-    bool Float4::operator==(const Float4& b) const {}
-    bool Float4::operator!=(const Float4& b) const {}
+    bool Float4::operator==(const Float4& b) const {
+    	return (x == b.x && y == b.y && z == b.z && w == b.w);
+    }
+    bool Float4::operator!=(const Float4& b) const {
+    	return !(x == b.x && y == b.y && z == b.z && w == b.w);
+    }
 
 
-Float4 operator*(float scalar, const Float4& b) {}
-Float4 operator*(const Float4& a, float scalar) {}
-Float4 operator/(const Float4& a, float scalar) {}
-float dot(const Float4& a, const Float4& b) {}
+Float4 operator*(float scalar, const Float4& b) {
+	return Float4(scalar * b.x, scalar * b.y, scalar * b.z, scalar * b.w);
+}
+Float4 operator*(const Float4& a, float scalar) {
+	return Float4(scalar * a.x, scalar * a.y, scalar * a.z, scalar * a.w);
+}
+Float4 operator/(const Float4& a, float scalar) {
+	return Float4(a.x / scalar, a.y / scalar, a.z / scalar, scalar / a.w);
+}
 
-Float4 min(const Float4& a, const Float4& b) {}
-Float4 max(const Float4& a, const Float4& b) {}
+float dot(const Float4& a, const Float4& b) {
+	return (a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
+}
+
+Float4 min(const Float4& a, const Float4& b) {
+	return std::min(sqrtf(dot(a, a)), sqrtf(dot (b,b)));
+}
+Float4 max(const Float4& a, const Float4& b) {
+	return std::max(sqrtf(dot(a, a)), sqrtf(dot (b,b)));
+}
 
 }
