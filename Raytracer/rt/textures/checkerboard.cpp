@@ -18,13 +18,37 @@ CheckerboardTexture::CheckerboardTexture(const RGBColor& white, const RGBColor& 
 }
 
 RGBColor CheckerboardTexture::getColor(const Point& coord) {
-	float a = (int)(coord.x * 2) % 2;
-	float b = (int)(coord.y * 2) % 2;
-	float c = (int)(coord.z * 2) % 2;
+	int a;
+	if(coord.x >= 0){
+		a = (int)(coord.x * 2) % 2;
+	}
+	else{
+		a = (int)(coord.x * (-2)) % 2;
+		a = !a;
+	}
+	int b;
+	if(coord.y >= 0){
+		b = (int)(coord.y * 2) % 2;
+	}
+	else{
+		b = (int)(coord.y * (-2)) % 2;
+		b = !b;
+	}
+	int c;
+	if(coord.z >= 0){
+		c = (int)(coord.z * 2) % 2;
+	}
+	else{
+		c = (int)(coord.z * (-2)) % 2;
+		c = !c;
+	}
 
-	LOG_DEBUG("Test a=" << a << ", b=" << b << ", c= " << c);
-
-	return RGBColor(b && c, c && a, a && b);
+	if((!c && a && !b) || (!c && !a && b) || (c && !a && !b) || (c && a && b)){
+		return white;
+	}
+	else{
+		return black;
+	}
 }
 
 RGBColor CheckerboardTexture::getColorDX(const Point& coord) {
