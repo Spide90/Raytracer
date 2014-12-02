@@ -9,6 +9,8 @@
 
 
 namespace rt {
+	RGBColor black;
+	RGBColor white;
 
     class PerlinTexture : public Texture {
     public:

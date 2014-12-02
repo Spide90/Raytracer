@@ -29,11 +29,10 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 }
 
 RGBColor ImageTexture::getColorDX(const Point& coord) {
-
+	return RGBColor(0,0,0);
 }
-
 RGBColor ImageTexture::getColorDY(const Point& coord) {
-
+	return RGBColor(0,0,0);
 }
 
 }

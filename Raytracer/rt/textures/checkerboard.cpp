@@ -12,8 +12,7 @@
 
 namespace rt {
 
-CheckerboardTexture::CheckerboardTexture(const RGBColor& white, const RGBColor& black) {
-
+CheckerboardTexture::CheckerboardTexture(const RGBColor& white, const RGBColor& black):white(white), black(black) {
 }
 
 RGBColor CheckerboardTexture::getColor(const Point& coord) {
@@ -21,11 +20,11 @@ RGBColor CheckerboardTexture::getColor(const Point& coord) {
 }
 
 RGBColor CheckerboardTexture::getColorDX(const Point& coord) {
-
+	return RGBColor(0,0,0);
 }
 
 RGBColor CheckerboardTexture::getColorDY(const Point& coord) {
-
+	return RGBColor(0,0,0);
 }
 
 }

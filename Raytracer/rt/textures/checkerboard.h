@@ -7,6 +7,8 @@
 #include <core/color.h>
 
 namespace rt {
+	RGBColor black;
+	RGBColor white;
 
     class CheckerboardTexture : public Texture {
     public:
