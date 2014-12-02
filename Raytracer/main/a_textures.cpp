@@ -85,6 +85,7 @@ void a_textures() {
     RayTracingIntegrator integrator(&world);
     Renderer engine(&cam, &integrator);
 
+
     world.scene = proceduralTextures();
     engine.render(img);
     img.writePNG("tx-1.png");
