@@ -21,6 +21,7 @@ RGBColor FlatMaterial::getReflectance(const Point& texPoint, const Vector& norma
 }
 
 RGBColor FlatMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
+	LOG_DEBUG("asddf");
 	return texture->getColor(texPoint);
 }
 
