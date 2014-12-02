@@ -6,11 +6,18 @@
  */
 #include <core/point.h>
 #include <core/vector.h>
+#include <core/float4.h>
+
+#include <assert.h>
 
 namespace rt {
 
 #define MIN_FLOAT(a, b) a < b ? a : b
 #define MAX_FLOAT(a, b) a < b ? b : a
+
+Point::Point(const Float4& f4) : x(f4.x), y(f4.y), z(f4.z) {
+	assert(f4.w == 1);
+}
 
 Vector Point::operator-(const Point& otherPoint) const {
 	return Vector(x - otherPoint.x, y - otherPoint.y, z - otherPoint.z);

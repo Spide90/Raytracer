@@ -8,6 +8,7 @@
 #include <core/point.h>
 #include <core/float4.h>
 
+#include <assert.h>
 #include <math.h>
 
 namespace rt {
@@ -92,7 +93,7 @@ Point operator-(const Point& point, const Vector& vector) {
 }
 
 Point operator*(const Float4& scale, const Point& point) {
-	return new Point(scale.x * point.x, scale.y * point.y, scale.z * point.z);
+	return Point(scale.x * point.x, scale.y * point.y, scale.z * point.z);
 }
 
 }
