@@ -44,10 +44,10 @@ RGBColor CheckerboardTexture::getColor(const Point& coord) {
 	}
 
 	if((!c && a && !b) || (!c && !a && b) || (c && !a && !b) || (c && a && b)){
-		return white;
+		return black;
 	}
 	else{
-		return black;
+		return white;
 	}
 }
 

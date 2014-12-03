@@ -14,6 +14,8 @@ namespace rt {
     public:
     	RGBColor black;
     	RGBColor white;
+    	std::vector<float> ampl;
+    	std::vector<float> freq;
 
         PerlinTexture(const RGBColor& white, const RGBColor& black);
         void addOctave(float amplitude, float frequency);
