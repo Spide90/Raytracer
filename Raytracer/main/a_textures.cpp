@@ -98,7 +98,7 @@ void a_textures() {
     engine.render(img);
     img.writePNG("tx-2.png");
 
-    /*world.scene = imageTexturesInterpolate();
+    world.scene = imageTexturesInterpolate();
     engine.render(img);
     img.writePNG("tx-3.png");
 

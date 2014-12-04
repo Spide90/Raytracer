@@ -31,17 +31,17 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 	switch (bh) {
 		case REPEAT:
 			if(coord.x > 0){
-				tu = coord.x * image.width() > image.width() ? (coord.x * image.width()) % image.width() : coord.x * image.width();
+				tu = coord.x * image.width() > image.width() ? (int) (coord.x * image.width()) % image.width() : coord.x * image.width();
 			}
 			else{
-				tu = (coord.x * image.width()) % image.width();
+				tu = (int) (coord.x * image.width()) % image.width();
 			}
 
 			if(coord.y > 0){
-				tv = coord.y * image.height() > image.height() ? (coord.y * image.height()) % image.height() : coord.y * image.height();
+				tv = coord.y * image.height() > image.height() ? (int) (coord.y * image.height()) % image.height() : coord.y * image.height();
 			}
 			else{
-				tv = (coord.y * image.height()) % image.height();
+				tv = (int) (coord.y * image.height()) % image.height();
 			}
 
 			break;
