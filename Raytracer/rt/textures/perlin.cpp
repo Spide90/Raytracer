@@ -32,6 +32,11 @@ float smooth_noise(int x, int y, int z) {
 }
 
 void PerlinTexture::addOctave(float amplitude, float frequency) {
+//	if(ampl.size() == 0){
+//		ampl.push_back(1.f);
+//		freq.push_back(frequency / 2);
+//	}
+
 	ampl.push_back(amplitude);
 	freq.push_back(frequency);
 }
@@ -39,35 +44,42 @@ void PerlinTexture::addOctave(float amplitude, float frequency) {
 RGBColor PerlinTexture::getColor(const Point& coord) {
 	float interpol = 0;
 
+//	interpol = interpol
+//			+ 		fabs(lerp3d(noise(floor(coord.x * freq[0] / 2), floor(coord.y * freq[0] / 2), floor(coord.z * freq[0] / 2)), noise(floor(coord.x * freq[0] / 2) + 1, floor(coord.y * freq[0] / 2), floor(coord.z * freq[0] / 2)), noise(floor(coord.x * freq[0] / 2), floor(coord.y * freq[0] / 2) + 1, floor(coord.z * freq[0] / 2)),
+//							noise(floor(coord.x * freq[0] / 2) + 1, floor(coord.y * freq[0] / 2) + 1, floor(coord.z * freq[0] / 2)), noise(floor(coord.x * freq[0] / 2), floor(coord.y * freq[0] / 2), floor(coord.z * freq[0] / 2) + 1),
+//							noise(floor(coord.x * freq[0] / 2) + 1, floor(coord.y * freq[0] / 2), floor(coord.z * freq[0] / 2) + 1), noise(floor(coord.x * freq[0] / 2), floor(coord.y * freq[0] / 2) + 1, floor(coord.z * freq[0] / 2) + 1),
+//							noise(floor(coord.x * freq[0] / 2) + 1, floor(coord.y * freq[0] / 2) + 1, floor(coord.z * freq[0] / 2) + 1), coord.x * freq[0] - floor(coord.x * freq[0] / 2), coord.y * freq[0] - floor(coord.y * freq[0] / 2), coord.z * freq[0] - floor(coord.z * freq[0] / 2)));
+
 	for (int i = 0; i < ampl.size(); i++) {
 		int int_x = floor(coord.x * freq[i]);
 		int int_y = floor(coord.y * freq[i]);
 		int int_z = floor(coord.z * freq[i]);
 
-		interpol = interpol + ampl[i] * fabs(noise(int_x, int_y, int_z));
+		//interpol = interpol + fabs(noise(int_x, int_y, int_z) * ampl[i]);
 
 		float frac_x = coord.x * freq[i] - int_x;
 		float frac_y = coord.y * freq[i] - int_y;
 		float frac_z = coord.z * freq[i] - int_z;
 
-		/*interpol = interpol
-		 + fabs(
-		 lerp3d(smooth_noise(int_x, int_y, int_z), smooth_noise(int_x + 1, int_y, int_z),
-		 smooth_noise(int_x, int_y + 1, int_z), smooth_noise(int_x + 1, int_y + 1, int_z),
-		 smooth_noise(int_x, int_y, int_z + 1), smooth_noise(int_x + 1, int_y, int_z + 1),
-		 smooth_noise(int_x, int_y + 1, int_z + 1), smooth_noise(int_x + 1, int_y + 1, int_z + 1), frac_x,
-		 frac_y, frac_z) * ampl[i]);
-		 */
-		/*interpol = interpol
-				+ fabs(
-						lerp3d(noise(int_x, int_y, int_z), noise(int_x + 1, int_y, int_z), noise(int_x, int_y + 1, int_z),
+//		interpol = interpol
+//		 + 	 lerp3d(smooth_noise(int_x, int_y, int_z), smooth_noise(int_x + 1, int_y, int_z),
+//		 smooth_noise(int_x, int_y + 1, int_z), smooth_noise(int_x + 1, int_y + 1, int_z),
+//		 smooth_noise(int_x, int_y, int_z + 1), smooth_noise(int_x + 1, int_y, int_z + 1),
+//		 smooth_noise(int_x, int_y + 1, int_z + 1), smooth_noise(int_x + 1, int_y + 1, int_z + 1), frac_x,
+//		 frac_y, frac_z) * ampl[i];
+
+		interpol = interpol
+				+ 		fabs(lerp3d(noise(int_x, int_y, int_z), noise(int_x + 1, int_y, int_z), noise(int_x, int_y + 1, int_z),
 								noise(int_x + 1, int_y + 1, int_z), noise(int_x, int_y, int_z + 1),
 								noise(int_x + 1, int_y, int_z + 1), noise(int_x, int_y + 1, int_z + 1),
 								noise(int_x + 1, int_y + 1, int_z + 1), frac_x, frac_y, frac_z) * ampl[i]);
-*/
+
 	}
 
-	RGBColor color = lerp(black, white, interpol);
+	interpol = interpol > 1 ? 1 : interpol;
+	interpol = interpol < 0 ? 0 : interpol;
+
+	RGBColor color = lerp(white, black, interpol);
 	return color;
 }
 
