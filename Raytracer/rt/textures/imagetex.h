@@ -20,6 +20,10 @@ public:
         BILINEAR
     };
 
+    BorderHandlingType bh;
+    InterpolationType i;
+    Image image;
+
     ImageTexture();
     ImageTexture(const Image& image, BorderHandlingType bh=REPEAT, InterpolationType i=BILINEAR);
     ImageTexture(const std::string& filename, BorderHandlingType bh=REPEAT, InterpolationType i=BILINEAR);

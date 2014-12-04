@@ -41,6 +41,9 @@ RGBColor PerlinTexture::getColor(const Point& coord) {
 		int int_x = (int) (coord.x * freq[i]);
 		int int_y = (int) (coord.y * freq[i]);
 		int int_z = (int) (coord.z * freq[i]);
+
+//		interpol = interpol + fabs(ampl[i]*noise(int_x, int_y, int_z));
+
 		float frac_x = coord.x * freq[i] - int_x;
 		float frac_y = coord.y * freq[i] - int_y;
 		float frac_z = coord.z * freq[i] - int_z;
@@ -51,15 +54,15 @@ RGBColor PerlinTexture::getColor(const Point& coord) {
 //				smooth_noise(int_x, int_y + 1, int_z + 1), smooth_noise(int_x + 1, int_y + 1, int_z + 1),
 //				frac_x, frac_y, frac_z) * ampl[i];
 
-		interpol = interpol + lerp3d(noise(int_x, int_y, int_z), noise(int_x + 1, int_y, int_z),
+		interpol = interpol + fabs(lerp3d(noise(int_x, int_y, int_z), noise(int_x + 1, int_y, int_z),
 				noise(int_x, int_y + 1, int_z), noise(int_x + 1, int_y + 1, int_z),
 				noise(int_x, int_y, int_z + 1), noise(int_x + 1, int_y, int_z + 1),
 				noise(int_x, int_y + 1, int_z + 1), noise(int_x + 1, int_y + 1, int_z + 1),
-				frac_x, frac_y, frac_z) * ampl[i];
+				frac_x, frac_y, frac_z) * ampl[i]);
 
 	}
-	interpol = (interpol + 1) / 2;
-	RGBColor color = (1 - interpol) * black + interpol * white;
+
+	RGBColor color = lerp(black, white, interpol);
 	return color;
 }
 
