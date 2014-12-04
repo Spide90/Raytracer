@@ -38,7 +38,6 @@ void PerlinTexture::addOctave(float amplitude, float frequency) {
 
 RGBColor PerlinTexture::getColor(const Point& coord) {
 	float interpol = 0;
-
 	for (int i = 0; i < ampl.size(); i++) {
 		int int_x = floor(coord.x * freq[i]);
 		int int_y = floor(coord.y * freq[i]);
@@ -58,13 +57,13 @@ RGBColor PerlinTexture::getColor(const Point& coord) {
 		 smooth_noise(int_x, int_y + 1, int_z + 1), smooth_noise(int_x + 1, int_y + 1, int_z + 1), frac_x,
 		 frac_y, frac_z) * ampl[i]);
 		 */
-		/*interpol = interpol
+		interpol = interpol
 				+ fabs(
 						lerp3d(noise(int_x, int_y, int_z), noise(int_x + 1, int_y, int_z), noise(int_x, int_y + 1, int_z),
 								noise(int_x + 1, int_y + 1, int_z), noise(int_x, int_y, int_z + 1),
 								noise(int_x + 1, int_y, int_z + 1), noise(int_x, int_y + 1, int_z + 1),
 								noise(int_x + 1, int_y + 1, int_z + 1), frac_x, frac_y, frac_z) * ampl[i]);
-*/
+
 	}
 
 	RGBColor color = lerp(black, white, interpol);
