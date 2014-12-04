@@ -16,12 +16,11 @@ WorldMapper::WorldMapper() {
 
 }
 
-WorldMapper::WorldMapper(const Float4& scale) {
-
+WorldMapper::WorldMapper(const Float4& scale): scale(scale) {
 }
 
 Point WorldMapper::getCoords(const Intersection& hit) const {
-
+	return Point(Float4(hit.point) * scale);
 }
 
 }

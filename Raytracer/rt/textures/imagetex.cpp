@@ -27,18 +27,18 @@ ImageTexture::ImageTexture(const std::string& filename, BorderHandlingType bh, I
 }
 
 RGBColor ImageTexture::getColor(const Point& coord) {
-	float tu, tv;
+	float tu, tv, fl_x, fl_y;
 	switch (bh) {
 		case REPEAT:
-			if(coord.x > 0){
-				tu = coord.x * image.width() > image.width() ? (int) (coord.x * image.width()) % image.width() : coord.x * image.width();
+			if(coord.x >= 0){
+				tu = coord.x * image.width() >= image.width() ? (int) (coord.x * image.width()) % image.width() : coord.x * image.width();
 			}
 			else{
 				tu = (int) (coord.x * image.width()) % image.width();
 			}
 
-			if(coord.y > 0){
-				tv = coord.y * image.height() > image.height() ? (int) (coord.y * image.height()) % image.height() : coord.y * image.height();
+			if(coord.y >= 0){
+				tv = coord.y * image.height() >= image.height() ? (int) (coord.y * image.height()) % image.height() : coord.y * image.height();
 			}
 			else{
 				tv = (int) (coord.y * image.height()) % image.height();
@@ -47,15 +47,15 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 			break;
 
 		case CLAMP:
-			if(coord.x > 0){
-				tu = coord.x * image.width() > image.width() ? image.width() : coord.x * image.width();
+			if(coord.x >= 0){
+				tu = coord.x * image.width() >= image.width() ? image.width()-1 : coord.x * image.width();
 			}
 			else{
 				tu = 0;
 			}
 
-			if(coord.y > 0){
-				tv = coord.y * image.height() > image.height() ? image.height() : coord.y * image.height();
+			if(coord.y >= 0){
+				tv = coord.y * image.height() >= image.height() ? image.height()-1 : coord.y * image.height();
 			}
 			else{
 				tv = 0;
@@ -63,24 +63,11 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 
 			break;
 		case MIRROR:
-			if(coord.x > 0){
-				tu = coord.x * image.width() > image.width() ? image.width() : coord.x * image.width();
-			}
-			else{
-				tu = 0;
-			}
+			fl_x = fabs(coord.x);
+			fl_y = fabs(coord.y);
 
-			if(coord.y > 0){
-				tv = coord.y * image.height() > image.height() ? image.height() : coord.y * image.height();
-			}
-			else{
-				tv = 0;
-			}
-
-			tu = coord.x - floor(coord.x);
-			tv = coord.y - floor(coord.y);
-
-			return image((unsigned int)(tu * image.width()), (unsigned int)(tv * image.height()));
+			tu = fl_x >= 1 ? (int)((1 - fl_x) * image.width()) % image.width() : fl_x * image.width();
+			tv = fl_y >= 1 ? (int)((1 - fl_y) * image.height()) % image.height() : fl_y * image.height();
 
 			break;
 		default:

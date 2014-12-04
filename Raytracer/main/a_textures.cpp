@@ -67,10 +67,10 @@ namespace {
         perlinTex->addOctave(0.25f, 10.0f);
         perlinTex->addOctave(0.125f, 20.0f);
         perlinTex->addOctave(0.125f, 40.0f);
-        perlinTex->addOctave(0.125f, 80.0f);
-        perlinTex->addOctave(0.125f, 160.0f);
-        perlinTex->addOctave(0.125f, 320.0f);
-        perlinTex->addOctave(0.125f, 640.0f);
+//        perlinTex->addOctave(0.125f, 80.0f);
+//        perlinTex->addOctave(0.125f, 160.0f);
+//        perlinTex->addOctave(0.125f, 320.0f);
+//        perlinTex->addOctave(0.125f, 640.0f);
         FlatMaterial* perlin = new FlatMaterial(perlinTex);
 
         scene->add(new InfinitePlane(Point(0.0f,0.0f,-0.018f), Vector(0.01f, 0.0f, 1.0f), nullptr, checkerboard));
