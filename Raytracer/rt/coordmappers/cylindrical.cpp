@@ -10,6 +10,7 @@
 #include <core/vector.h>
 #include <rt/coordmappers/coordmapper.h>
 #include <rt/intersection.h>
+#include <math.h>
 
 namespace rt {
 

@@ -15,7 +15,8 @@
 
 namespace rt {
 
-Triangle::Triangle(Point vertices[3], CoordMapper* texMapper, Material* material) :
+Triangle::Triangle(Point vertices[3], CoordMapper* texMapper,
+		Material* material) :
 		Solid(texMapper, material) {
 	//i am too stupid to assign them in one step ...
 	//edges = vertices;
@@ -24,7 +25,8 @@ Triangle::Triangle(Point vertices[3], CoordMapper* texMapper, Material* material
 	edges[2] = vertices[2];
 }
 
-Triangle::Triangle(const Point& v1, const Point& v2, const Point& v3, CoordMapper* texMapper, Material* material) :
+Triangle::Triangle(const Point& v1, const Point& v2, const Point& v3,
+		CoordMapper* texMapper, Material* material) :
 		Solid(texMapper, material) {
 	edges[0] = v1;
 	edges[1] = v2;
@@ -42,23 +44,34 @@ BBox Triangle::getBounds() const {
 	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 
-Intersection Triangle::intersect(const Ray& ray, float previousBestDistance) const {
+Intersection Triangle::intersect(const Ray& ray,
+		float previousBestDistance) const {
 	Vector normal12 = cross(edges[1] - ray.o, edges[0] - ray.o);
 	Vector normal23 = cross(edges[2] - ray.o, edges[1] - ray.o);
 	Vector normal31 = cross(edges[0] - ray.o, edges[2] - ray.o);
-	bool inside = (dot(normal12, ray.d) >= 0) && (dot(normal23, ray.d)) >= 0 && (dot(normal31, ray.d) >= 0);
+	bool inside = (dot(normal12, ray.d) >= 0) && (dot(normal23, ray.d)) >= 0
+			&& (dot(normal31, ray.d) >= 0);
 	Vector normalVector = cross(edges[2] - edges[1], edges[0] - edges[1]);
 	if (!inside) {
 		normal12 = -normal12;
 		normal23 = -normal23;
 		normal31 = -normal31;
-		inside = (dot(normal12, ray.d) >= 0) && (dot(normal23, ray.d)) >= 0 && (dot(normal31, ray.d) >= 0);
+		inside = (dot(normal12, ray.d) >= 0) && (dot(normal23, ray.d)) >= 0
+				&& (dot(normal31, ray.d) >= 0);
 		normalVector = cross(edges[0] - edges[1], edges[2] - edges[1]);
 	}
 	if (inside) {
-		InfinitePlane plane = InfinitePlane(edges[0], normalVector, nullptr, nullptr);
+		InfinitePlane plane = InfinitePlane(edges[0], normalVector, nullptr,
+				nullptr);
 		Intersection intersection = plane.intersect(ray, previousBestDistance);
 		intersection.solid = this;
+		if (intersection) {
+			float a = (edges[0] - edges[1]).length();
+			float b = (edges[1] - edges[2]).length();
+			float c = (edges[2] - edges[0]).length();
+			Point hitPoint(a*intersection.point.x, b*intersection.point.y, c*intersection.point.z);
+			intersection.point = hitPoint;
+		}
 		return intersection;
 	} else {
 		return Intersection::failure();
@@ -79,7 +92,8 @@ float Triangle::getArea() const {
 }
 
 Point Triangle::getCenterPoint() {
-	return Point((1 / 3) * (edges[0].x + edges[1].x + edges[2].x), (1 / 3) * (edges[0].y + edges[1].y + edges[2].y),
+	return Point((1 / 3) * (edges[0].x + edges[1].x + edges[2].x),
+			(1 / 3) * (edges[0].y + edges[1].y + edges[2].y),
 			(1 / 3) * (edges[0].z + edges[1].z + edges[2].z));
 }
 
