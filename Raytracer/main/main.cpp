@@ -19,7 +19,7 @@ void a_mappers();
 #define TEST_INDEX false
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
-#define TEST_TEXTURES true
+#define TEST_TEXTURES false
 #define TEST_MAPPERS true
 
 int main(int argc, char* argv[]) {

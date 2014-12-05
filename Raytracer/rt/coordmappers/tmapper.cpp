@@ -30,6 +30,7 @@ Point TriangleMapper::getCoords(const Intersection& hit) const {
 	float c = (edge3 - edge1).length();
 	Point hitPoint(b * hit.point.x, c * hit.point.y,
 			a * hit.point.z);
+	LOG_DEBUG("segsghs");
 	return hitPoint;
 	/*float x = (hit.point.x * a.x + hit.point.x * b.x + hit.point.z * c.x)
 			/ (hit.point.x + hit.point.y + hit.point.z);

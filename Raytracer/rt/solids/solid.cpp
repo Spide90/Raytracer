@@ -13,8 +13,6 @@
 namespace rt {
 
 Solid::Solid(CoordMapper* texMapper, Material* material) : texMapper(texMapper), material(material) {
-	if(texMapper == nullptr)
-		this->texMapper = new WorldMapper(Float4(1.f, 1.f, 1.f, 1.f));
 }
 
 }
