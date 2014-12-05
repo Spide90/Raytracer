@@ -49,7 +49,7 @@ Intersection Sphere::intersect(const Ray& ray, float previousBestDistance) const
 	float t1 = angle + thc;
 	float t = min(t0, t1);
 	if (t < previousBestDistance) {
-		return Intersection(t, ray, this, ((ray.o + ray.d * t) - center).normalize(), ray.o + t * ray.d);
+		return Intersection(t, ray, this, ((ray.o + ray.d * t)-center).normalize(), ray.o + t * ray.d);
 	} else {
 		return Intersection::failure();
 	}
