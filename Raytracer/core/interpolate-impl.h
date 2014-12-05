@@ -15,7 +15,7 @@ namespace rt {
 
     template <typename T>
     T lerp2d(const T& px0y0, const T& px1y0, const T& px0y1, const T& px1y1, float xWeight, float yWeight) {
-        return px0y0 + (xWeight * (px1y0 + (-1) * px0y0)) + (yWeight * (px0y1 + (-1) * px0y0)) + (xWeight * yWeight * (px0y0 + (-1) * px1y0 + (-1) * px0y1 + px1y1));
+        return px0y0 + (xWeight * (px1y0 - px0y0)) + (yWeight * (px0y1 - px0y0)) + (xWeight * yWeight * (px0y0 - px1y0 - px0y1 + px1y1));
     }
 
     template <typename T>

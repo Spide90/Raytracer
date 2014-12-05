@@ -24,10 +24,6 @@ SphericalCoordMapper::SphericalCoordMapper(const Point& origin,
 }
 
 Point SphericalCoordMapper::getCoords(const Intersection& hit) const {
-	Vector D = hit.local() - origin;
-	float r = zenith.length() / 2;
-
-	return Point();
 }
 
 }
