@@ -32,9 +32,13 @@ ImageTexture::ImageTexture(const std::string& filename, BorderHandlingType bh,
 }
 
 RGBColor ImageTexture::getColor(const Point& coord) {
-	float tu, tv, fl_x, fl_y;
-	float ctu, ctv, xW, yW, ftu, ftv;
+	float tu, tv, fl_x, fl_y, xW, yW;
+	//float ctu, ctv, ftu, ftv;
+	unsigned int ctu, ctv, ftu, ftv;
 	RGBColor color;
+	const float EPSILON = 1 / image.width();
+	const float DELTA = 1 / image.height();
+
 	switch (bh) {
 	case REPEAT:
 		if (coord.x >= 0) {
@@ -111,44 +115,51 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 		}
 		break;
 	case MIRROR:
-		if (coord.x == floorf(coord.x) && (int) floorf(coord.x) % 2) {
-			tu = image.width() - 1;
-		}
-		if (coord.x == floorf(coord.x) && !((int) floorf(coord.x) % 2)) {
-			tu = 0;
-		}
-		if (coord.x != floorf(coord.x) && (int) floorf(coord.x) % 2) {
-			tu = (ceilf(coord.x) - coord.x) * (image.width() - 1);
-		}
-		if (coord.x != floorf(coord.x) && !((int) floorf(coord.x) % 2)) {
-			tu = (coord.x - floor(coord.x)) * (image.width() - 1);
+		if ((int) floorf(coord.x) % 2) {
+			tu = (ceilf(coord.x) - coord.x) * (image.width());
+		} else {
+			tu = (coord.x - floor(coord.x)) * (image.width());
 		}
 
-		if (coord.y == floorf(coord.y) && (int) floorf(coord.y) % 2) {
-			tv = image.height() - 1;
+		if ((int) floorf(coord.y) % 2) {
+			tv = (ceilf(coord.y) - coord.y) * (image.height());
+		} else {
+			tv = (coord.y - floor(coord.y)) * (image.height());
 		}
-		if (coord.y == floorf(coord.y) && !((int) floorf(coord.y) % 2)) {
-			tv = 0;
-		}
-		if (coord.y != floorf(coord.y) && (int) floorf(coord.y) % 2) {
-			tv = (ceilf(coord.y) - coord.y) * (image.height() - 1);
-		}
-		if (coord.y != floorf(coord.y) && !((int) floorf(coord.y) % 2)) {
-			tv = (coord.y - floor(coord.y)) * (image.height() - 1);
-		}
+
+//		if ((int) floorf(coord.x) % 2) {
+//			tu = (ceilf(coord.x) - coord.x);
+//		} else {
+//			tu = (coord.x - floor(coord.x));
+//		}
+//
+//		if ((int) floorf(coord.y) % 2) {
+//			tv = (ceilf(coord.y) - coord.y);
+//		} else {
+//			tv = (coord.y - floor(coord.y));
+//		}
 
 		switch (i) {
 		case NEAREST:
-			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu);
+//				tu = roundf(tu * image.width()) == image.width() ?
+//						(image.width() - 1) : roundf(tu * image.width());
+//				tv = roundf(tv * image.height()) == image.height() ?
+//						(image.height() - 1) : roundf(tv * image.height());
+//				return image(tu, tv);
+//				break;
+			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu) % image.width();
 			tv = roundf(tv) == image.height() ?
-					(image.height() - 1) : roundf(tv);
+					(image.height() - 1) : roundf(tv) % image.height();
 			return image(tu, tv);
 			break;
 		case BILINEAR:
-			ctu = ceilf(tu);
-			ctv = ceilf(tv);
-			ftu = floorf(tu);
-			ftv = floorf(tv);
+			ctu = (unsigned int) ceilf(tu);
+			ctv = (unsigned int) ceilf(tv);
+			ftu = (unsigned int) floorf(tu);
+			ftv = (unsigned int) floorf(tv);
+
+			if(ctu == image.width() && ctv == image.height()){
+			}
 
 			xW = (tu - floorf(tu));
 			yW = (tv - floorf(tv));

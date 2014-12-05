@@ -96,7 +96,6 @@ void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* sp
     world.scene = &scene;
 
     PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
-    LOG_DEBUG("Deine Mutter stinkt!");
     
     CheckerboardTexture* redtex = new CheckerboardTexture(RGBColor(.7f,0.1f,0.1f), RGBColor(0.3f,0.1f,0.1f));
     PerlinTexture* greentex = new PerlinTexture(RGBColor(0.f,.7f,0.f), RGBColor(0.0f,0.2f,0.4f));
