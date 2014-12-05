@@ -80,7 +80,7 @@ Intersection Triangle::intersect(const Ray& ray,
 			float w = (d00 * d21 - d01 * d20) / denom;
 			float u = 1.0f - v - w;
 			intersection.localPoint = Point(v, w, u);
-
+/*
 			Vector vx = edges[0] - intersection.point;
 			Vector vy = edges[1] - intersection.point;
 			Vector vz = edges[2] - intersection.point;
@@ -97,7 +97,7 @@ Intersection Triangle::intersect(const Ray& ray,
 			Point hitPoint(S1/S, S2/S, S3/S);
 
 			LOG_DEBUG("coords equal " << (hitPoint == intersection.localPoint));
-			intersection.localPoint = hitPoint;
+			intersection.localPoint = hitPoint;*/
 
 		}
 		return intersection;
