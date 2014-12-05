@@ -30,7 +30,12 @@ Point SphericalCoordMapper::getCoords(const Intersection& hit) const {
 	Point Q = hit.local() - phi * zenith.normalize();
 	float theta = dot(Q - origin, aziRef);
 
-	return Point(rho * theta * sinf(acosf(phi)), rho * sinf(acosf(phi)) * sinf(acosf(theta)), rho * phi);
+	return Point(theta * sinf(acosf(phi)), -phi, -sinf(acosf(phi)) * sinf(acosf(theta)));
+
+//	float theta = atan2f(-(hit.local().z - origin.z), hit.local().x  - origin.x);
+//	float phi = acosf(-(hit.local().y - origin.y) / (zenith.length() / 2));
+//
+//	return Point((theta + M_PI) / (2.f * M_PI), phi / M_PI, 1.f);
 }
 
 }
