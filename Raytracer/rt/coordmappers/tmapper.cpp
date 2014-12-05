@@ -25,13 +25,12 @@ TriangleMapper::TriangleMapper(Point ntv[3]) :
 }
 
 Point TriangleMapper::getCoords(const Intersection& hit) const {
-	/*float a = (edge1 - edge2).length();
+	float a = (edge1 - edge2).length();
 	 float b = (edge2 - edge3).length();
 	 float c = (edge3 - edge1).length();
-	 Point hitPoint(b * hit.point.x, c * hit.point.y,
-	 a * hit.point.z);
-	 LOG_DEBUG("segsghs");
-	 return hitPoint;*/
+	 Point hitPoint(a * hit.point.x, b * hit.point.y,
+	 c * hit.point.z);
+	 return hitPoint;
 	/*Vector v0 = edge2 - edge1;
 	Vector v1 = edge3 - edge1;
 	Vector v2 = hit.point - edge1;
@@ -45,7 +44,7 @@ Point TriangleMapper::getCoords(const Intersection& hit) const {
 	float w = (d00 * d21 - d01 * d20) / denom;
 	float u = 1.0f - v - w;*/
 	//SOLLTE SO EIGENTLICH FUNKTIONIEREN!
-	Vector v0 = edge1 - hit.local();
+	/*Vector v0 = edge1 - hit.local();
 	 Vector v1 = edge2 - hit.local();
 	 Vector v2 = edge3 - hit.local();
 
@@ -57,7 +56,7 @@ Point TriangleMapper::getCoords(const Intersection& hit) const {
 	 Point p(S1/S, S2/S, S3/S);
 	 //LOG_DEBUG("x " << p.x << " y " << p.y << " " << p.z);
 	 return p;
-
+*/
 	/*float x = (hit.point.x * a.x + hit.point.x * b.x + hit.point.z * c.x)
 	 / (hit.point.x + hit.point.y + hit.point.z);
 	 float y = (hit.point.x * a.y + hit.point.x * b.y + hit.point.z * c.y)

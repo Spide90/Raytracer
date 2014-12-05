@@ -65,7 +65,7 @@ Intersection Triangle::intersect(const Ray& ray,
 				nullptr);
 		Intersection intersection = plane.intersect(ray, previousBestDistance);
 		intersection.solid = this;
-		/*if (intersection && texMapper != nullptr) {
+		if (intersection && texMapper != nullptr) {
 			Vector v0 = edges[1] - edges[0];
 			Vector v1 = edges[2] - edges[0];
 			Vector v2 = intersection.point - edges[0];
@@ -79,7 +79,7 @@ Intersection Triangle::intersect(const Ray& ray,
 			float w = (d00 * d21 - d01 * d20) / denom;
 			float u = 1.0f - v - w;
 			intersection.point = Point(u, v, w);
-		}*/
+		}
 		return intersection;
 	} else {
 		return Intersection::failure();
