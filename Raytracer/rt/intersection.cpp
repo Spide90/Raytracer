@@ -28,7 +28,7 @@ Vector Intersection::normal() const {
 }
 
 Point Intersection::local() const {
-	return point;
+	return localPoint;
 }
 
 Intersection Intersection::failure() {
