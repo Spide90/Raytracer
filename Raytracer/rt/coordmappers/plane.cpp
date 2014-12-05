@@ -17,9 +17,9 @@ PlaneCoordMapper::PlaneCoordMapper(const Vector& e1, const Vector& e2): e1(e1), 
 }
 
 Point PlaneCoordMapper::getCoords(const Intersection& hit) const {
-	Vector normal = cross(e1, e2);
+	Vector normal = cross(e1, e2).normalize();
 
-	Point proj = hit.local() - dot(hit.local() - Point(e1.x,e1.y,e1.z), normal) * normal;
+	Point proj = hit.local() - dot(hit.local() - Point(0,0,0), normal) * normal;
 
 	return proj;
 }
