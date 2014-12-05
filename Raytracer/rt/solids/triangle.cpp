@@ -79,15 +79,15 @@ Intersection Triangle::intersect(const Ray& ray,
 			float v = (d11 * d20 - d01 * d21) / denom;
 			float w = (d00 * d21 - d01 * d20) / denom;
 			float u = 1.0f - v - w;
-			intersection.localPoint = Point(u, v, w);
-/*
-			Vector v0 = edges[0] - intersection.point;
-			Vector v1 = edges[1] - intersection.point;
-			Vector v2 = edges[2] - intersection.point;
+			intersection.localPoint = Point(v, w, u);
 
-			float S3 = cross(v0, v1).length() / 2;
-			float S2 = cross(v2, v0).length() / 2;
-			float S1 = cross(v1, v2).length() / 2;
+			Vector vx = edges[0] - intersection.point;
+			Vector vy = edges[1] - intersection.point;
+			Vector vz = edges[2] - intersection.point;
+
+			float S3 = cross(vx, vy).length() / 2;
+			float S2 = cross(vz, vx).length() / 2;
+			float S1 = cross(vy, vz).length() / 2;
 
 			float S = cross(edges[0] - edges[1], edges[0] - edges[2]).length() / 2;
 //			float a = (edges[0] - edges[1]).length();
@@ -96,8 +96,9 @@ Intersection Triangle::intersect(const Ray& ray,
 
 			Point hitPoint(S1/S, S2/S, S3/S);
 
-			intersection.point = hitPoint;
-*/
+			LOG_DEBUG("coords equal " << (hitPoint == intersection.localPoint));
+			intersection.localPoint = hitPoint;
+
 		}
 		return intersection;
 	} else {

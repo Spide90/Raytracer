@@ -32,7 +32,7 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 		for (int i = 0; i < world->light.size(); i++) {
 			LightHit shadowRay = world->light[i]->getLightHit(local);
 			if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-				Ray shadow = Ray(intersection.local() + EPSILON * shadowRay.direction, shadowRay.direction);
+				Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
 				Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 				if (!shadowRayIntersection) {
 					RGBColor reflectance = intersection.solid->material->getReflectance(local,
