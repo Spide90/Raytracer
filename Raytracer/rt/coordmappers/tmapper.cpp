@@ -25,7 +25,26 @@ TriangleMapper::TriangleMapper(Point ntv[3]) :
 }
 
 Point TriangleMapper::getCoords(const Intersection& hit) const {
+	float a = (edge1 - edge2).length();
+	 float b = (edge2 - edge3).length();
+	 float c = (edge3 - edge1).length();
+	 Point hitPoint(a * hit.point.x, b * hit.point.y,
+	 c * hit.point.z);
+	 return hitPoint;
+	/*Vector v0 = edge2 - edge1;
+	Vector v1 = edge3 - edge1;
+	Vector v2 = hit.point - edge1;
+	float d00 = dot(v0, v0);
+	float d01 = dot(v0, v1);
+	float d11 = dot(v1, v1);
+	float d20 = dot(v2, v0);
+	float d21 = dot(v2, v1);
+	float denom = d00 * d11 - d01 * d01;
+	float v = (d11 * d20 - d01 * d21) / denom;
+	float w = (d00 * d21 - d01 * d20) / denom;
+	float u = 1.0f - v - w;*/
 	//SOLLTE SO EIGENTLICH FUNKTIONIEREN!
+<<<<<<< HEAD
 //	Vector v0 = edge1 - hit.local();
 //	Vector v1 = edge2 - hit.local();
 //	Vector v2 = edge3 - hit.local();
@@ -43,7 +62,21 @@ Point TriangleMapper::getCoords(const Intersection& hit) const {
 					+ edge3.y * hit.local().z,
 			edge1.z * hit.local().x + edge2.z * hit.local().y
 					+ edge3.z * hit.local().z);
+=======
+	/*Vector v0 = edge1 - hit.local();
+	 Vector v1 = edge2 - hit.local();
+	 Vector v2 = edge3 - hit.local();
+>>>>>>> branch 'master' of https://github.com/Spide90/Raytracer.git
 
+	 float S3 = cross(v0, v1).length()/2;
+	 float S2 = cross(v2, v0).length()/2;
+	 float S1 = cross(v1, v2).length()/2;
+
+	 float S = cross(edge1 - edge2, edge1 - edge3).length()/2;
+	 Point p(S1/S, S2/S, S3/S);
+	 //LOG_DEBUG("x " << p.x << " y " << p.y << " " << p.z);
+	 return p;
+*/
 	/*float x = (hit.point.x * a.x + hit.point.x * b.x + hit.point.z * c.x)
 	 / (hit.point.x + hit.point.y + hit.point.z);
 	 float y = (hit.point.x * a.y + hit.point.x * b.y + hit.point.z * c.y)
