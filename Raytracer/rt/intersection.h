@@ -18,6 +18,8 @@ public:
 	Vector normalVector;
 	Point point;
 
+	Point localPoint;
+
 	bool intersected;
 
 	Intersection() {
