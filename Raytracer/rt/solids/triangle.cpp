@@ -65,7 +65,6 @@ Intersection Triangle::intersect(const Ray& ray,
 				nullptr);
 		Intersection intersection = plane.intersect(ray, previousBestDistance);
 		intersection.solid = this;
-<<<<<<< HEAD
 		if (intersection) {
 			Vector v0 = edges[0] - intersection.point;
 			Vector v1 = edges[1] - intersection.point;
@@ -82,22 +81,6 @@ Intersection Triangle::intersect(const Ray& ray,
 
 			Point hitPoint(S1/S, S2/S, S3/S);
 			intersection.point = hitPoint;
-=======
-		if (intersection && texMapper != nullptr) {
-			Vector v0 = edges[1] - edges[0];
-			Vector v1 = edges[2] - edges[0];
-			Vector v2 = intersection.point - edges[0];
-			float d00 = dot(v0, v0);
-			float d01 = dot(v0, v1);
-			float d11 = dot(v1, v1);
-			float d20 = dot(v2, v0);
-			float d21 = dot(v2, v1);
-			float denom = d00 * d11 - d01 * d01;
-			float v = (d11 * d20 - d01 * d21) / denom;
-			float w = (d00 * d21 - d01 * d20) / denom;
-			float u = 1.0f - v - w;
-			intersection.point = Point(u, v, w);
->>>>>>> branch 'master' of https://github.com/Spide90/Raytracer.git
 		}
 		return intersection;
 	} else {
