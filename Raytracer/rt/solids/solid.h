@@ -2,11 +2,13 @@
 #define CG1RAYTRACER_SOLIDS_SOLID_HEADER
 
 #include <rt/primitive.h>
+#include <rt/coordmappers/coordmapper.h>
+#include <rt/coordmappers/world.h>
 
 namespace rt {
 
 class Material;
-class CoordMapper;
+//class CoordMapper;
 
 /*
 A solid is a physical primitive that has material and can be textured

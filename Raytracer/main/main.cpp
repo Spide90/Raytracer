@@ -20,7 +20,7 @@ void a_mappers();
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
 #define TEST_TEXTURES true
-#define TEST_MAPPERS false
+#define TEST_MAPPERS true
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {

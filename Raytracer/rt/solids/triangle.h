@@ -3,6 +3,7 @@
 
 #include <rt/solids/solid.h>
 #include <core/point.h>
+#include <rt/coordmappers/world.h>
 
 namespace rt {
 

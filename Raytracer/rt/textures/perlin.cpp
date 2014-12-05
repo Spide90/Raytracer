@@ -18,18 +18,18 @@ float noise(int x, int y, int z) {
 	return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
 }
 
-float smooth_noise(int x, int y, int z) {
-	float corners = (noise(x - 1, y - 1, z - 1) + noise(x - 1, y - 1, z + 1) + noise(x - 1, y + 1, z - 1)
-			+ noise(x - 1, y + 1, z + 1) + noise(x + 1, y - 1, z - 1) + noise(x + 1, y - 1, z + 1) + noise(x + 1, y + 1, z - 1)
-			+ noise(x + 1, y + 1, z + 1)) / 64;
-	float edgemiddle = (noise(x, y - 1, z - 1) + noise(x, y - 1, z + 1) + noise(x, y + 1, z - 1) + noise(x, y + 1, z + 1)
-			+ noise(x + 1, y, z - 1) + noise(x + 1, y, z + 1) + noise(x - 1, y, z - 1) + noise(x - 1, y, z + 1)
-			+ noise(x + 1, y - 1, z) + noise(x + 1, y + 1, z) + noise(x - 1, y - 1, z) + noise(x - 1, y + 1, z)) / 32;
-	float adjacent = (noise(x, y, z - 1) + noise(x, y, z + 1) + noise(x, y - 1, z) + noise(x, y + 1, z) + noise(x - 1, y, z)
-			+ noise(x + 1, y, z)) / 16;
-	float center = noise(x, y, z) / 8;
-	return (corners + edgemiddle + adjacent + center);
-}
+//float smooth_noise(int x, int y, int z) {
+//	float corners = (noise(x - 1, y - 1, z - 1) + noise(x - 1, y - 1, z + 1) + noise(x - 1, y + 1, z - 1)
+//			+ noise(x - 1, y + 1, z + 1) + noise(x + 1, y - 1, z - 1) + noise(x + 1, y - 1, z + 1) + noise(x + 1, y + 1, z - 1)
+//			+ noise(x + 1, y + 1, z + 1)) / 64;
+//	float edgemiddle = (noise(x, y - 1, z - 1) + noise(x, y - 1, z + 1) + noise(x, y + 1, z - 1) + noise(x, y + 1, z + 1)
+//			+ noise(x + 1, y, z - 1) + noise(x + 1, y, z + 1) + noise(x - 1, y, z - 1) + noise(x - 1, y, z + 1)
+//			+ noise(x + 1, y - 1, z) + noise(x + 1, y + 1, z) + noise(x - 1, y - 1, z) + noise(x - 1, y + 1, z)) / 32;
+//	float adjacent = (noise(x, y, z - 1) + noise(x, y, z + 1) + noise(x, y - 1, z) + noise(x, y + 1, z) + noise(x - 1, y, z)
+//			+ noise(x + 1, y, z)) / 16;
+//	float center = noise(x, y, z) / 8;
+//	return (corners + edgemiddle + adjacent + center);
+//}
 
 void PerlinTexture::addOctave(float amplitude, float frequency) {
 //	if(ampl.size() == 0){
