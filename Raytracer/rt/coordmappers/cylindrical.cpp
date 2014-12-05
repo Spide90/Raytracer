@@ -20,17 +20,16 @@ CylindricalCoordMapper::CylindricalCoordMapper(const Point& origin,
 }
 
 Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
-//	Vector perp;
-//	float H = longAxe.length();
-//	float r = polAxe.length();
-//	if(!dot(polAxe, longAxe)){
-//		perp = cross(polAxe, longAxe);
-//	}
-//	else{
-//		perp = polAxe;
-//	}
-//	float theta = dot(hit.local() - origin, perp);
-//	return Point(r*theta, r*sinf(acosf(theta)), H);
+	Vector perp;
+	float H = longAxe.length();
+	float r = polAxe.length();
+	if (!dot(polAxe, longAxe)) {
+		perp = cross(polAxe, longAxe);
+	} else {
+		perp = polAxe;
+	}
+	float theta = dot(hit.local() - origin, perp);
+	return Point(r * theta, r * sinf(acosf(theta)), H);
 }
 
 }
