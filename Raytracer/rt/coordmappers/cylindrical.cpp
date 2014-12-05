@@ -23,13 +23,14 @@ Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
 	Vector perp;
 	float H = longAxe.length();
 	float r = polAxe.length();
-	if (!dot(polAxe, longAxe)) {
+	if(dot(polAxe, longAxe)){
 		perp = cross(polAxe, longAxe);
-	} else {
+	}
+	else{
 		perp = polAxe;
 	}
-	float theta = dot(hit.local() - origin, perp);
-	return Point(r * theta, r * sinf(acosf(theta)), H);
+	float theta = dot((hit.local() - origin) / (hit.local() - origin).length(), perp / perp.length());
+	return Point(r*theta, r*sinf(acosf(theta)), H);
 }
 
 }
