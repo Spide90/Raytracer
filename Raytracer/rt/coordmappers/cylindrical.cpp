@@ -25,20 +25,19 @@ Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
 	float H = longAxe.length();
 	float r = polAxe.length();
 	if (dot(polAxe, longAxe)) {
-		perp = cross(polAxe, longAxe).normalize();
+		perp = hit.normal();
 	} else {
 		perp = polAxe.normalize();
 	}
 	Point proj = hit.local() - dot((hit.local() - origin).normalize(), longAxe.normalize()) * longAxe.normalize();
+
 	Vector pro = (proj - origin);
-
 	float theta = dot(pro, polAxe) / (pro.length()*polAxe.length());
-
 	Float4 pro2 = Float4(proj) + Float4(hit.local() - origin);
 
 	float h = dot(pro2, Float4(longAxe));
 
-	return Point(theta, h/r, sinf(acosf(theta)));
+	return Point(-theta, h/r, sinf(acosf(theta)));
 
 //	return Point((acosf(theta) + M_PI) / (2.f * M_PI), 1.f / H, 1.f);
 }
