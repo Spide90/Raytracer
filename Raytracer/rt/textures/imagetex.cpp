@@ -116,15 +116,15 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 		break;
 	case MIRROR:
 		if ((int) floorf(coord.x) % 2) {
-			tu = (ceilf(coord.x) - coord.x) * (image.width());
+			tu = (ceilf(coord.x) - coord.x) * (image.width()-1);
 		} else {
-			tu = (coord.x - floor(coord.x)) * (image.width());
+			tu = (coord.x - floor(coord.x)) * (image.width()-1);
 		}
 
 		if ((int) floorf(coord.y) % 2) {
-			tv = (ceilf(coord.y) - coord.y) * (image.height());
+			tv = (ceilf(coord.y) - coord.y) * (image.height()-1);
 		} else {
-			tv = (coord.y - floor(coord.y)) * (image.height());
+			tv = (coord.y - floor(coord.y)) * (image.height()-1);
 		}
 
 //		if ((int) floorf(coord.x) % 2) {
@@ -147,9 +147,9 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 //						(image.height() - 1) : roundf(tv * image.height());
 //				return image(tu, tv);
 //				break;
-			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu) % image.width();
+			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu);
 			tv = roundf(tv) == image.height() ?
-					(image.height() - 1) : roundf(tv) % image.height();
+					(image.height() - 1) : roundf(tv);
 			return image(tu, tv);
 			break;
 		case BILINEAR:
@@ -158,8 +158,8 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 			ftu = (unsigned int) floorf(tu);
 			ftv = (unsigned int) floorf(tv);
 
-			if(ctu == image.width() && ctv == image.height()){
-			}
+//			if(ctu == image.width() && ctv == image.height()){
+//			}
 
 			xW = (tu - floorf(tu));
 			yW = (tv - floorf(tv));
