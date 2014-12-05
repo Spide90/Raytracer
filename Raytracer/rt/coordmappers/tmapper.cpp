@@ -35,16 +35,22 @@ Point TriangleMapper::getCoords(const Intersection& hit) const {
 //	float S1 = cross(v1, v2).length()/2;
 //
 //	float S = cross(edge1 - edge2, edge1 - edge3).length()/2;
-//
-//	return Point(S1/S, S2/S, S3/S);
+
+	return Point(
+			edge1.x * hit.local().x + edge2.x * hit.local().y
+					+ edge3.x * hit.local().z,
+			edge1.y * hit.local().x + edge2.y * hit.local().y
+					+ edge3.y * hit.local().z,
+			edge1.z * hit.local().x + edge2.z * hit.local().y
+					+ edge3.z * hit.local().z);
 
 	/*float x = (hit.point.x * a.x + hit.point.x * b.x + hit.point.z * c.x)
-			/ (hit.point.x + hit.point.y + hit.point.z);
-	float y = (hit.point.x * a.y + hit.point.x * b.y + hit.point.z * c.y)
-			/ (hit.point.x + hit.point.y + hit.point.z);
-	float z = (hit.point.x * a.z + hit.point.x * b.z + hit.point.z * c.z)
-			/ (hit.point.x + hit.point.y + hit.point.z);
-	return Point(x, y, z);*/
+	 / (hit.point.x + hit.point.y + hit.point.z);
+	 float y = (hit.point.x * a.y + hit.point.x * b.y + hit.point.z * c.y)
+	 / (hit.point.x + hit.point.y + hit.point.z);
+	 float z = (hit.point.x * a.z + hit.point.x * b.z + hit.point.z * c.z)
+	 / (hit.point.x + hit.point.y + hit.point.z);
+	 return Point(x, y, z);*/
 }
 
 }

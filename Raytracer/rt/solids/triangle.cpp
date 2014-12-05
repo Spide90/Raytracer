@@ -66,10 +66,20 @@ Intersection Triangle::intersect(const Ray& ray,
 		Intersection intersection = plane.intersect(ray, previousBestDistance);
 		intersection.solid = this;
 		if (intersection) {
-			float a = (edges[0] - edges[1]).length();
-			float b = (edges[1] - edges[2]).length();
-			float c = (edges[2] - edges[0]).length();
-			Point hitPoint(a*intersection.point.x, b*intersection.point.y, c*intersection.point.z);
+			Vector v0 = edges[0] - intersection.point;
+			Vector v1 = edges[1] - intersection.point;
+			Vector v2 = edges[2] - intersection.point;
+
+			float S3 = cross(v0, v1).length() / 2;
+			float S2 = cross(v2, v0).length() / 2;
+			float S1 = cross(v1, v2).length() / 2;
+
+			float S = cross(edges[0] - edges[1], edges[0] - edges[2]).length() / 2;
+//			float a = (edges[0] - edges[1]).length();
+//			float b = (edges[1] - edges[2]).length();
+//			float c = (edges[2] - edges[0]).length();
+
+			Point hitPoint(S1/S, S2/S, S3/S);
 			intersection.point = hitPoint;
 		}
 		return intersection;
