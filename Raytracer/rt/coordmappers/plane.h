@@ -10,6 +10,7 @@ class Intersection;
 
 class PlaneCoordMapper : public CoordMapper{
 public:
+	Vector e1, e2;
     PlaneCoordMapper(const Vector& e1, const Vector& e2);
     virtual Point getCoords(const Intersection& hit) const;
 };

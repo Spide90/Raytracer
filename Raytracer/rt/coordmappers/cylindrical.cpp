@@ -13,7 +13,7 @@
 
 namespace rt {
 
-CylindricalCoordMapper::CylindricalCoordMapper(const Point& origin, const Vector& longitudinalAxis, const Vector& polarAxis) {
+CylindricalCoordMapper::CylindricalCoordMapper(const Point& origin, const Vector& longitudinalAxis, const Vector& polarAxis): origin(origin), longAxe(longitudinalAxis), polAxe(polarAxis) {
 
 }
 
