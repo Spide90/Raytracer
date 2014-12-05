@@ -29,7 +29,11 @@ Intersection InfinitePlane::intersect(const Ray& ray, float previousBestDistance
 	float t = -(dot(ray.o - origin, normalVector) / dot(ray.d, normalVector));
 	if (t < previousBestDistance && t > 0) {
 		Point localPoint = ray.o + ray.d * t;
-		return Intersection(t, ray, this, normalVector, localPoint);
+		Intersection intersection(t, ray, this, normalVector, localPoint);
+		/*Float4 f4 = Float4(localPoint) - Float4(origin);
+		f4.w = 1;
+		intersection.localPoint = Point(f4);*/
+		return intersection;
 	}
 	return Intersection::failure();
 }
