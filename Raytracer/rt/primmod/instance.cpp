@@ -61,19 +61,20 @@ void Instance::scale(const Vector& scale) {
 
 BBox Instance::getBounds() const {
 	BBox originalBox = primitve->getBounds();
-	return BBox(Point(transformation * Float4(originalBox.min)),
-			Point(transformation * Float4(originalBox.max)));
+	return BBox(Point(transformation * originalBox.min),
+			Point(transformation * originalBox.max));
 }
 
 Intersection Instance::intersect(const Ray& ray,
 		float previousBestDistance) const {
 	Matrix inverseTransformation = transformation.invert();
-	Ray transformedRay = Ray(inverseTransformation * ray.o,
-			inverseTransformation * ray.d);
+	Ray transformedRay = Ray(inverseTransformation * ray.o, ray.d);
 	Intersection intersection = primitve->intersect(transformedRay,
 			previousBestDistance);
 	intersection.ray = ray;
 	intersection.normalVector = transformation * intersection.normalVector;
+	intersection.point = transformation * intersection.point;
+	intersection.localPoint = transformation * intersection.localPoint;
 	return intersection;
 }
 
