@@ -22,28 +22,28 @@ void Instance::reset() {
 void Instance::translate(const Vector& t) {
 	Matrix translateMatrix(Float4(1, 0, 0, t.x), Float4(0, 1, 0, t.y),
 			Float4(0, 0, 1, t.z), Float4(0, 0, 0, 1));
-	transformation = product(transformation, translateMatrix);
+	transformation = product(translateMatrix, transformation);
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
-	Matrix scaleMatrix(Float4(cos(angle), 0, 0, 0), Float4(0, cos(angle), 0, 0),
-			Float4(0, 0, cos(angle), 0), Float4(0, 0, 0, 1));
-	Matrix rot1(Float4(0, -axis.z * sin(angle), axis.y * sin(angle), 0),
-			Float4(axis.z * sin(angle), 0, -axis.x * sin(angle), 0),
-			Float4(-axis.y * sin(angle), axis.x * sin(angle), 0, 0),
+	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
+			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
+	Matrix rot1(Float4(0, -axis.z * sin(angle), axis.y * sinf(angle), 0),
+			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
+			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
 			Float4(0, 0, 0, 0));
 	Matrix rot2(
-			Float4(axis.x * axis.x * (1 - cos(angle)),
-					axis.x * axis.y * (1 - cos(angle)),
-					axis.x * axis.z * (1 - cos(angle)), 0),
-			Float4(axis.x * axis.y * (1 - cos(angle)),
-					axis.y * axis.y * (1 - cos(angle)),
-					axis.y * axis.z * (1 - cos(angle)), 0),
-			Float4(axis.x * axis.z * (1 - cos(angle)),
-					axis.y * axis.z * (1 - cos(angle)),
-					axis.z * axis.z * (1 - cos(angle)), 0), Float4(0, 0, 0, 0));
+			Float4(axis.x * axis.x * (1 - cosf(angle)),
+					axis.x * axis.y * (1 - cosf(angle)),
+					axis.x * axis.z * (1 - cosf(angle)), 0),
+			Float4(axis.x * axis.y * (1 - cosf(angle)),
+					axis.y * axis.y * (1 - cosf(angle)),
+					axis.y * axis.z * (1 - cosf(angle)), 0),
+			Float4(axis.x * axis.z * (1 - cosf(angle)),
+					axis.y * axis.z * (1 - cosf(angle)),
+					axis.z * axis.z * (1 - cosf(angle)), 0), Float4(0, 0, 0, 0));
 
-	transformation = product(transformation, (scaleMatrix + rot1 + rot2));
+	transformation = product((scaleMatrix + rot1 + rot2), transformation);
 
 }
 
@@ -56,7 +56,7 @@ void Instance::scale(float scale) {
 void Instance::scale(const Vector& scale) {
 	Matrix scaleMatrix(Float4(scale.x, 0, 0, 0), Float4(0, scale.y, 0, 0),
 			Float4(0, 0, scale.z, 0), Float4(0, 0, 0, 1));
-	transformation = product(transformation, scaleMatrix);
+	transformation = product(scaleMatrix, transformation);
 }
 
 BBox Instance::getBounds() const {
