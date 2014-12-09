@@ -14,13 +14,16 @@ void a_textures();
 
 void a_mappers();
 
+void a_instancing();
+
 #define TEST_CAMERA false
 #define TEST_SOLID false
 #define TEST_INDEX false
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
 #define TEST_TEXTURES false
-#define TEST_MAPPERS true
+#define TEST_MAPPERS false
+#define TEST_INSTANCING true
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -57,6 +60,11 @@ int main(int argc, char* argv[]) {
 		std::cout << "starting mapper tests\n";
 		a_mappers();
 		std::cout << "mapper tests finished\n";
+	}
+	if (TEST_INSTANCING) {
+			std::cout << "starting instancing tests\n";
+			a_instancing();
+			std::cout << "instancing tests finished\n";
 	}
 	return 0;
 }
