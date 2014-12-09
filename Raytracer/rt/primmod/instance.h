@@ -9,6 +9,10 @@ class Instance : public Primitive {
 public:
 
 	Primitive* primitve;
+	Matrix transformation;
+
+	Material* material;
+	CoordMapper* coordMapper;
 
     Instance(Primitive* content);
     Primitive* content();

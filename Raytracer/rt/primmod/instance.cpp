@@ -7,18 +7,29 @@ namespace rt {
 
 Instance::Instance(Primitive* content) :
 		primitve(content) {
+	transformation = Matrix::identity();
+}
 
+Primitive* Instance::content() {
+	return primitve;
 }
 
 void Instance::reset() {
-} //reset transformation back to identity
+	transformation = Matrix::identity();
+}
+
 void Instance::translate(const Vector& t) {
 }
+
 void Instance::rotate(const Vector& axis, float angle) {
 }
+
 void Instance::scale(float scale) {
+	transformation = transformation * scale;
 }
+
 void Instance::scale(const Vector& scale) {
+	transformation = transformation * scale;
 }
 
 BBox Instance::getBounds() const {
@@ -30,11 +41,11 @@ Intersection Instance::intersect(const Ray& ray,
 }
 
 void Instance::setMaterial(Material* m) {
-
+	material = m;
 }
 
 void Instance::setCoordMapper(CoordMapper* cm) {
-
+	coordMapper = cm;
 }
 
 Point Instance::getCenterPoint() {
