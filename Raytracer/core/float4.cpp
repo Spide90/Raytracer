@@ -49,7 +49,7 @@ float Float4::operator[](int idx) const {
 		return z;
 		break;
 	case 3:
-		return z;
+		return w;
 		break;
 	default:
 		break;
