@@ -20,7 +20,8 @@ void Instance::reset() {
 }
 
 void Instance::translate(const Vector& t) {
-	Matrix translateMatrix(Float4(1, 0, 0, t.x), Float4(0, 1, 0, t.y), Float4(0, 0, 1, t.z), Float4(0, 0, 0, 1));
+	Matrix translateMatrix(Float4(1, 0, 0, t.x), Float4(0, 1, 0, t.y),
+			Float4(0, 0, 1, t.z), Float4(0, 0, 0, 1));
 	transformation = product(transformation, translateMatrix);
 }
 
@@ -33,7 +34,8 @@ void Instance::scale(float scale) {
 }
 
 void Instance::scale(const Vector& scale) {
-	Matrix scaleMatrix(Float4(scale.x, 0, 0, 0), Float4(0, scale.y, 0, 0), Float4(0, 0, scale.z, 0), Float4(0, 0, 0, 1));
+	Matrix scaleMatrix(Float4(scale.x, 0, 0, 0), Float4(0, scale.y, 0, 0),
+			Float4(0, 0, scale.z, 0), Float4(0, 0, 0, 1));
 	transformation = product(transformation, scaleMatrix);
 }
 

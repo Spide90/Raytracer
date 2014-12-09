@@ -155,6 +155,7 @@ Point Matrix::operator*(const Point& b) const {
 			result[i] = result[i] + rows[i][j] * b2[j];
 		}
 	}
+	result.w = 1;
 	return Point(result);
 }
 
