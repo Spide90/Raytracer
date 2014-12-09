@@ -10,7 +10,7 @@ public:
     Matrix() {}
     Matrix(const Float4& r1, const Float4& r2, const Float4& r3, const Float4& r4);
 
-    Float4 r1, r2, r3, r4;
+    Float4 rows[4];
 
     Float4& operator[](int idx);
     Float4 operator[](int idx) const;
@@ -40,7 +40,7 @@ public:
 Matrix product(const Matrix& a, const Matrix& b);
 Matrix operator*(const Matrix& a, float scalar);
 Matrix operator*(float scalar, const Matrix& a);
-
+float det3(Vector& a, Vector& b, Vector& c);
 }
 
 

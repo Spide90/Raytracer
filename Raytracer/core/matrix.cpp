@@ -1,12 +1,17 @@
 #include <core/matrix.h>
 #include <core/vector.h>
 #include <core/point.h>
+#include <core/float4.h>
+#include <math.h>
 
 namespace rt {
 
 Matrix::Matrix(const Float4& r1, const Float4& r2, const Float4& r3,
-		const Float4& r4) :
-		r1(r1), r2(r2), r3(r3), r4(r4) {
+		const Float4& r4) {
+	rows[0] = r1;
+	rows[1] = r2;
+	rows[2] = r3;
+	rows[3] = r4;
 }
 Matrix Matrix::zero() {
 	return Matrix(Float4(0, 0, 0, 0), Float4(0, 0, 0, 0), Float4(0, 0, 0, 0),
@@ -86,77 +91,112 @@ Matrix Matrix::invert() const {
 }
 
 Float4& Matrix::operator[](int idx) {
-	switch (idx) {
-	case 0:
-		return r1;
-		break;
-	case 1:
-		return r2;
-		break;
-	case 2:
-		return r3;
-		break;
-	case 3:
-		return r4;
-		break;
-	default:
-		break;
-	}
+	return rows[idx];
 }
 Float4 Matrix::operator[](int idx) const {
-	switch (idx) {
-	case 0:
-		return r1;
-		break;
-	case 1:
-		return r2;
-		break;
-	case 2:
-		return r3;
-		break;
-	case 3:
-		return r4;
-		break;
-	default:
-		break;
-	}
+	return rows[idx];
 }
 
 Matrix Matrix::operator+(const Matrix& b) const {
-	for(int i=0; i<4; i++){
-		for(int j=0; j<4; j++){
-
-		}
-	}
+	return Matrix(rows[0] + b.rows[0], rows[1] + b.rows[1], rows[2] + b.rows[2],
+			rows[3] + b.rows[3]);
 }
 
 Matrix Matrix::operator-(const Matrix& b) const {
+	return Matrix(rows[0] - b.rows[0], rows[1] - b.rows[1], rows[2] - b.rows[2],
+			rows[3] - b.rows[3]);
 }
 
 Matrix Matrix::transpose() const {
+	return (Float4(rows[0][0], rows[1][0], rows[2][0], rows[3][0]), Float4(
+			rows[0][1], rows[1][1], rows[2][1], rows[3][1]), Float4(rows[0][2],
+			rows[1][2], rows[2][2], rows[3][2]), Float4(rows[0][3], rows[1][3],
+			rows[2][3], rows[3][3]));
 }
 
 bool Matrix::operator==(const Matrix& b) const {
+	return (rows[0] == b.rows[0] && rows[1] == b.rows[1] && rows[2] == b.rows[2]
+			&& rows[3] == b.rows[3]);
 }
 bool Matrix::operator!=(const Matrix& b) const {
+	return !(rows[0] == b.rows[0] && rows[1] == b.rows[1]
+			&& rows[2] == b.rows[2] && rows[3] == b.rows[3]);
 }
 
 Float4 Matrix::operator*(const Float4& b) const {
+	Float4 result;
+	for (int k = 0; k < 4; k++) {
+		result[k] = 0;
+	}
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result[i] = result[i] + rows[i][j] * b[j];
+		}
+	}
+	return result;
 }
 Vector Matrix::operator*(const Vector& b) const {
+	Float4 result = Float4::rep(0.f);
+	Float4 b2 = Float4(b);
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 4; j++) {
+			result[i] = result[i] + rows[i][j] * b2[j];
+		}
+	}
+	return Vector(result);
 }
 Point Matrix::operator*(const Point& b) const {
+	Float4 result = Float4::rep(0.f);
+	Float4 b2 = Float4(b);
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 4; j++) {
+			result[i] = result[i] + rows[i][j] * b2[j];
+		}
+	}
+	return Point(result);
 }
 
 float Matrix::det() const {
+	float determinante = 0;
+	for (int i = 0; i < 4; i++) {
+		Vector a(rows[1][(i + 1) % 4], rows[2][(i + 1) % 4],
+				rows[3][(i + 1) % 4]);
+		Vector b(rows[1][(i + 2) % 4], rows[2][(i + 2) % 4],
+				rows[3][(i + 2) % 4]);
+		Vector c(rows[1][(i + 3) % 4], rows[2][(i + 3) % 4],
+				rows[3][(i + 3) % 4]);
+		determinante = determinante + pow(-1, i) * rows[0][i] * det3(a, b, c);
+	}
 }
 
 Matrix product(const Matrix& a, const Matrix& b) {
+	Matrix result;
+	result.zero();
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++) {
+				result[i][j] = result[i][j] + a.rows[i][k] * b.rows[k][j];
+			}
+		}
+	}
+
+	return result;
 }
 Matrix operator*(const Matrix& a, float scalar) {
+	return Matrix(scalar * a.rows[0], scalar * a.rows[1], scalar * a.rows[2],
+			scalar * a.rows[3]);
 }
 Matrix operator*(float scalar, const Matrix& a) {
+	return Matrix(scalar * a.rows[0], scalar * a.rows[1], scalar * a.rows[2],
+			scalar * a.rows[3]);
+}
+
+float det3(Vector& a, Vector& b, Vector& c) {
+	return a.x * b.y * c.z + b.x * c.y * a.z + c.x * a.y * b.z - c.x * b.y * a.z
+			- b.x * a.y * c.z - a.x * c.y * b.z;
 }
 
 }
-

@@ -34,13 +34,13 @@ Triangle::Triangle(const Point& v1, const Point& v2, const Point& v3,
 }
 
 BBox Triangle::getBounds() const {
-	float minX = std::min( { edges[0].x, edges[1].x, edges[2].x });
-	float minY = std::min( { edges[0].y, edges[1].y, edges[2].y });
-	float minZ = std::min( { edges[0].z, edges[1].z, edges[2].z });
+	float minX = std::min(edges[0].x, std::min(edges[1].x, edges[2].x));
+	float minY = std::min(edges[0].y, std::min(edges[1].y, edges[2].y));
+	float minZ = std::min(edges[0].z, std::min(edges[1].z, edges[2].z));
 
-	float maxX = std::max( { edges[0].x, edges[1].x, edges[2].x });
-	float maxY = std::max( { edges[0].y, edges[1].y, edges[2].y });
-	float maxZ = std::max( { edges[0].z, edges[1].z, edges[2].z });
+	float maxX = std::max(edges[0].x, std::max(edges[1].x, edges[2].x ));
+	float maxY = std::max(edges[0].y, std::max(edges[1].y, edges[2].y ));
+	float maxZ = std::max(edges[0].z, std::max(edges[1].z, edges[2].z ));
 	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 

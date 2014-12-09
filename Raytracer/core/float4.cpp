@@ -16,7 +16,7 @@ Float4::Float4(const Point& p) :
 }
 
 Float4::Float4(const Vector& v) :
-		x(v.x), y(v.y), z(v.z), w(1) {
+		x(v.x), y(v.y), z(v.z), w(0) {
 }
 
 float& Float4::operator[](int idx) {
@@ -31,7 +31,7 @@ float& Float4::operator[](int idx) {
 		return z;
 		break;
 	case 3:
-		return z;
+		return w;
 		break;
 	default:
 		break;
