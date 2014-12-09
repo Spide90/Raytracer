@@ -26,10 +26,30 @@ void Instance::translate(const Vector& t) {
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
+	Matrix scaleMatrix(Float4(cos(angle), 0, 0, 0), Float4(0, cos(angle), 0, 0),
+			Float4(0, 0, cos(angle), 0), Float4(0, 0, 0, 1));
+	Matrix rot1(Float4(0, -axis.z * sin(angle), axis.y * sin(angle), 0),
+			Float4(axis.z * sin(angle), 0, -axis.x * sin(angle), 0),
+			Float4(-axis.y * sin(angle), axis.x * sin(angle), 0, 0),
+			Float4(0, 0, 0, 0));
+	Matrix rot2(
+			Float4(axis.x * axis.x * (1 - cos(angle)),
+					axis.x * axis.y * (1 - cos(angle)),
+					axis.x * axis.z * (1 - cos(angle)), 0),
+			Float4(axis.x * axis.y * (1 - cos(angle)),
+					axis.y * axis.y * (1 - cos(angle)),
+					axis.y * axis.z * (1 - cos(angle)), 0),
+			Float4(axis.x * axis.z * (1 - cos(angle)),
+					axis.y * axis.z * (1 - cos(angle)),
+					axis.z * axis.z * (1 - cos(angle)), 0), Float4(0, 0, 0, 0));
+
+	transformation = transformation * (scaleMatrix + rot1 + rot2);
 
 }
 
 void Instance::scale(float scale) {
+	Matrix scaleMatrix(Float4(scale, 0, 0, 0), Float4(0, scale, 0, 0),
+			Float4(0, 0, scale, 0), Float4(0, 0, 0, 1));
 	transformation = transformation * scale;
 }
 
