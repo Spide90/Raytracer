@@ -43,7 +43,7 @@ void Instance::rotate(const Vector& axis, float angle) {
 					axis.y * axis.z * (1 - cos(angle)),
 					axis.z * axis.z * (1 - cos(angle)), 0), Float4(0, 0, 0, 0));
 
-	transformation = transformation * (scaleMatrix + rot1 + rot2);
+	transformation = product(transformation, (scaleMatrix + rot1 + rot2));
 
 }
 
