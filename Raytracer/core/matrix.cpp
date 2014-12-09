@@ -23,7 +23,7 @@ Matrix Matrix::identity() {
 }
 Matrix Matrix::system(const Vector& e1, const Vector& e2, const Vector& e3) {
 	return Matrix(Float4(e1.x, e2.x, e3.x, 0), Float4(e1.y, e2.y, e3.y, 0),
-			Float4(e1.z, e2.z, e3.z, 0), Float4(0, 0, 0, 1));
+			Float4(e1.z, e2.z, e3.z, 0), Float4(0, 0, 0, 0));
 }
 
 Matrix Matrix::invert() const {
