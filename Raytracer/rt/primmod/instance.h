@@ -2,6 +2,7 @@
 #define CG1RAYTRACER_PRIMMOD_INSTANCE_HEADER
 
 #include <rt/primitive.h>
+#include <core/matrix.h>
 
 namespace rt {
 
