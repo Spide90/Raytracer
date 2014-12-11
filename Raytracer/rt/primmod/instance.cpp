@@ -50,7 +50,7 @@ void Instance::rotate(const Vector& axis, float angle) {
 void Instance::scale(float scale) {
 	Matrix scaleMatrix(Float4(scale, 0, 0, 0), Float4(0, scale, 0, 0),
 			Float4(0, 0, scale, 0), Float4(0, 0, 0, 1));
-	transformation = transformation * scale;
+	transformation = product(scaleMatrix, transformation);
 }
 
 void Instance::scale(const Vector& scale) {
@@ -68,13 +68,13 @@ BBox Instance::getBounds() const {
 Intersection Instance::intersect(const Ray& ray,
 		float previousBestDistance) const {
 	Matrix inverseTransformation = transformation.invert();
-	Ray transformedRay = Ray(inverseTransformation * ray.o, ray.d);
+	Ray transformedRay = Ray(inverseTransformation * ray.o, inverseTransformation * ray.d);
 	Intersection intersection = primitve->intersect(transformedRay,
 			previousBestDistance);
 	intersection.ray = ray;
-	intersection.normalVector = transformation * intersection.normalVector;
-	intersection.point = transformation * intersection.point;
-	intersection.localPoint = transformation * intersection.localPoint;
+	intersection.normalVector = inverseTransformation.transpose() * intersection.normalVector;
+	//intersection.point = transformation * intersection.point;
+	//intersection.localPoint = transformation * intersection.localPoint;
 	return intersection;
 }
 
@@ -87,6 +87,7 @@ void Instance::setCoordMapper(CoordMapper* cm) {
 }
 
 Point Instance::getCenterPoint() {
+	LOG_DEBUG("blubb");
 	//not used
 }
 

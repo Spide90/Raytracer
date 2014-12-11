@@ -78,14 +78,14 @@ void a_instancing() {
     scene->add(normal);
 
     float circleRadius = 18.0f;
-    for (int i = 0; i<11; ++i) {
+    for (int i = 0; i<3; ++i) {
         float angle = 2.0f*i*pi / 11.0f;
         Instance* itree = new Instance(tree);
         itree->scale(Vector(1.0f,1.0f + sin(i*1.0f)*0.3f,1.0f));
         itree->translate(Vector(sin(angle) * circleRadius, 0.0f, cos(angle) * circleRadius));
         scene->add(itree);
     }
-
+/*
     {
     Instance* broken = new Instance(tree);
     broken->rotate(Vector(0.3f, 0.0f, 0.7f),-1.0f);
@@ -106,7 +106,7 @@ void a_instancing() {
     flat->translate(Vector(-11.0f, 0.0f, 0.0f));
     scene->add(flat);
     }
-
+*/
     scene->add(new InfinitePlane(Point(0,0,0), Vector(0, 1, 0), nullptr, nullptr));
     scene->rebuildIndex();
 
