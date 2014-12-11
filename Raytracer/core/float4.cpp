@@ -87,7 +87,7 @@ Float4 operator*(const Float4& a, float scalar) {
 	return Float4(scalar * a.x, scalar * a.y, scalar * a.z, scalar * a.w);
 }
 Float4 operator/(const Float4& a, float scalar) {
-	return Float4(a.x / scalar, a.y / scalar, a.z / scalar, scalar / a.w);
+	return Float4(a.x / scalar, a.y / scalar, a.z / scalar, a.w / scalar);
 }
 
 float dot(const Float4& a, const Float4& b) {
