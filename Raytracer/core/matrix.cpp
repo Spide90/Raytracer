@@ -173,8 +173,7 @@ float Matrix::det() const {
 }
 
 Matrix product(const Matrix& a, const Matrix& b) {
-	Matrix result;
-	result.zero();
+	Matrix result = Matrix::zero();
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
