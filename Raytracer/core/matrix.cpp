@@ -187,11 +187,11 @@ Matrix product(const Matrix& a, const Matrix& b) {
 }
 Matrix operator*(const Matrix& a, float scalar) {
 	return Matrix(scalar * a.rows[0], scalar * a.rows[1], scalar * a.rows[2],
-			scalar * a.rows[3]);
+			a.rows[3]);
 }
 Matrix operator*(float scalar, const Matrix& a) {
 	return Matrix(scalar * a.rows[0], scalar * a.rows[1], scalar * a.rows[2],
-			scalar * a.rows[3]);
+			a.rows[3]);
 }
 
 float det3(Vector& a, Vector& b, Vector& c) {
