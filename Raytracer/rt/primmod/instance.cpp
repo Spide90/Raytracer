@@ -26,8 +26,9 @@ void Instance::translate(const Vector& t) {
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
-	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
-			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
+	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0),
+			Float4(0, cosf(angle), 0, 0), Float4(0, 0, cosf(angle), 0),
+			Float4(0, 0, 0, 1));
 	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
 			Float4(axis.z * sinf(angle), 0, -axis.x * angle, 0),
 			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
@@ -41,7 +42,8 @@ void Instance::rotate(const Vector& axis, float angle) {
 					axis.y * axis.z * (1 - cosf(angle)), 0),
 			Float4(axis.x * axis.z * (1 - cosf(angle)),
 					axis.y * axis.z * (1 - cosf(angle)),
-					axis.z * axis.z * (1 - cosf(angle)), 0), Float4(0, 0, 0, 0));
+					axis.z * axis.z * (1 - cosf(angle)), 0),
+			Float4(0, 0, 0, 0));
 
 	transformation = product(scaleMatrix + (rot1 + rot2), transformation);
 
@@ -68,11 +70,17 @@ BBox Instance::getBounds() const {
 Intersection Instance::intersect(const Ray& ray,
 		float previousBestDistance) const {
 	Matrix inverseTransformation = transformation.invert();
-	Ray transformedRay = Ray(inverseTransformation * ray.o, inverseTransformation * ray.d);
+	Vector transformedDirection = inverseTransformation * ray.d;
+	float length = transformedDirection.length();
+	float transformedDistance = previousBestDistance * length;
+	transformedDirection = transformedDirection.normalize();
+	Ray transformedRay = Ray(inverseTransformation * ray.o,
+			transformedDirection);
 	Intersection intersection = primitve->intersect(transformedRay,
-			previousBestDistance);
+			transformedDistance);
 	intersection.ray = ray;
-	intersection.normalVector = inverseTransformation.transpose() * intersection.normalVector;
+	intersection.normalVector = inverseTransformation.transpose()
+			* intersection.normalVector;
 	//intersection.point = transformation * intersection.point;
 	//intersection.distance = (intersection.point - ray.o).length();
 	//intersection.localPoint = transformation * intersection.localPoint;
