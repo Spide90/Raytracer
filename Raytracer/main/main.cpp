@@ -16,6 +16,8 @@ void a_mappers();
 
 void a_instancing();
 
+void a_csg();
+
 #define TEST_CAMERA false
 #define TEST_SOLID false
 #define TEST_INDEX false
@@ -23,7 +25,8 @@ void a_instancing();
 #define TEST_MATERIAL false
 #define TEST_TEXTURES false
 #define TEST_MAPPERS false
-#define TEST_INSTANCING true
+#define TEST_INSTANCING false
+#define TEST_CSG true
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -62,9 +65,14 @@ int main(int argc, char* argv[]) {
 		std::cout << "mapper tests finished\n";
 	}
 	if (TEST_INSTANCING) {
-			std::cout << "starting instancing tests\n";
-			a_instancing();
-			std::cout << "instancing tests finished\n";
+		std::cout << "starting instancing tests\n";
+		a_instancing();
+		std::cout << "instancing tests finished\n";
+	}
+	if (TEST_CSG) {
+		std::cout << "starting csg tests\n";
+		a_csg();
+		std::cout << "csg tests finished\n";
 	}
 	return 0;
 }

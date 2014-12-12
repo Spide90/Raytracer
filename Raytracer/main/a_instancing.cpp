@@ -81,7 +81,7 @@ void a_instancing() {
     for (int i = 0; i<11; ++i) {
         float angle = 2.0f*i*pi / 11.0f;
         Instance* itree = new Instance(tree);
-        //itree->scale(Vector(1.0f,1.0f + sin(i*1.0f)*0.3f,1.0f));
+        itree->scale(Vector(1.0f,1.0f + sin(i*1.0f)*0.3f,1.0f));
         itree->translate(Vector(sin(angle) * circleRadius, 0.0f, cos(angle) * circleRadius));
         scene->add(itree);
     }
@@ -102,7 +102,7 @@ void a_instancing() {
 /*
     {
     Instance* flat = new Instance(tree);
-    //flat->scale(Vector(0.3f, 1.5f, 1.5f));
+    flat->scale(Vector(0.3f, 1.5f, 1.5f));
     flat->translate(Vector(-11.0f, 0.0f, 0.0f));
     scene->add(flat);
     }

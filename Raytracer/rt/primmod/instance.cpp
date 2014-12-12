@@ -26,13 +26,10 @@ void Instance::translate(const Vector& t) {
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
-//	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
-//			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
-	Matrix scaleMatrix(Float4(1, 0, 0, 0),
-			Float4(0, 1, 0, 0), Float4(0, 0, 1, 0),
-			Float4(0, 0, 0, 1));
+	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
+			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
 	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
-			Float4(axis.z * sinf(angle), 0, -axis.x * angle, 0),
+			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
 			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
 			Float4(0, 0, 0, 0));
 //	float L = axis.x*axis.x + axis.y*axis.y + axis.z*axis.z;
@@ -72,8 +69,7 @@ void Instance::rotate(const Vector& axis, float angle) {
 //					((axis.z * axis.z
 //							+ (axis.y * axis.y + axis.x * axis.x) * cos(angle))
 //							/ L), 0), Float4(0, 0, 0, 1));
-
-	transformation = product((scaleMatrix + rot1 + rot2), transformation);
+	transformation = product(scaleMatrix + (rot1 + rot2), transformation);
 
 }
 
@@ -98,17 +94,20 @@ BBox Instance::getBounds() const {
 Intersection Instance::intersect(const Ray& ray,
 		float previousBestDistance) const {
 	Matrix inverseTransformation = transformation.invert();
+	Vector transformedDirection = inverseTransformation * ray.d;
+	float length = transformedDirection.length();
+	float transformedDistance = previousBestDistance * length;
+	transformedDirection = transformedDirection.normalize();
 	Ray transformedRay = Ray(inverseTransformation * ray.o,
-			inverseTransformation * ray.d);
+			transformedDirection);
 	Intersection intersection = primitve->intersect(transformedRay,
-			previousBestDistance);
+			transformedDistance);
+	intersection.distance *= 1/length;
 	intersection.ray = ray;
-	intersection.normalVector = inverseTransformation.transpose()
-			* intersection.normalVector;
 	intersection.point = transformation * intersection.point;
-	Vector DeineMudda = intersection.point - transformedRay.o;
-	intersection.distance = DeineMudda.length();
 	intersection.localPoint = transformation * intersection.localPoint;
+	intersection.normalVector = (inverseTransformation.transpose()
+			* intersection.normalVector).normalize();
 	return intersection;
 }
 
