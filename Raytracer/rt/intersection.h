@@ -20,12 +20,15 @@ public:
 
 	Point localPoint;
 
+	Point exitPoint;
+
 	bool intersected;
 
 	Intersection() {
 	}
 	static Intersection failure();
 	Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv);
+	Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv, const Point& exitPoint);
 
 	Point hitPoint() const;
 	Vector normal() const;

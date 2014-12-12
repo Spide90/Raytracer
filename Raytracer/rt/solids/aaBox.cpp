@@ -83,7 +83,7 @@ Intersection AABox::intersect(const Ray& ray, float previousBestDistance) const 
 			normalVector = Vector(0, 0, 1);
 		}
 		if (nearMax < previousBestDistance) {
-			return Intersection(nearMax, ray, this, normalVector, ray.o + nearMax * ray.d);
+			return Intersection(nearMax, ray, this, normalVector, ray.o + nearMax * ray.d, ray.o + farMin * ray.d);
 		}
 	}
 	return Intersection::failure();

@@ -30,7 +30,7 @@ void Instance::rotate(const Vector& axis, float angle) {
 			Float4(0, cosf(angle), 0, 0), Float4(0, 0, cosf(angle), 0),
 			Float4(0, 0, 0, 1));
 	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
-			Float4(axis.z * sinf(angle), 0, -axis.x * angle, 0),
+			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
 			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
 			Float4(0, 0, 0, 0));
 	Matrix rot2(
@@ -78,12 +78,10 @@ Intersection Instance::intersect(const Ray& ray,
 			transformedDirection);
 	Intersection intersection = primitve->intersect(transformedRay,
 			transformedDistance);
+	intersection.distance *= 1/length;
 	intersection.ray = ray;
-	intersection.normalVector = inverseTransformation.transpose()
-			* intersection.normalVector;
-	//intersection.point = transformation * intersection.point;
-	//intersection.distance = (intersection.point - ray.o).length();
-	//intersection.localPoint = transformation * intersection.localPoint;
+	intersection.normalVector = (inverseTransformation.transpose()
+			* intersection.normalVector).normalize();
 	return intersection;
 }
 

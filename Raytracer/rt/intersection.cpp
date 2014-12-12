@@ -14,8 +14,18 @@
 
 namespace rt {
 
-Intersection::Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv) :
-		distance(distance), ray(ray), solid(solid), normalVector(normal), point(uv) {
+Intersection::Intersection(float distance, const Ray& ray, const Solid* solid,
+		const Vector& normal, const Point& uv) :
+		distance(distance), ray(ray), solid(solid), normalVector(normal), point(
+				uv) {
+	intersected = true;
+	localPoint = point;
+}
+
+Intersection::Intersection(float distance, const Ray& ray, const Solid* solid,
+		const Vector& normal, const Point& uv, const Point& exitPoint) :
+		distance(distance), ray(ray), solid(solid), normalVector(normal), point(
+				uv), exitPoint(exitPoint) {
 	intersected = true;
 	localPoint = point;
 }
