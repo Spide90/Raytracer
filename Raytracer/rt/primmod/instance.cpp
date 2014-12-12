@@ -26,63 +26,26 @@ void Instance::translate(const Vector& t) {
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
-	Matrix rot(
-			Float4(cosf(angle)+axis.x*axis.x*(1-cosf(angle)),
-					axis.x*axis.y*(1-cosf(angle))-axis.z*sinf(angle),
-					axis.x*axis.z*(1-cosf(angle))+axis.y*sinf(angle), 0),
-			Float4(axis.y*axis.x*(1-cosf(angle))+ axis.z*sinf(angle),
-					cosf(angle)+axis.y*axis.y*(1-cosf(angle)),
-					axis.y*axis.z*(1-cosf(angle))-axis.x*sinf(angle), 0),
-			Float4(axis.z*axis.x*(1-cosf(angle))-axis.y*sinf(angle),
-					axis.z*axis.y*(1-cosf(angle))+axis.x*sinf(angle),
-					axis.z*axis.z*(1-cosf(angle))+cosf(angle), 0),
-			Float4(0,0,0,1));
-	rot = rot * (1/axis.length());
-//	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
-//			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
-//	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
-//			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
-//			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
-//			Float4(0, 0, 0, 0));
-//	Matrix rot2(
-//			Float4(axis.x * axis.x * (1 - cosf(angle)),
-//					axis.x * axis.y * (1 - cosf(angle)),
-//					axis.x * axis.z * (1 - cosf(angle)), 0),
-//			Float4(axis.x * axis.y * (1 - cosf(angle)),
-//					axis.y * axis.y * (1 - cosf(angle)),
-//					axis.z * axis.y * (1 - cosf(angle)), 0),
-//			Float4(axis.x * axis.z * (1 - cosf(angle)),
-//					axis.y * axis.z * (1 - cosf(angle)),
-//					axis.z * axis.z * (1 - cosf(angle)), 0),
-//			Float4(0, 0, 0, 0));
-//	float L = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
-//	Matrix rot(
-//			Float4(
-//					((axis.x * axis.x
-//							+ (axis.y * axis.y + axis.z * axis.z) * cos(angle))
-//							/ L),
-//					((axis.x * axis.y * (1 - cos(angle))
-//							- axis.z * sqrtf(L) * sin(angle)) / L),
-//					((axis.x * axis.z * (1 - cos(angle))
-//							- axis.y * sqrtf(L) * sin(angle)) / L), 0),
-//			Float4(
-//					((axis.x * axis.y * (1 - cos(angle))
-//							- axis.z * sqrtf(L) * sin(angle)) / L),
-//					((axis.y * axis.y
-//							+ (axis.x * axis.x + axis.z * axis.z) * cos(angle))
-//							/ L),
-//					((axis.y * axis.z * (1 - cos(angle))
-//							- axis.x * sqrtf(L) * sin(angle)) / L), 0),
-//			Float4(
-//					((axis.x * axis.z * (1 - cos(angle))
-//							- axis.y * sqrtf(L) * sin(angle)) / L),
-//					((axis.y * axis.z * (1 - cos(angle))
-//							- axis.x * sqrtf(L) * sin(angle)) / L),
-//					((axis.z * axis.z
-//							+ (axis.y * axis.y + axis.x * axis.x) * cos(angle))
-//							/ L), 0), Float4(0, 0, 0, 1));
-	transformation = product(rot, transformation);
-	//transformation = product(scaleMatrix + (rot1 + rot2), transformation);
+	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
+			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
+	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
+			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
+			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
+			Float4(0, 0, 0, 0));
+	Matrix rot2(
+			Float4(axis.x * axis.x * (1 - cosf(angle)),
+					axis.x * axis.y * (1 - cosf(angle)),
+					axis.x * axis.z * (1 - cosf(angle)), 0),
+			Float4(axis.x * axis.y * (1 - cosf(angle)),
+					axis.y * axis.y * (1 - cosf(angle)),
+					axis.z * axis.y * (1 - cosf(angle)), 0),
+			Float4(axis.x * axis.z * (1 - cosf(angle)),
+					axis.y * axis.z * (1 - cosf(angle)),
+					axis.z * axis.z * (1 - cosf(angle)), 0),
+			Float4(0, 0, 0, 0));
+	rot2 = rot2 * (1/(axis.length()*axis.length()));
+	rot1 = rot1 * (1/axis.length());
+	transformation = product(scaleMatrix + (rot1 + rot2), transformation);
 
 }
 
