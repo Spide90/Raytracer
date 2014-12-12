@@ -45,6 +45,7 @@ Point Intersection::local() const {
 Intersection Intersection::failure() {
 	Intersection intersection = Intersection();
 	intersection.distance = FLT_MAX;
+	intersection.exitDistance = FLT_MAX;
 	intersection.intersected = false;
 	return intersection;
 }

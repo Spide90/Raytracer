@@ -26,39 +26,61 @@ BBox ConstructiveSolidGeometry::getBounds() const {
 Intersection ConstructiveSolidGeometry::intersect(const Ray& ray,
 		float previousBestDistance) const {
 	Intersection leftIntersection = left->intersect(ray, previousBestDistance);
-	Intersection rightIntersection = right->intersect(ray, previousBestDistance);
+	Intersection rightIntersection = right->intersect(ray,
+			previousBestDistance);
 	switch (op) {
 	case UNION:
-			if (leftIntersection.distance < rightIntersection.distance) {
-				return leftIntersection;
-			} else {
-				return rightIntersection;
+		if (leftIntersection.distance < rightIntersection.distance) {
+			return leftIntersection;
+		} else {
+			return rightIntersection;
 		}
 		break;
 	case INTERSECTION:
-		if (leftIntersection.distance)
-		/*
-		for (int i = 0; i < primitives.size(); i++) {
-			intersection = primitives[i]->intersect(ray, previousBestDistance);
-			if (intersection) {
-				bestIntersection = intersection;
+		if (leftIntersection.distance < rightIntersection.distance) {
+			if (leftIntersection.exitDistance > rightIntersection.distance) {
+				return rightIntersection;
+			} else {
+				return Intersection::failure();
+			}
+		} else {
+			if (rightIntersection.exitDistance > leftIntersection.distance) {
+				return leftIntersection;
 			} else {
 				return Intersection::failure();
 			}
 		}
-		return bestIntersection;*/
 		break;
 	case DIFFERENCE:
-		/*
-		//substract all from first element
-		intersection = primitives[0]->intersect(ray, previousBestDistance);
-		for (int i = 1; i < primitives.size(); i++) {
-			intersection = primitives[i]->intersect(ray, previousBestDistance);
-			if (intersection) {
-				return Intersection::failure();
+		if (leftIntersection && rightIntersection) {
+			//left - right
+			if (leftIntersection.distance < rightIntersection.distance) {
+				//TODO maybe do the computaion as well ?
+				return leftIntersection;
+			} else {
+				if (rightIntersection.exitDistance
+						>= leftIntersection.distance) {
+					Intersection resultIntersection(
+							rightIntersection.exitDistance, ray,
+							rightIntersection.solid,
+							-rightIntersection.normalVector,
+							ray.o + ray.d * rightIntersection.exitDistance,
+							leftIntersection.exitDistance);
+					if (leftIntersection.exitDistance < resultIntersection.distance) {
+						return Intersection::failure();
+					}
+					return resultIntersection;
+				} else {
+					return leftIntersection;
+				}
+			}
+		} else {
+			if (leftIntersection) {
+				return leftIntersection;
+			} else {
+				return Intersection:: failure();
 			}
 		}
-		return intersection;*/
 		break;
 	default:
 		break;
