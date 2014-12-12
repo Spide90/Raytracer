@@ -15,7 +15,8 @@ namespace rt {
 
 ConstructiveSolidGeometry::ConstructiveSolidGeometry(Operator op) :
 		op(op) {
-
+	left = nullptr;
+	right = nullptr;
 }
 
 BBox ConstructiveSolidGeometry::getBounds() const {
@@ -24,35 +25,31 @@ BBox ConstructiveSolidGeometry::getBounds() const {
 
 Intersection ConstructiveSolidGeometry::intersect(const Ray& ray,
 		float previousBestDistance) const {
-	Intersection intersection = intersection.failure();
-	Intersection bestIntersection = Intersection::failure();
-	float bestDistance = previousBestDistance;
+	Intersection leftIntersection = left->intersect(ray, previousBestDistance);
+	Intersection rightIntersection = right->intersect(ray, previousBestDistance);
 	switch (op) {
 	case UNION:
-		for (int i = 0; i < primitives.size(); i++) {
-			intersection = primitives[i]->intersect(ray, previousBestDistance);
-			if (intersection && intersection.distance < bestDistance) {
-				bestIntersection = intersection;
-				bestDistance = intersection.distance;
-			}
+			if (leftIntersection.distance < rightIntersection.distance) {
+				return leftIntersection;
+			} else {
+				return rightIntersection;
 		}
-		return bestIntersection;
 		break;
 	case INTERSECTION:
+		if (leftIntersection.distance)
+		/*
 		for (int i = 0; i < primitives.size(); i++) {
-			intersection = primitives[i]->intersect(ray, bestDistance);
+			intersection = primitives[i]->intersect(ray, previousBestDistance);
 			if (intersection) {
-				if (intersection.distance <= bestDistance) {
-					bestIntersection = intersection;
-					bestDistance = intersection.distance;
-				}
+				bestIntersection = intersection;
 			} else {
 				return Intersection::failure();
 			}
 		}
-		return bestIntersection;
+		return bestIntersection;*/
 		break;
 	case DIFFERENCE:
+		/*
 		//substract all from first element
 		intersection = primitives[0]->intersect(ray, previousBestDistance);
 		for (int i = 1; i < primitives.size(); i++) {
@@ -61,7 +58,7 @@ Intersection ConstructiveSolidGeometry::intersect(const Ray& ray,
 				return Intersection::failure();
 			}
 		}
-		return intersection;
+		return intersection;*/
 		break;
 	default:
 		break;
@@ -74,7 +71,23 @@ void ConstructiveSolidGeometry::rebuildIndex() {
 }
 
 void ConstructiveSolidGeometry::add(Primitive* p) {
-	primitives.push_back(p);
+	if (left == nullptr) {
+		left = p;
+		return;
+	}
+	if (right == nullptr) {
+		right = p;
+		return;
+	}
+	LOG_DEBUG("adding to much primitives to one csg!");
+}
+
+void ConstructiveSolidGeometry::addLeft(Primitive* p) {
+	left = p;
+}
+
+void ConstructiveSolidGeometry::addRight(Primitive* p) {
+	right = p;
 }
 
 void ConstructiveSolidGeometry::setMaterial(Material* m) {

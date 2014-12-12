@@ -5,7 +5,6 @@
  *      Author: chris
  */
 
-
 #include <core/image.h>
 #include <rt/cameras/perspective.h>
 #include <rt/groups/group.h>
@@ -14,52 +13,60 @@
 #include <rt/integrators/casting.h>
 #include <rt/world.h>
 #include <rt/renderer.h>
+#include <core/point.h>
 
 #include <rt/groups/csg.h>
 
 #include <rt/solids/infiniteplane.h>
 #include <rt/solids/quad.h>
 #include <rt/solids/sphere.h>
-
+#include <rt/solids/aabox.h>
 
 using namespace rt;
 
-void makeBox(Group* scene, const Point& aaa, const Vector& forward, const Vector& left, const Vector& up) {
-    scene->add(new Quad(aaa, forward, left, nullptr, nullptr));
-    scene->add(new Quad(aaa, forward, up, nullptr, nullptr));
-    scene->add(new Quad(aaa, left, up, nullptr, nullptr));
-    Point bbb = aaa + forward + left + up;
-    scene->add(new Quad(bbb, -forward, -left, nullptr, nullptr));
-    scene->add(new Quad(bbb, -forward, -up, nullptr, nullptr));
-    scene->add(new Quad(bbb, -left, -up, nullptr, nullptr));
-}
-
 void a_csg() {
-    Image img(800, 600);
+	Image img(800, 600);
 
-    ConstructiveSolidGeometry* scene = new ConstructiveSolidGeometry(ConstructiveSolidGeometry::INTERSECTION);
+	ConstructiveSolidGeometry* scene = new ConstructiveSolidGeometry(
+			ConstructiveSolidGeometry::UNION);
 
-    SimpleGroup* box = new SimpleGroup();
 
-    float size = 5;
+	scene->add(new AABox(Point(0, 0, 0), Point(10, 10, 10), nullptr, nullptr));
+	scene->add(new Sphere(Point(10, 10, 10), 5, nullptr, nullptr));
 
-    makeBox(box, Point(1, 1, 1), Vector(0, 0, size), Vector(size, 0, 0), Vector(0, size, 0));
+	World world;
+	world.scene = scene;
+	RayCastingIntegrator integrator(&world);
 
-    scene->add(new Sphere(Point(size, size, size), size/2, nullptr, nullptr));
+	PerspectiveCamera cam(Point(-3.75f, 20, 40), Vector(0.1, -0.5, -1),
+			Vector(0, 1, 0), pi / 4, pi / 3);
+	Renderer engine(&cam, &integrator);
+	engine.render(img);
+	img.writePNG("a7-2-union.png");
 
-    scene->add(box);
+	scene = new ConstructiveSolidGeometry(
+			ConstructiveSolidGeometry::INTERSECTION);
 
-    //scene->add(new InfinitePlane(Point(0,0,0), Vector(0, 1, 0), nullptr, nullptr));
 
-    World world;
-    world.scene = scene;
-    RayCastingIntegrator integrator(&world);
+	scene->add(new AABox(Point(0, 0, 0), Point(10, 10, 10), nullptr, nullptr));
+	scene->add(new Sphere(Point(10, 10, 10), 5, nullptr, nullptr));
 
-    PerspectiveCamera cam(Point(-3.75f, 20, 40), Vector(0.1, -0.5, -1), Vector(0, 1, 0), pi/4, pi/3);
-    Renderer engine(&cam, &integrator);
-    engine.render(img);
-    img.writePNG("a7-2.png");
+	world.scene = scene;
+
+	engine.render(img);
+	img.writePNG("a7-2-intersection.png");
+
+	scene = new ConstructiveSolidGeometry(
+			ConstructiveSolidGeometry::DIFFERENCE);
+
+
+	scene->add(new AABox(Point(0, 0, 0), Point(10, 10, 10), nullptr, nullptr));
+	scene->add(new Sphere(Point(10, 10, 10), 5, nullptr, nullptr));
+
+	world.scene = scene;
+
+	engine.render(img);
+	img.writePNG("a7-2-difference.png");
+
 }
-
-
 

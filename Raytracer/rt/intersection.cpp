@@ -20,12 +20,13 @@ Intersection::Intersection(float distance, const Ray& ray, const Solid* solid,
 				uv) {
 	intersected = true;
 	localPoint = point;
+	exitDistance = distance;
 }
 
 Intersection::Intersection(float distance, const Ray& ray, const Solid* solid,
-		const Vector& normal, const Point& uv, const Point& exitPoint) :
+		const Vector& normal, const Point& uv, const float exitDistance) :
 		distance(distance), ray(ray), solid(solid), normalVector(normal), point(
-				uv), exitPoint(exitPoint) {
+				uv), exitDistance(exitDistance) {
 	intersected = true;
 	localPoint = point;
 }

@@ -14,13 +14,13 @@ public:
 	Ray ray;
 	const Solid* solid;
 	float distance;
+	float exitDistance;
 
 	Vector normalVector;
 	Point point;
 
 	Point localPoint;
 
-	Point exitPoint;
 
 	bool intersected;
 
@@ -28,7 +28,7 @@ public:
 	}
 	static Intersection failure();
 	Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv);
-	Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv, const Point& exitPoint);
+	Intersection(float distance, const Ray& ray, const Solid* solid, const Vector& normal, const Point& uv, const float exitDistance);
 
 	Point hitPoint() const;
 	Vector normal() const;

@@ -23,7 +23,8 @@ public:
 		INTERSECTION
     };
 
-	std::vector<Primitive*> primitives;
+	Primitive* left;
+	Primitive* right;
 	Operator op;
 	Material* material;
 	CoordMapper* coordMapper;
@@ -34,6 +35,8 @@ public:
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;
     virtual void rebuildIndex();
     virtual void add(Primitive* p);
+    virtual void addLeft(Primitive* p);
+    virtual void addRight(Primitive* p);
     virtual void setMaterial(Material* m);
     virtual void setCoordMapper(CoordMapper* cm);
     virtual Point getCenterPoint();
