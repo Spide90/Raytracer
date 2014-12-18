@@ -21,25 +21,28 @@ CylindricalCoordMapper::CylindricalCoordMapper(const Point& origin,
 }
 
 Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
+	Vector vector = (hit.local() - origin);
+	float height = longAxe.length();
+	float radius = polAxe.length();
+
+	Vector longAxeNorm = longAxe.normalize();
+	Vector perp2 = cross(longAxe, polAxe);
 	Vector perp;
-	float H = longAxe.length();
-	float r = polAxe.length();
-	if (dot(polAxe, longAxe)) {
-		perp = hit.normal();
-	} else {
-		perp = polAxe.normalize();
+
+	if(dot(longAxe, polAxe) == 0){
+		perp = polAxe;
 	}
-	Point proj = hit.local() - dot((hit.local() - origin).normalize(), longAxe.normalize()) * longAxe.normalize();
+	else{
+		perp = cross(longAxeNorm, perp2);
+	}
 
-	Vector pro = (proj - origin);
-	float theta = dot(pro, polAxe) / (pro.length()*polAxe.length());
-	Float4 pro2 = Float4(proj) + Float4(hit.local() - origin);
+	float y = dot(vector.normalize(), longAxeNorm) / (height);
+	float x = dot(vector.normalize(), perp);
+	float z = dot(vector.normalize(), perp2) / (radius * radius);
 
-	float h = dot(pro2, Float4(longAxe));
+	float phi = acosf(x) / (2 * M_PI);
 
-	return Point(-theta, h/r, sinf(acosf(theta)));
-
-//	return Point((acosf(theta) + M_PI) / (2.f * M_PI), 1.f / H, 1.f);
+	return Point(phi, y, 0);
 }
 
 }

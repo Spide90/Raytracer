@@ -24,9 +24,9 @@ void a_csg();
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
 #define TEST_TEXTURES false
-#define TEST_MAPPERS false
-#define TEST_INSTANCING true
-#define TEST_CSG true
+#define TEST_MAPPERS true
+#define TEST_INSTANCING false
+#define TEST_CSG false
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
