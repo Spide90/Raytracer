@@ -21,28 +21,49 @@ CylindricalCoordMapper::CylindricalCoordMapper(const Point& origin,
 }
 
 Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
-	Vector vector = (hit.local() - origin);
-	float height = longAxe.length();
-	float radius = polAxe.length();
+//	Vector PO = hit.local() - origin;
+//	Vector zAx = cross(longAxe.normalize(), polAxe.normalize()).normalize() * polAxe.length();
+//
+//	float u = dot(PO, longAxe) / longAxe.lensqr();
+//	Vector help = longAxe * u;
+//	Point q = origin + help;
+//	Vector vec2 = hit.local() - q;
+//
+//	float v = acosf(dot(vec2.normalize(), polAxe.normalize()));
+//
+////	float costheta = dot(vec2.normalize(), polAxe.normalize());
+////	float sintheta = dot(vec2.normalize(), zAx.normalize());
+////	float v = atan2f(sintheta, costheta) / (polAxe.length());
+//
+//	return Point( v / (2 * M_PI * polAxe.length()), u, 0.f);
 
-	Vector longAxeNorm = longAxe.normalize();
-	Vector perp2 = cross(longAxe, polAxe);
-	Vector perp;
+	//FUNKTIONIERT FAST!!!
+//	Vector PO = hit.local() - origin;
+//	Vector zAx = cross(longAxe.normalize(), polAxe.normalize()).normalize() * polAxe.length();
+//
+//	float u = dot(PO, polAxe) / polAxe.lensqr();
+//	float v = dot(PO, zAx) / zAx.lensqr();
+//
+//	Vector projHit(u, 0.f, v);
+//
+//	float theta = acosf(dot(projHit.normalize(), polAxe.normalize()));
+//	float h = dot(PO, longAxe) / longAxe.lensqr();
+//
+//	return Point(theta / (2 * M_PI * polAxe.length()), h, 0.f);
 
-	if(dot(longAxe, polAxe) == 0){
-		perp = polAxe;
-	}
-	else{
-		perp = cross(longAxeNorm, perp2);
-	}
+	Vector PO = hit.local() - origin;
+	Vector zAx = cross(longAxe.normalize(), polAxe.normalize()).normalize() * polAxe.length();
 
-	float y = dot(vector.normalize(), longAxeNorm) / (height);
-	float x = dot(vector.normalize(), perp);
-	float z = dot(vector.normalize(), perp2) / (radius * radius);
+	float u = dot(PO, polAxe) / polAxe.lensqr();
+	float v = dot(PO, zAx) / zAx.lensqr();
 
-	float phi = acosf(x) / (2 * M_PI);
+	Vector projHit(u, 0.f, v);
 
-	return Point(phi, y, 0);
+	float theta = acosf(dot(projHit.normalize(), polAxe.normalize()));
+	float h = dot(PO, longAxe) / longAxe.lensqr();
+
+	return Point(theta / (2 * M_PI * polAxe.length()), h, 0.f);
+
 }
 
 }
