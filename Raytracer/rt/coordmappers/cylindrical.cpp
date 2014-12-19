@@ -11,6 +11,7 @@
 #include <core/vector.h>
 #include <rt/coordmappers/coordmapper.h>
 #include <rt/intersection.h>
+#include <core/matrix.h>
 #include <math.h>
 
 namespace rt {
@@ -37,20 +38,7 @@ Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
 //
 //	return Point( v / (2 * M_PI * polAxe.length()), u, 0.f);
 
-	//FUNKTIONIERT FAST!!!
-//	Vector PO = hit.local() - origin;
-//	Vector zAx = cross(longAxe.normalize(), polAxe.normalize()).normalize() * polAxe.length();
-//
-//	float u = dot(PO, polAxe) / polAxe.lensqr();
-//	float v = dot(PO, zAx) / zAx.lensqr();
-//
-//	Vector projHit(u, 0.f, v);
-//
-//	float theta = acosf(dot(projHit.normalize(), polAxe.normalize()));
-//	float h = dot(PO, longAxe) / longAxe.lensqr();
-//
-//	return Point(theta / (2 * M_PI * polAxe.length()), h, 0.f);
-
+//FUNKTIONIERT FAST!!!
 	Vector PO = hit.local() - origin;
 	Vector zAx = cross(longAxe.normalize(), polAxe.normalize()).normalize() * polAxe.length();
 
@@ -63,7 +51,6 @@ Point CylindricalCoordMapper::getCoords(const Intersection& hit) const {
 	float h = dot(PO, longAxe) / longAxe.lensqr();
 
 	return Point(theta / (2 * M_PI * polAxe.length()), h, 0.f);
-
 }
 
 }
