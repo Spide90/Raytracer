@@ -61,8 +61,8 @@ Intersection Triangle::intersect(const Ray& ray,
 		normalVector = cross(edges[0] - edges[1], edges[2] - edges[1]);
 	}
 	if (inside) {
-		InfinitePlane plane = InfinitePlane(edges[0], normalVector, nullptr,
-				nullptr);
+		InfinitePlane plane = InfinitePlane(edges[0], normalVector, texMapper,
+				material);
 		Intersection intersection = plane.intersect(ray, previousBestDistance);
 		intersection.solid = this;
 		if (intersection) {

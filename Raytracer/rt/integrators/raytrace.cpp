@@ -26,7 +26,9 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 		if (intersection.solid->texMapper == nullptr) {
 			local = WorldMapper(Float4::rep(1)).getCoords(intersection);
 		} else {
+			LOG_DEBUG("before!Tex");
 			local = intersection.solid->texMapper->getCoords(intersection);
+			LOG_DEBUG("after!Tex");
 		}
 		RGBColor emission;
 		if(intersection.solid->material == nullptr){
