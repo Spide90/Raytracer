@@ -18,15 +18,18 @@ void a_instancing();
 
 void a_csg();
 
+void a_rendComp();
+
 #define TEST_CAMERA false
 #define TEST_SOLID false
 #define TEST_INDEX false
 #define TEST_LIGHTING false
 #define TEST_MATERIAL false
 #define TEST_TEXTURES false
-#define TEST_MAPPERS true
+#define TEST_MAPPERS false
 #define TEST_INSTANCING false
 #define TEST_CSG false
+#define REND_COMP true
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -73,6 +76,11 @@ int main(int argc, char* argv[]) {
 		std::cout << "starting csg tests\n";
 		a_csg();
 		std::cout << "csg tests finished\n";
+	}
+	if (REND_COMP) {
+		std::cout << "starting rendering competition\n";
+		a_rendComp();
+		std::cout << "rendering competition finished\n";
 	}
 	return 0;
 }

@@ -28,7 +28,14 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 		} else {
 			local = intersection.solid->texMapper->getCoords(intersection);
 		}
-		RGBColor emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
+		RGBColor emission;
+		if(intersection.solid->material == nullptr){
+			float greyScale = fabs(dot(intersection.ray.d, intersection.normalVector));
+			emission = RGBColor(greyScale, greyScale, greyScale);
+		}
+		else{
+			emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
+		}
 		for (int i = 0; i < world->light.size(); i++) {
 			LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 			if (dot(intersection.normalVector, shadowRay.direction) > 0) {
