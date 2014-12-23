@@ -157,23 +157,23 @@ void trymapper(const char* filename, CoordMapper* spheremapper1, CoordMapper* sp
 }
 
 void a_mappers() {
-//    trynomapper("map-1.png");
-//    trymapper("map-2.png",nullptr,nullptr);
+    trynomapper("map-1.png");
+    trymapper("map-2.png",nullptr,nullptr);
 
-//    Vector one(0.25f, 0.35f, -0.25f);
-//    Vector two(-0.25f, 0.35f, -0.25f);
-//    Vector perp = cross(cross(one, two), one).normalize()*two.length();
-//    trymapper("map-3.png",
-//        new PlaneCoordMapper(Vector(0.25f,0.0f,0.25f),Vector(-0.25f,0.0f,0.25f)),
-//        new PlaneCoordMapper(Vector(0.25f,0.35f,-0.25f),perp)
-//        );
+    Vector one(0.25f, 0.35f, -0.25f);
+    Vector two(-0.25f, 0.35f, -0.25f);
+    Vector perp = cross(cross(one, two), one).normalize()*two.length();
+    trymapper("map-3.png",
+        new PlaneCoordMapper(Vector(0.25f,0.0f,0.25f),Vector(-0.25f,0.0f,0.25f)),
+        new PlaneCoordMapper(Vector(0.25f,0.35f,-0.25f),perp)
+        );
     float hsq2 = 0.5f / std::sqrt(2.0f);
     trymapper("map-4.png",
         new CylindricalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
         new CylindricalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
         );
-//    trymapper("map-5.png",
-//        new SphericalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
-//        new SphericalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
-//        );
+    trymapper("map-5.png",
+        new SphericalCoordMapper(Point(.4f,.45f,.3f),Vector(0.0f,hsq2,hsq2),Vector(0.5f,0.0f,0.0f)),
+        new SphericalCoordMapper(Point(.3f,.1f,.3f),Vector(0.0f,hsq2,-hsq2),Vector(0.5f,0.0f,0.0f))
+        );
 }

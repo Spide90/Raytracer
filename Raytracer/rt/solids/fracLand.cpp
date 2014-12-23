@@ -120,6 +120,7 @@ Intersection FracLand::intersect(const Ray& ray,
 					}
 				}
 			}
+			min.solid = this;
 			return min;
 		}
 //	}

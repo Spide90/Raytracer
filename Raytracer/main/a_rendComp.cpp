@@ -39,11 +39,11 @@ void a_rendComp(){
     ConstantTexture* lambTex = new ConstantTexture(RGBColor (253.f / 255.f, 184.f / 255.f, 19.f / 255.f));
     LambertianMaterial* lamb = new LambertianMaterial(lambTex, nullptr);
 
-    ConstantTexture* seaTex = new ConstantTexture(RGBColor (19.f / 255.f, 19.f / 224.f, 19.f / 255.f));
-    LambertianMaterial* sea = new LambertianMaterial(lambTex, nullptr);
+    ConstantTexture* seaTex = new ConstantTexture(RGBColor (19.f / 255.f, 19.f / 255.f, 224.f / 255.f));
+    LambertianMaterial* sea = new LambertianMaterial(seaTex, nullptr);
 
     scene->add(new Sphere(Point(-400.f, 500.f, 2000.f), 100.f, nullptr, lamb));
-    scene->add(new FracLand(Point(800.f, 0.f, 1000.f), Point(-800.f, 0.f, 1000.f), Point(0.f, 0.f, 0.f), 5, 20.f, nullptr, nullptr));
+    scene->add(new FracLand(Point(800.f, 0.f, 1000.f), Point(-800.f, 0.f, 1000.f), Point(0.f, 0.f, 0.f), 3, 20.f, nullptr, nullptr));
     scene->add(new InfinitePlane(Point(0.0f,0.0f,-0.018f), Vector(0.f, 1.f, 0.f), nullptr, sea));
 
     world.scene = scene;
