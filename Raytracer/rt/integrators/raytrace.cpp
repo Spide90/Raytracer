@@ -26,9 +26,7 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 		if (intersection.solid->texMapper == nullptr) {
 			local = WorldMapper(Float4::rep(1)).getCoords(intersection);
 		} else {
-			LOG_DEBUG("before!Tex");
 			local = intersection.solid->texMapper->getCoords(intersection);
-			LOG_DEBUG("after!Tex");
 		}
 		RGBColor emission;
 		if(intersection.solid->material == nullptr){
@@ -44,8 +42,14 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 				Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
 				Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 				if (!shadowRayIntersection) {
-					RGBColor reflectance = intersection.solid->material->getReflectance(local,
+					RGBColor reflectance;
+					if(intersection.solid->material == nullptr){
+						reflectance = RGBColor(0.5, 0.5, 0.5);
+					}
+					else{
+						reflectance = intersection.solid->material->getReflectance(local,
 							intersection.normalVector, -ray.d, shadowRay.direction);
+					}
 					RGBColor intensity = world->light[i]->getIntensity(shadowRay);
 					RGBColor lightSourceColor = (reflectance * intensity);
 					color = color + lightSourceColor;

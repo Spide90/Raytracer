@@ -12,11 +12,11 @@ public:
 
 	Point edges[3];
 	int lod;
-	float roughConst;
+	float roughConst, height;
 
     FracLand() {}
-    FracLand(Point vertices[3], int lod, float roughConst, CoordMapper* texMapper, Material* material);
-    FracLand(const Point& v1, const Point& v2, const Point& v3, int lod, float roughConst, CoordMapper* texMapper, Material* material);
+    FracLand(Point vertices[3], int lod, float roughConst, float height, CoordMapper* texMapper, Material* material);
+    FracLand(const Point& v1, const Point& v2, const Point& v3, int lod, float roughConst, float height, CoordMapper* texMapper, Material* material);
 
     virtual BBox getBounds() const;
     virtual Intersection intersect(const Ray& ray, float previousBestDistance=FLT_MAX) const;

@@ -18,9 +18,9 @@
 
 namespace rt {
 
-FracLand::FracLand(Point vertices[3], int lod, float roughConst,
+FracLand::FracLand(Point vertices[3], int lod, float roughConst, float height,
 		CoordMapper* texMapper, Material* material) :
-		Solid(texMapper, material), lod(lod), roughConst(roughConst) {
+		Solid(texMapper, material), lod(lod), roughConst(roughConst), height(height) {
 	//edges = vertices;
 	edges[0] = vertices[0];
 	edges[1] = vertices[1];
@@ -28,8 +28,8 @@ FracLand::FracLand(Point vertices[3], int lod, float roughConst,
 }
 
 FracLand::FracLand(const Point& v1, const Point& v2, const Point& v3, int lod,
-		float roughConst, CoordMapper* texMapper, Material* material) :
-		Solid(texMapper, material), lod(lod), roughConst(roughConst) {
+		float roughConst, float height, CoordMapper* texMapper, Material* material) :
+		Solid(texMapper, material), lod(lod), roughConst(roughConst), height(height) {
 	edges[0] = v1;
 	edges[1] = v2;
 	edges[2] = v3;
@@ -46,21 +46,21 @@ float noiseFrac(int x, int y, int z) {
 
 BBox FracLand::getBounds() const {
 	float minX = std::min(edges[0].x, std::min(edges[1].x, edges[2].x));
-	float minY = std::min(edges[0].y, std::min(edges[1].y, edges[2].y)) - roughConst * lod;
+	float minY = std::min(edges[0].y, std::min(edges[1].y, edges[2].y)) - height * lod;
 	float minZ = std::min(edges[0].z, std::min(edges[1].z, edges[2].z));
 
 	float maxX = std::max(edges[0].x, std::max(edges[1].x, edges[2].x));
-	float maxY = std::max(edges[0].y, std::max(edges[1].y, edges[2].y))	+ roughConst * lod;
+	float maxY = std::max(edges[0].y, std::max(edges[1].y, edges[2].y))	+ height * lod;
 	float maxZ = std::max(edges[0].z, std::max(edges[1].z, edges[2].z));
 	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 
 Intersection FracLand::intersect(const Ray& ray,
 		float previousBestDistance) const {
-//	if (this->getBounds().intersect(ray).first
-//			> this->getBounds().intersect(ray).second) {
-//		return Intersection::failure();
-//	} else {
+	if (this->getBounds().intersect(ray).first
+			> this->getBounds().intersect(ray).second) {
+		return Intersection::failure();
+	} else {
 		if (lod == 0) {
 			Triangle tria(edges[0], edges[1], edges[2], texMapper, material);
 			return tria.intersect(ray, previousBestDistance);
@@ -68,17 +68,17 @@ Intersection FracLand::intersect(const Ray& ray,
 			Point m1 = Point((Float4(edges[0]) + Float4(edges[1])) * 0.5);
 			Point m2 = Point((Float4(edges[1]) + Float4(edges[2])) * 0.5);
 			Point m3 = Point((Float4(edges[2]) + Float4(edges[0])) * 0.5);
-			m1.y = m1.y + noiseFrac(m1.x, m1.y, m1.z) * roughConst;
-			m2.y = m2.y + noiseFrac(m2.x, m2.y, m2.z) * roughConst;
-			m3.y = m3.y + noiseFrac(m3.x, m3.y, m3.z) * roughConst;
+			m1.y = m1.y + noiseFrac(m1.x, m1.y, m1.z) * height;
+			m2.y = m2.y + noiseFrac(m2.x, m2.y, m2.z) * height;
+			m3.y = m3.y + noiseFrac(m3.x, m3.y, m3.z) * height;
 
-			FracLand f1(edges[0], m1, m3, lod - 1, roughConst, texMapper,
+			FracLand f1(edges[0], m1, m3, lod - 1, roughConst, roughConst * height, texMapper,
 					material);
-			FracLand f2(m1, edges[1], m2, lod - 1, roughConst, texMapper,
+			FracLand f2(m1, edges[1], m2, lod - 1, roughConst, roughConst * height, texMapper,
 					material);
-			FracLand f3(m2, edges[2], m3, lod - 1, roughConst, texMapper,
+			FracLand f3(m2, edges[2], m3, lod - 1, roughConst, roughConst * height, texMapper,
 					material);
-			FracLand f4(m1, m2, m3, lod - 1, roughConst, texMapper, material);
+			FracLand f4(m1, m2, m3, lod - 1, roughConst, roughConst * height, texMapper, material);
 
 			Intersection i1 = f1.intersect(ray, previousBestDistance);
 			Intersection i2 = f2.intersect(ray, previousBestDistance);
@@ -123,7 +123,7 @@ Intersection FracLand::intersect(const Ray& ray,
 			min.solid = this;
 			return min;
 		}
-//	}
+	}
 }
 
 Point FracLand::sample() const {
