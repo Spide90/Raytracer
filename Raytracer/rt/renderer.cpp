@@ -29,10 +29,11 @@ Renderer::Renderer(Camera* camera, Integrator* integrator) :
 }
 
 void Renderer::setSamples(uint samples) {
-	//TODO implement me
+	sampleCount = samples;
 }
 
 void Renderer::render(Image& image) {
+	//TODO use samples!
 	std::cout << "start rendering image\n";
 	uint width = image.width();
 	uint height = image.height();
@@ -54,28 +55,5 @@ void Renderer::test_render1(Image& image) {
 void Renderer::test_render2(Image& image) {
 
 }
-/*
-void Renderer::test_render1(Image& image) {
-	uint width = image.width();
-	uint height = image.height();
-	for (uint y = 0; y < height; y++) {
-		for (uint x = 0; x < width; x++) {
-			image(x, y) = a1computeColor(x, y, width, height);
-		}
-	}
-}
 
-void Renderer::test_render2(Image& image) {
-	uint width = image.width();
-	uint height = image.height();
-	for (uint y = 0; y < height; y++) {
-		for (uint x = 0; x < width; x++) {
-			float pointX = 2 * ((x + 0.5) / width) - 1;
-			float pointY = 2 * ((y + 0.5) / height) - 1;
-			//printf("x: %f, y: %f", pointX, pointY);
-			image(x, y) = a2computeColor(camera->getPrimaryRay(pointX, pointY));
-		}
-	}
-}
-*/
 }

@@ -18,6 +18,8 @@ void a_instancing();
 
 void a_csg();
 
+void a_distributed();
+
 void a_rendComp();
 
 #define TEST_CAMERA false
@@ -29,7 +31,9 @@ void a_rendComp();
 #define TEST_MAPPERS false
 #define TEST_INSTANCING false
 #define TEST_CSG false
-#define REND_COMP true
+#define TEST_DISTRIBUTED true
+
+#define REND_COMP false
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -76,6 +80,11 @@ int main(int argc, char* argv[]) {
 		std::cout << "starting csg tests\n";
 		a_csg();
 		std::cout << "csg tests finished\n";
+	}
+	if (TEST_DISTRIBUTED) {
+		std::cout << "starting distributed tests\n";
+		a_distributed();
+		std::cout << "distributed tests finished\n";
 	}
 	if (REND_COMP) {
 		std::cout << "starting rendering competition\n";
