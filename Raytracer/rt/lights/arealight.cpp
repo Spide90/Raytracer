@@ -32,7 +32,7 @@ RGBColor AreaLight::getIntensity(const LightHit& irr) const {
 	//TODO replace dummy values!
 	RGBColor intensity = source->material->getEmission(Point(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
 	//LOG_DEBUG("intensity: r:" << intensity.r << " g: " << intensity.g << " b: " << intensity.b);
-	return intensity;
+	return intensity / (irr.distance * irr.distance / source->getArea());
 }
 
 }

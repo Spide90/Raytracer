@@ -46,8 +46,9 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			for (int i = 0; i < world->light.size(); i++) {
 				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
+					//move along the normal direction?
 					Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
-					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
+					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance + EPSILON);
 					if (!shadowRayIntersection) {
 						RGBColor reflectance;
 						if (intersection.solid->material == nullptr) {
@@ -64,7 +65,6 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			}
 			break;
 		case Material::SAMPLING_ALL:
-			LOG_DEBUG("sampling all");
 			sample = intersection.solid->material->getSampleReflectance(intersection.hitPoint(), intersection.normalVector,
 					-intersection.ray.d);
 			sampleRay = Ray(intersection.hitPoint() + EPSILON * sample.direction, sample.direction);
@@ -77,7 +77,6 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 
 			break;
 		case Material::SAMPLING_SECONDARY:
-			LOG_DEBUG("sampling all");
 			for (int i = 0; i < world->light.size(); i++) {
 				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
