@@ -29,7 +29,6 @@ PerspectiveCamera::PerspectiveCamera(const Point& center, const Vector& forw, co
 
 Ray PerspectiveCamera::getPrimaryRay(float x, float y) const {
 	Ray ray(center, (forward + (x * imageX) + (y * imageY)).normalize());
-	//LOG_DEBUG("ray direction: " << ray.d.x << ", " << ray.d.y << ", " << ray.d.z)
 	return ray;
 }
 

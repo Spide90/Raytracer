@@ -12,6 +12,8 @@ public:
 	Point center;
 	Vector forward;
 	Vector up;
+	Vector imageX;
+	Vector imageY;
 	float verticalOpeningAngle;
 	float horizontalOpeningAngle;
 	float focalDistance;
