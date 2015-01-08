@@ -17,7 +17,7 @@
 
 namespace rt {
 
-#define EPSILON 0.000001
+#define EPSILON 0.00001
 #define MAX_RECURSION_DEPTH 6
 
 int recursionDepth = 0;
@@ -46,9 +46,9 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			for (int i = 0; i < world->light.size(); i++) {
 				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-					//move along the normal direction?
-					Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
-					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance + EPSILON);
+					Ray shadow = Ray(intersection.hitPoint() + EPSILON * intersection.normal(), shadowRay.direction);
+					//TODO more epsilon?
+					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance - 2 * EPSILON);
 					if (!shadowRayIntersection) {
 						RGBColor reflectance;
 						if (intersection.solid->material == nullptr) {
@@ -80,7 +80,7 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			for (int i = 0; i < world->light.size(); i++) {
 				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-					Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
+					Ray shadow = Ray(intersection.hitPoint() + EPSILON * intersection.normal(), shadowRay.direction);
 					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 					if (!shadowRayIntersection) {
 						RGBColor reflectance = intersection.solid->material->getReflectance(
