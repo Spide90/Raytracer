@@ -19,6 +19,8 @@
 #include <rt/lights/pointlight.h>
 #include <rt/lights/spotlight.h>
 
+#include <rt/coordmappers/plane.h>
+
 #include <rt/materials/combine.h>
 #include <rt/materials/dummy.h>
 #include <rt/materials/flatmaterial.h>
@@ -45,16 +47,23 @@ void a_rendComp() {
 	PerspectiveCamera cam(Point(0.f, 50.f, -20.f), Vector(0, 0, 1),
 			Vector(0, 1, 0), 0.686f, 0.686f);
 
-	ImageTexture* landsTex = new ImageTexture("models/17_DIFFUSE.png",
-			ImageTexture::REPEAT, ImageTexture::BILINEAR);
-	FlatMaterial* lands = new FlatMaterial(landsTex);
+//	ImageTexture* landsTex = new ImageTexture("models/17_DIFFUSE.png",
+//			ImageTexture::REPEAT, ImageTexture::BILINEAR);
+//	FlatMaterial* lands = new FlatMaterial(landsTex);
 
-//	ConstantTexture* lambTex = new ConstantTexture(
-//			RGBColor(253.f / 255.f, 184.f / 255.f, 19.f / 255.f));
-//	LambertianMaterial* lamb = new LambertianMaterial(lambTex, nullptr);
+	DummyMaterial* dummy = new DummyMaterial();
+
+	ConstantTexture* lambTex = new ConstantTexture(
+			RGBColor(253.f / 255.f, 184.f / 255.f, 19.f / 255.f));
+	LambertianMaterial* lamb = new LambertianMaterial(lambTex, nullptr);
 
 	ConstantTexture* seaTex = new ConstantTexture(
 			RGBColor(19.f / 255.f, 19.f / 255.f, 224.f / 255.f));
+	LambertianMaterial* sea = new LambertianMaterial(seaTex, seaTex);
+	scene->add(
+			new InfinitePlane(Point(0.0f, 30.0f, 0.018), Vector(0.f, 1.f, 0.f),
+					nullptr, sea));
+
 //	PerlinTexture* seaTex = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f),
 //			RGBColor(0.2f, 0.2f, 0.8f));
 //	seaTex->addOctave(0.5f, 1.0f);
@@ -62,7 +71,6 @@ void a_rendComp() {
 //	seaTex->addOctave(0.125f, 4.0f);
 //	seaTex->addOctave(0.125f, 8.0f);
 //	PhongMaterial* sea = new PhongMaterial(seaTex, 10.f);
-	LambertianMaterial* sea = new LambertianMaterial(seaTex, seaTex);
 
 //	Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
 //	Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
@@ -73,16 +81,22 @@ void a_rendComp() {
 //	combined->add(phong, 0.62f);
 //	combined->add(mirror, 0.18f);
 
-	DummyMaterial* dummy = new DummyMaterial();
-
 	scene->add(
-			new Sphere(Point(-400.f, 500.f, 2000.f), 100.f, nullptr, dummy));
+			new Sphere(Point(-18000.f, 22000.f, 100000.f), 5000.f, nullptr, dummy));
+	world.light.push_back(
+			new PointLight(Point(-18000.f, 22000.f, 94500.f),
+					RGBColor(253.f * 3000000.f / 255.f, 184.f * 3000000.f / 255.f,
+							19.f * 3000000.f / 255.f)));
+
+	ConstantTexture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
+	ConstantTexture* landTex = new ConstantTexture(
+			RGBColor(139.f / 255.f, 69.f / 255.f, 19.f / 255.f));
+	LambertianMaterial landscape(blacktex, landTex);
 	scene->add(
 			new FracLand(Point(800.f, 0.f, 1000.f), Point(-800.f, 0.f, 1000.f),
-					Point(0.f, 0.f, 0.f), 12, 0.55, 125.f, nullptr, nullptr));
-	scene->add(
-			new InfinitePlane(Point(0.0f, 30.0f, 0.018), Vector(0.f, 1.f, 0.f),
-					nullptr, sea));
+					Point(0.f, 0.f, 0.f), 12, 0.55, 125.f,
+					new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
+							Vector(-1.f, 0.0f, 1.f)), &landscape));
 
 	DummyMaterial* moonMat = new DummyMaterial();
 	ConstructiveSolidGeometry* csg1 = new ConstructiveSolidGeometry(
@@ -95,26 +109,17 @@ void a_rendComp() {
 			new SpotLight(Point(200.f, 0.f, 2000.f), Vector(1.0f, 4.0f, 0.0f),
 					pi / 3, 8.0f,
 					RGBColor(490.f * 490.f, 490.f * 490.f, 490.f * 490.f)));
-//	world.light.push_back(
-//			new PointLight(Point(-400.f, 500.f, 1899.f),
-//					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
-//	world.light.push_back(
-//			new PointLight(Point(-390.f, 500.f, 1899.f),
-//					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
-//	world.light.push_back(
-//			new PointLight(Point(-380.f, 500.f, 1899.f),
-//					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
-//	world.light.push_back(
-//			new PointLight(Point(-370.f, 500.f, 1899.f),
-//					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
-//	world.light.push_back(
-//			new PointLight(Point(-360.f, 500.f, 1899.f),
-//					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
 	world.light.push_back(
 			new PointLight(Point(-350.f, 500.f, 1899.f),
-					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f  / 255.f, 19.f * 1000.f  / 255.f)));
+					RGBColor(253.f * 1000.f / 255.f, 184.f * 1000.f / 255.f,
+							19.f * 1000.f / 255.f)));
 
-//	world.light.push_back(new DirectionalLight(Vector(0.f, -100.f, 100.f), RGBColor(253.f/ 255.f, 184.f / 255.f, 19.f / 255.f)));
+	world.light.push_back(
+			new PointLight(Point(0.f, 1000.f, 0.f),
+					RGBColor(253.f * 3000000.f / 255.f, 253.f * 3000000.f / 255.f,
+							253.f * 3000000.f / 255.f)));
+
+//	world.light.push_back(new DirectionalLight(Vector(0.f, -100.f, 100.f), RGBColor(253.f/ 255.f, 253.f / 255.f, 253.f / 255.f)));
 
 	world.scene = scene;
 	RayTracingIntegrator integrator(&world);
