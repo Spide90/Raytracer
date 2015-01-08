@@ -20,12 +20,13 @@
 #include <iostream>
 
 #include <rt/integrators/integrator.h>
+#include <core/random.h>
 
 namespace rt {
 
 Renderer::Renderer(Camera* camera, Integrator* integrator) :
 		camera(camera), integrator(integrator) {
-
+	sampleCount = 1;
 }
 
 void Renderer::setSamples(uint samples) {
@@ -39,15 +40,33 @@ void Renderer::render(Image& image) {
 	uint height = image.height();
 	for (uint y = 0; y < height; y++) {
 		for (uint x = 0; x < width; x++) {
-			float pointX = 2 * ((x + 0.5) / width) - 1;
-			float pointY = 2 * ((y + 0.5) / height) - 1;
-			Ray ray = camera->getPrimaryRay(pointX, pointY);
-			image(x, y) = integrator->getRadiance(ray);
+			if (sampleCount > 1) {
+				//supersampling
+				RGBColor averageColor = RGBColor::rep(0);
+				for (int sample = 0; sample < sampleCount; sample++) {
+					float sampleX = x + random();
+					float sampleY = y + random();
+					float pointX = 2 * ((sampleX + 0.5) / width) - 1;
+					float pointY = 2 * ((sampleY + 0.5) / height) - 1;
+					Ray ray = camera->getPrimaryRay(pointX, pointY);
+					averageColor = averageColor + integrator->getRadiance(ray);
+				}
+				image(x, y) = averageColor / sampleCount;
+			} else {
+				//normal raytracing
+				float pointX = 2 * ((x + 0.5) / width) - 1;
+				float pointY = 2 * ((y + 0.5) / height) - 1;
+				Ray ray = camera->getPrimaryRay(pointX, pointY);
+				image(x, y) = integrator->getRadiance(ray);
+			}
 		}
 	}
 	std::cout << "image complete\n";
 
 }
+
+
+
 void Renderer::test_render1(Image& image) {
 
 }

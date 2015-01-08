@@ -13,6 +13,8 @@
 #include <rt/bbox.h>
 #include <math.h>
 
+#include <core/random.h>
+
 namespace rt {
 
 Triangle::Triangle(Point vertices[3], CoordMapper* texMapper,
@@ -38,9 +40,9 @@ BBox Triangle::getBounds() const {
 	float minY = std::min(edges[0].y, std::min(edges[1].y, edges[2].y));
 	float minZ = std::min(edges[0].z, std::min(edges[1].z, edges[2].z));
 
-	float maxX = std::max(edges[0].x, std::max(edges[1].x, edges[2].x ));
-	float maxY = std::max(edges[0].y, std::max(edges[1].y, edges[2].y ));
-	float maxZ = std::max(edges[0].z, std::max(edges[1].z, edges[2].z ));
+	float maxX = std::max(edges[0].x, std::max(edges[1].x, edges[2].x));
+	float maxY = std::max(edges[0].y, std::max(edges[1].y, edges[2].y));
+	float maxZ = std::max(edges[0].z, std::max(edges[1].z, edges[2].z));
 	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 
@@ -75,9 +77,10 @@ Intersection Triangle::intersect(const Ray& ray,
 			float S2 = cross(vz, vx).length() / 2;
 			float S1 = cross(vy, vz).length() / 2;
 
-			float S = cross(edges[0] - edges[1], edges[0] - edges[2]).length() / 2;
+			float S = cross(edges[0] - edges[1], edges[0] - edges[2]).length()
+					/ 2;
 
-			Point hitPoint(S1/S, S2/S, S3/S);
+			Point hitPoint(S1 / S, S2 / S, S3 / S);
 
 			intersection.localPoint = hitPoint;
 
@@ -89,7 +92,13 @@ Intersection Triangle::intersect(const Ray& ray,
 }
 
 Point Triangle::sample() const {
-
+	//http://www.cs.princeton.edu/~funk/tog02.pdf
+	float random1 = random();
+	float random2 = random();
+	return Point(
+			(1 - sqrtf(random1)) * Float4(edges[0])
+					+ (sqrtf(random1) * (1 - random2)) * Float4(edges[1])
+					+ (sqrtf(random1) * random2) * Float4(edges[2]));
 }
 
 float Triangle::getArea() const {

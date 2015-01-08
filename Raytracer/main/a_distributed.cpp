@@ -19,6 +19,8 @@
 
 #include <rt/lights/pointlight.h>
 
+#include <rt/integrators/raytrace.h>
+
 using namespace rt;
 
 namespace {
@@ -81,6 +83,7 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
     world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
     RecursiveRayTracingIntegrator integrator(&world);
+    //RayTracingIntegrator integrator(&world);
 
     Renderer engine(cam, &integrator);
     if (numSamples>1)
@@ -104,7 +107,7 @@ void a_distributed() {
     Material* sphereMaterial2 = new GlassMaterial(2.0f);
 
     a9renderCornellbox(0.001f, "a9-1.png", cam, sphereMaterial1, floorMaterial1, 30);
-    a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
-    a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
-    a9renderCornellbox(0.001f, "a9-4.png", dofcam, sphereMaterial2, floorMaterial2, 1000);
+    //a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
+    //a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
+    //a9renderCornellbox(0.001f, "a9-4.png", dofcam, sphereMaterial2, floorMaterial2, 1000);
 }

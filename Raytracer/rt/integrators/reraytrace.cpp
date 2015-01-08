@@ -26,19 +26,36 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);
 	if (intersection) {
 		RGBColor color = RGBColor(0, 0, 0);
-		RGBColor emission = intersection.solid->material->getEmission(intersection.local(), intersection.normalVector, -ray.d);
+		Point local;
+		if (intersection.solid->texMapper == nullptr) {
+			local = WorldMapper(Float4::rep(1)).getCoords(intersection);
+		} else {
+			local = intersection.solid->texMapper->getCoords(intersection);
+		}
+		RGBColor emission;
+		if (intersection.solid->material == nullptr) {
+			float greyScale = fabs(dot(intersection.ray.d, intersection.normalVector));
+			emission = RGBColor(greyScale, greyScale, greyScale);
+		} else {
+			emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
+		}
 		Material::SampleReflectance sample;
 		Ray sampleRay;
 		switch (intersection.solid->material->useSampling()) {
 		case Material::SAMPLING_NOT_NEEDED:
 			for (int i = 0; i < world->light.size(); i++) {
-				LightHit shadowRay = world->light[i]->getLightHit(intersection.local());
+				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-					Ray shadow = Ray(intersection.local() + EPSILON * shadowRay.direction, shadowRay.direction);
+					Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
 					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 					if (!shadowRayIntersection) {
-						RGBColor reflectance = intersection.solid->material->getReflectance(intersection.local(),
-								intersection.normalVector, -ray.d, shadowRay.direction);
+						RGBColor reflectance;
+						if (intersection.solid->material == nullptr) {
+							reflectance = RGBColor(0.5, 0.5, 0.5);
+						} else {
+							reflectance = intersection.solid->material->getReflectance(local,
+									intersection.normalVector, -ray.d, shadowRay.direction);
+						}
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
 						RGBColor lightSourceColor = (reflectance * intensity);
 						color = color + lightSourceColor;
@@ -47,9 +64,10 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			}
 			break;
 		case Material::SAMPLING_ALL:
-			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
+			LOG_DEBUG("sampling all");
+			sample = intersection.solid->material->getSampleReflectance(intersection.hitPoint(), intersection.normalVector,
 					-intersection.ray.d);
-			sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
+			sampleRay = Ray(intersection.hitPoint() + EPSILON * sample.direction, sample.direction);
 			if (recursionDepth > MAX_RECURSION_DEPTH) {
 				recursionDepth = 0;
 			} else {
@@ -59,15 +77,16 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 
 			break;
 		case Material::SAMPLING_SECONDARY:
+			LOG_DEBUG("sampling all");
 			for (int i = 0; i < world->light.size(); i++) {
-				LightHit shadowRay = world->light[i]->getLightHit(intersection.local());
+				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-					Ray shadow = Ray(intersection.local() + EPSILON * shadowRay.direction, shadowRay.direction);
+					Ray shadow = Ray(intersection.hitPoint() + EPSILON * shadowRay.direction, shadowRay.direction);
 					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 					if (!shadowRayIntersection) {
-						RGBColor reflectance = intersection.solid->material->getReflectance(intersection.local(),
-								intersection.normalVector, -ray.d, shadowRay.direction);
-						RGBColor emission = intersection.solid->material->getEmission(intersection.local(),
+						RGBColor reflectance = intersection.solid->material->getReflectance(
+								intersection.hitPoint(), intersection.normalVector, -ray.d, shadowRay.direction);
+						RGBColor emission = intersection.solid->material->getEmission(local,
 								intersection.normalVector, -ray.d);
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
 						RGBColor lightSourceColor = (reflectance * intensity);
@@ -75,10 +94,10 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 					}
 				}
 			}
-			sample = intersection.solid->material->getSampleReflectance(intersection.local(), intersection.normalVector,
-					-intersection.ray.d);
+			sample = intersection.solid->material->getSampleReflectance(local,
+					intersection.normalVector, -intersection.ray.d);
 			if (sample.direction != Vector(0, 0, 1) && sample.reflectance != RGBColor(0.f, 0.f, 0.f)) {
-				sampleRay = Ray(intersection.local() + EPSILON * sample.direction, sample.direction);
+				sampleRay = Ray(intersection.hitPoint() + EPSILON * sample.direction, sample.direction);
 				if (recursionDepth > MAX_RECURSION_DEPTH) {
 					recursionDepth = 0;
 				} else {
