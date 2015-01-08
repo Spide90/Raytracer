@@ -32,8 +32,7 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 		if(intersection.solid->material == nullptr){
 			float greyScale = fabs(dot(intersection.ray.d, intersection.normalVector));
 			emission = RGBColor(greyScale, greyScale, greyScale);
-		}
-		else{
+		} else{
 			emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
 		}
 		for (int i = 0; i < world->light.size(); i++) {

@@ -12,6 +12,8 @@
 #include <rt/bbox.h>
 #include <core/point.h>
 
+#include <core/random.h>
+
 #include <stdio.h>
 
 namespace rt {
@@ -52,6 +54,10 @@ Intersection Quad::intersect(const Ray& ray, float previousBestDistance) const {
 }
 
 Point Quad::sample() const {
+	float random1 = random();
+	float random2 = random();
+
+	return origin + (random1 * span1) + (random2 * span2);
 
 }
 

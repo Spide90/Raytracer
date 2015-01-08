@@ -23,6 +23,7 @@
 #include <rt/materials/cookTorrance.h>
 
 #include <rt/integrators/recraytrace.h>
+#include <rt/integrators/raytrace.h>
 
 
 using namespace rt;
