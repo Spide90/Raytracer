@@ -23,7 +23,7 @@ FuzzyMirrorMaterial::FuzzyMirrorMaterial(float eta, float kappa,
 RGBColor FuzzyMirrorMaterial::getReflectance(const Point& texPoint,
 		const Vector& normal, const Vector& outDir, const Vector& inDir) const {
 	float e2_k2 = (eta * eta) + (kappa * kappa);
-	float cosine = dot(inDir, normal);
+	float cosine = fabs(dot(inDir, normal));
 	float cosine_2 = cosine * cosine;
 	float r_par_2 = (e2_k2 * cosine_2 - 2 * eta * cosine + 1)
 			/ (e2_k2 * cosine_2 + 2 * eta * cosine + 1);
@@ -42,43 +42,26 @@ RGBColor FuzzyMirrorMaterial::getEmission(const Point& texPoint,
 Material::SampleReflectance FuzzyMirrorMaterial::getSampleReflectance(
 		const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
-	Vector dir = (2 * dot(outDir, normal) * normal - outDir).normalize();
+	Vector dir = (2 * dot(outDir, normal) * normal - outDir);
+	Vector ndir;
 
-	float r1 = random(fuzzyAngle);
-	float r2 = random(sqrt(fuzzyAngle));
+	do{
+	float r1 = sqrt(random()) * tanf(fuzzyAngle);
+	float r2 = random() * M_PI * 2;
 
-	Point center = texPoint + dir;
+	float x = r1 * cosf(r2);
+	float y = r1 * sinf(r2);
 
-	Vector span1 = cross(outDir, normal).normalize();
-	Vector span2 = cross(outDir, span1).normalize();
+	Point center = texPoint + dir.normalize();
 
-	Point npoint = center + span1 * fuzzyAngle + span2 * sqrt(fuzzyAngle);
-	Vector ndir = npoint - texPoint;
+	Vector span1 = cross(dir, normal).normalize();
+	Vector span2 = cross(dir, span1).normalize();
 
-//	Vector axis = dir;
-//
-//	Matrix scaleMatrix(Float4(cosf(angle), 0, 0, 0), Float4(0, cosf(angle), 0, 0),
-//			Float4(0, 0, cosf(angle), 0), Float4(0, 0, 0, 1));
-//	Matrix rot1(Float4(0, -axis.z * sinf(angle), axis.y * sinf(angle), 0),
-//			Float4(axis.z * sinf(angle), 0, -axis.x * sinf(angle), 0),
-//			Float4(-axis.y * sinf(angle), axis.x * sinf(angle), 0, 0),
-//			Float4(0, 0, 0, 0));
-//	Matrix rot2(
-//			Float4(axis.x * axis.x * (1 - cosf(angle)),
-//					axis.x * axis.y * (1 - cosf(angle)),
-//					axis.x * axis.z * (1 - cosf(angle)), 0),
-//			Float4(axis.x * axis.y * (1 - cosf(angle)),
-//					axis.y * axis.y * (1 - cosf(angle)),
-//					axis.z * axis.y * (1 - cosf(angle)), 0),
-//			Float4(axis.x * axis.z * (1 - cosf(angle)),
-//					axis.y * axis.z * (1 - cosf(angle)),
-//					axis.z * axis.z * (1 - cosf(angle)), 0),
-//			Float4(0, 0, 0, 0));
-//	rot2 = rot2 * (1/(axis.length()*axis.length()));
-//	rot1 = rot1 * (1/axis.length());
-//	Matrix rot = scaleMatrix + (rot1 + rot2);
+	Point npoint = center + span1 * x + span2 * y;
+	ndir = (npoint - texPoint).normalize();
+	}while(dot(ndir, normal) <= 0);
 
-	return Material::SampleReflectance(dir,
+	return Material::SampleReflectance(ndir,
 			this->getReflectance(texPoint, normal, outDir, ndir));
 }
 
