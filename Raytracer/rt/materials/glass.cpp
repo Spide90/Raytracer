@@ -19,66 +19,6 @@ GlassMaterial::GlassMaterial(float eta) :
 RGBColor GlassMaterial::getReflectance(const Point& texPoint,
 		const Vector& normal, const Vector& outDir, const Vector& inDir) const {
 	return RGBColor::rep(1.f);
-
-//	Vector unormal = normal;
-//	float ueta = 1 / eta;
-//	float n1 = 1.f;
-//	float n2 = 1 / ueta;
-//
-//	float cosI = dot(inDir, unormal);
-//
-//	if (cosI > 0) {
-//		cosI = dot(inDir, -unormal);
-//		n2 = 1.f;
-//		n1 = 1 / ueta;
-//		ueta = 1 / ueta;
-//	}
-//
-//	float sinT2 = ueta * ueta * (1.f - cosI * cosI);
-//
-//	if (sinT2 > 1.f) {
-//		return RGBColor(0.f, 0.f, 0.f);
-//	}
-//
-//	float cosT = sqrtf(1.f - sinT2);
-//
-//	float rOrth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
-//	float rPar = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
-//
-//	float retCol = (rOrth * rOrth + rPar * rPar);
-//
-//	return RGBColor::rep(retCol);
-
-//	float cosI = dot(inDir, normal);
-//	float ueta = eta;
-//	Vector unormal = normal;
-//	float n1 = 1.f;
-//	float n2 = 1.f / ueta;
-//
-//	if(cosI < 0){
-//		unormal = -unormal;
-//		cosI = dot(inDir, unormal);
-//		n1 = 1 / ueta;
-//		n2 = 1.f;
-//		ueta = 1 / ueta;
-//	}
-//
-//	float sinI2 = ueta * ueta * (1 - cosI * cosI);
-//
-//	if(sinI2 > 1.f){
-//		return RGBColor(1.f, 1.f, 1.f);
-//	}
-//
-//	float cosT = sqrtf(1 - sinI2);
-//
-//	float r_Orth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
-//	float r_Par = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
-//
-//	float ret = (r_Orth * r_Orth + r_Par * r_Par) * 0.5;
-//
-//	return RGBColor(ret, ret, ret);
-
-//	return RGBColor(1.f, 1.f, 1.f);
 }
 
 RGBColor GlassMaterial::getEmission(const Point& texPoint, const Vector& normal,
@@ -89,45 +29,43 @@ RGBColor GlassMaterial::getEmission(const Point& texPoint, const Vector& normal,
 Material::SampleReflectance GlassMaterial::getSampleReflectance(
 		const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
-	float m_eta = eta;
-			Vector norm = normal;
-			float nInc = 1;
-			float nTrans = m_eta;
+	float ueta = 1.f / eta;
+	float nI = 1.f;
+	float nT = eta;
+	Vector unormal = normal;
 
-			float cosInc = dot(normal, -outDir);
-			float sinInc = sqrt(1 - cosInc * cosInc);
+	float cosI = dot(unormal, outDir.normalize());
+	if(cosI < 0.f){
+		unormal = -unormal;
+		nI = eta;
+		nT = 1.f;
+		ueta = eta;
+		cosI = -cosI;
+	}
 
-			if (cosInc < 0){ //angle greater 90°
-				norm = -normal;
-				nInc = m_eta;
-				nTrans = 1;
-				m_eta = 1 / m_eta;
-				cosInc = -cosInc;
-			}
+	float sinT = ueta * ueta * (1.f - cosI * cosI);
 
-			float sinTrans = sinInc * m_eta;
-			float cosTrans = sqrt(1 - sinTrans*sinTrans);
+	if(sinT > 1.f){
+		Vector ri = -outDir + 2 * dot(outDir, unormal)* unormal;
+		return SampleReflectance(ri.normalize(), RGBColor(1.f, 1.f, 1.f));
+	}
 
-			float rpar = (nTrans* cosInc - nInc * cosTrans) / (nTrans* cosInc + nInc * cosTrans);
-			float rort = (nInc * cosInc - nTrans * cosTrans) / (nInc * cosInc + nTrans * cosTrans);
+	float cosT = sqrtf(1.f - sinT);
 
-			float r = (rpar *rpar + rort*rort) / 2;
+	float rPar = (nT * cosI - nI * cosT) / (nT * cosI + nI * cosT);
+	float rOrt = (nI * cosI - nT * cosT) / (nI * cosI + nT * cosT);
 
+	float r = (rPar * rPar + rOrt * rOrt) / 2.f;
 
-			if (sinInc > (1/m_eta)){// totale innere Reflexion
-				Vector ri = -outDir + 2 * dot(outDir, norm)* norm;
-				return SampleReflectance(ri, RGBColor(1, 1, 1));
-			}
-
-			float rand = random();
-			if (rand < 0.5){ //reflection
-				Vector ri = -outDir + 2 * dot(outDir, normal)* normal;
-				return SampleReflectance(ri, RGBColor::rep(2*r));
-			}
-			else{
-				Vector trans = -outDir *m_eta + norm * (m_eta* cosInc - cosTrans);
-				return SampleReflectance(trans, RGBColor::rep((1-r)*2));
-			}
+	float blubb = random();
+	if (blubb < 0.5){ //reflection
+		Vector ri = -outDir + 2 * dot(outDir, unormal)* unormal;
+		return SampleReflectance(ri.normalize(), RGBColor::rep(2.f * r));
+	}
+	else{
+		Vector trans = -outDir * ueta + unormal * (ueta * cosI - cosT);
+		return SampleReflectance(trans.normalize(), RGBColor::rep((1.f - r) * 2.f));
+	}
 
 //	float ueta = eta;
 //	Vector unormal = normal;
