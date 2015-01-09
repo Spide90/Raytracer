@@ -25,12 +25,11 @@ RGBColor GlassMaterial::getReflectance(const Point& texPoint,
 	float n2 = 1.f / ueta;
 
 	if(cosI < 0){
-		LOG_DEBUG("test");
 		unormal = -unormal;
-		cosI = dot(outDir, unormal);
+		cosI = dot(inDir, unormal);
 		n1 = 1 / ueta;
 		n2 = 1.f;
-		ueta = 1 / eta;
+		ueta = 1 / ueta;
 	}
 
 	float sinI2 = ueta * ueta * (1 - cosI * cosI);
@@ -72,7 +71,7 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 		cosI = dot(outDir, unormal);
 		n1 = 1 / ueta;
 		n2 = 1.f;
-		ueta = 1 / eta;
+		ueta = 1 / ueta;
 	}
 
 	float sinI2 = ueta * ueta * (1 - cosI * cosI);
@@ -102,7 +101,7 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 				+ (ueta * cosI - cosT) * unormal).normalize();
 //		ret = 1 - ret;
 		return Material::SampleReflectance(dir,
-				2.f * (this->getReflectance(texPoint, unormal, outDir, dir)));
+				2.f * (this->getReflectance(texPoint, -unormal, outDir, dir)));
 	}
 //	return Material::SampleReflectance(dir,
 //			2.f * RGBColor(ret, ret, ret));
