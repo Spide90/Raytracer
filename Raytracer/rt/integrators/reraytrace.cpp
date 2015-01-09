@@ -18,7 +18,7 @@
 namespace rt {
 
 #define EPSILON 0.00001
-#define MAX_RECURSION_DEPTH 6
+#define MAX_RECURSION_DEPTH 100000
 
 int recursionDepth = 0;
 
@@ -65,7 +65,7 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			}
 			break;
 		case Material::SAMPLING_ALL:
-			sample = intersection.solid->material->getSampleReflectance(intersection.hitPoint(), intersection.normalVector,
+			sample = intersection.solid->material->getSampleReflectance(local, intersection.normalVector,
 					-intersection.ray.d);
 			sampleRay = Ray(intersection.hitPoint() + EPSILON * sample.direction, sample.direction);
 			if (recursionDepth > MAX_RECURSION_DEPTH) {
