@@ -16,25 +16,26 @@ GlassMaterial::GlassMaterial(float eta) :
 		eta(eta) {
 }
 
-RGBColor GlassMaterial::getReflectance(const Point& texPoint,
-		const Vector& normal, const Vector& outDir, const Vector& inDir) const {
+RGBColor GlassMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
+		const Vector& inDir) const {
 	Vector unormal = normal;
-	float ueta = eta;
+	float ueta = 1 / eta;
 	float n1 = 1.f;
 	float n2 = 1 / ueta;
 
 	float cosI = dot(inDir, unormal);
 
-	if(cosI > 0){
+	if (cosI > 0) {
 		cosI = dot(inDir, -unormal);
 		n2 = 1.f;
 		n1 = 1 / ueta;
+		ueta = 1 / ueta;
 	}
 
 	float sinT2 = ueta * ueta * (1.f - cosI * cosI);
 
-	if(sinT2 > 1.f){
-		return RGBColor(1.f, 1.f, 1.f);
+	if (sinT2 > 1.f) {
+		return RGBColor(0.f, 0.f, 0.f);
 	}
 
 	float cosT = sqrtf(1.f - sinT2);
@@ -42,7 +43,7 @@ RGBColor GlassMaterial::getReflectance(const Point& texPoint,
 	float rOrth = (n1 * cosI - n2 * cosT) / (n1 * cosI + n2 * cosT);
 	float rPar = (n2 * cosI - n1 * cosT) / (n2 * cosI + n1 * cosT);
 
-	float retCol = (rOrth * rOrth + rPar * rPar) / 2.f;
+	float retCol = (rOrth * rOrth + rPar * rPar);
 
 	return RGBColor::rep(retCol);
 
@@ -78,24 +79,25 @@ RGBColor GlassMaterial::getReflectance(const Point& texPoint,
 //	return RGBColor(1.f, 1.f, 1.f);
 }
 
-RGBColor GlassMaterial::getEmission(const Point& texPoint, const Vector& normal,
-		const Vector& outDir) const {
+RGBColor GlassMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
 	return RGBColor(0, 0, 0);
 }
 
-Material::SampleReflectance GlassMaterial::getSampleReflectance(
-		const Point& texPoint, const Vector& normal,
+Material::SampleReflectance GlassMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
-	float ueta = eta;
+	float ueta = 1 / eta;
 	Vector unormal = normal;
 	float blubb = random();
 
-	if(blubb < 0.5){
+	if (dot(outDir, unormal) < 0) {
+		//inside and go outside
+		unormal = -unormal;
+		ueta = 1 / ueta;
+	}
+
+	if (blubb < 0.5) {
 		//mirror
-		if(dot(outDir, unormal) < 0){
-			//inside and go outside
-			unormal = -unormal;
-		}
+
 		Vector dir = (2 * dot(outDir, unormal) * unormal - outDir).normalize();
 
 		float e2_k2 = (ueta * ueta);
@@ -104,30 +106,28 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 		float r_par_2 = (e2_k2 * cosine_2 - 2 * ueta * cosine + 1) / (e2_k2 * cosine_2 + 2 * ueta * cosine + 1);
 		float r_per_2 = (e2_k2 - 2 * ueta * cosine + cosine_2) / (e2_k2 + 2 * ueta * cosine + cosine_2);
 
-		RGBColor ret = 0.5 * RGBColor(r_par_2 + r_per_2, r_par_2 + r_per_2, r_par_2 + r_per_2);
+		RGBColor ret = RGBColor(r_par_2 + r_per_2, r_par_2 + r_per_2, r_par_2 + r_per_2);
 
 		return Material::SampleReflectance(dir, ret);
 
 //		return Material::SampleReflectance(dir, this->getReflectance(texPoint, unormal, outDir, dir));
-	}
-	else{
+	} else {
 		//refraction
 		float cosI = dot(outDir, unormal);
 
 		float sinT2 = ueta * ueta * (1.f - cosI * cosI);
 
 		//TIR
-		if(sinT2 > 1.f){
+		if (sinT2 > 1.f) {
 			return Material::SampleReflectance();
 		}
 
 		float cosT = sqrtf(1.f - sinT2);
 
-		Vector dir = (ueta * cosI - cosT)*unormal - ueta * outDir;
+		Vector dir = (ueta * cosI - cosT) * unormal - ueta * outDir;
 
-		return Material::SampleReflectance(dir, this->getReflectance(texPoint, unormal, outDir, dir));
+		return Material::SampleReflectance(dir, this->getReflectance(texPoint, normal, outDir, dir));
 	}
-
 
 //	Vector unormal = normal;
 //	Vector dir;

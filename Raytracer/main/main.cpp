@@ -1,4 +1,5 @@
 #include<iostream>
+#include <time.h>
 
 void a_cameras();
 
@@ -37,59 +38,81 @@ void a_rendComp();
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting camera tests\n";
 		a_cameras();
-		std::cout << "camera tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "camera tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_SOLID) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting solid tests\n";
 		a_solids();
-		std::cout << "solid tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "solid tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_INDEX) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting index tests\n";
 		a_indexing();
-		std::cout << "index tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "index tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_LIGHTING) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting lighting tests\n";
 		a_lighting();
-		std::cout << "lighting tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "lighting tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_MATERIAL) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting material tests\n";
 		a_materials();
-		std::cout << "material tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "material tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_TEXTURES) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting textures tests\n";
 		a_textures();
-		std::cout << "textures tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "textures tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_MAPPERS) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting mapper tests\n";
 		a_mappers();
-		std::cout << "mapper tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "mapper tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_INSTANCING) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting instancing tests\n";
 		a_instancing();
-		std::cout << "instancing tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "instancing tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_CSG) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting csg tests\n";
 		a_csg();
-		std::cout << "csg tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "csg tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_DISTRIBUTED) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting distributed tests\n";
 		a_distributed();
-		std::cout << "distributed tests finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "distributed tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (REND_COMP) {
+		unsigned int start = clock() / 1000;
 		std::cout << "starting rendering competition\n";
 		a_rendComp();
-		std::cout << "rendering competition finished\n";
+		unsigned int stop = clock() / 1000;
+		std::cout << "rendering competition finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	return 0;
 }
