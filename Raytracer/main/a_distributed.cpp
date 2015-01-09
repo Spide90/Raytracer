@@ -17,6 +17,10 @@
 #include <rt/materials/fuzzymirror.h>
 #include <rt/lights/arealight.h>
 
+#include <rt/textures/imagetex.h>
+#include <rt/materials/motionblur.h>
+
+
 #include <rt/lights/pointlight.h>
 
 #include <rt/integrators/raytrace.h>
@@ -83,7 +87,6 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
     world.light.push_back(new PointLight(Point(40*scale,159.99f*scale,249.5f*scale),RGBColor(5000.0f*scale*scale,30000.0f*scale*scale,5000.0f*scale*scale)));
 
     RecursiveRayTracingIntegrator integrator(&world);
-    //RayTracingIntegrator integrator(&world);
 
     Renderer engine(cam, &integrator);
     if (numSamples>1)
@@ -92,6 +95,43 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
     img.writePNG(filename);
 }
 
+}
+
+void renderMotionBlur() {
+
+	//right
+	Vector motionBlurDirection = Vector(0.1, 0, 0);
+
+	//up
+	//Vector motionBlurDirection = Vector(0, 0.25, 0);
+
+	//forward not visible because we look in this direction
+	//Vector motionBlurDirection = Vector(0, 0, 0.1);
+
+    Image img(400, 400);
+    World world;
+    SimpleGroup* scene = new SimpleGroup();
+
+    Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
+    Texture* stoneTex = new ImageTexture("models/stones_diffuse.png", ImageTexture::REPEAT, ImageTexture::NEAREST);
+
+    MotionBlurMaterial* mat = new MotionBlurMaterial(blacktex, stoneTex, motionBlurDirection);
+
+    scene->add(new Sphere(Point(0.f, 0.0f, 5.0f), 1.0f, nullptr, mat));
+
+    world.light.push_back(new PointLight(Point(0.f,0.f,0.f),RGBColor(40,40,40)));
+
+    world.scene = scene;
+
+    PerspectiveCamera* cam = new PerspectiveCamera(Point(0.f, 0.f, 0.f), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
+
+	RecursiveRayTracingIntegrator integrator(&world);
+
+	Renderer engine(cam, &integrator);
+	engine.setSamples(30);
+
+	engine.render(img);
+	img.writePNG("a9-5.png");
 }
 
 void a_distributed() {
@@ -106,8 +146,9 @@ void a_distributed() {
     Material* sphereMaterial1 = floorMaterial1;
     Material* sphereMaterial2 = new GlassMaterial(2.0f);
 
-//    a9renderCornellbox(0.001f, "a9-1.png", cam, sphereMaterial1, floorMaterial1, 30);
-    a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
-//    a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
+    a9renderCornellbox(0.001f, "a9-1.png", cam, sphereMaterial1, floorMaterial1, 30);
+//    a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
+    a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
 //    a9renderCornellbox(0.001f, "a9-4.png", dofcam, sphereMaterial2, floorMaterial2, 1000);
+    renderMotionBlur();
 }
