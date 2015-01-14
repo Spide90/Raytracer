@@ -33,23 +33,23 @@ BBox BumpMapper::getBounds() const {
 Intersection BumpMapper::intersect(const Ray& ray, float previousBestDistance) const {
 	Intersection intersection = triangleBase->intersect(ray, previousBestDistance);
 	if (intersection) {
-//		LOG_DEBUG("local x: " << intersection.local().x << " y " << intersection.local().y << " z " << intersection.local().z);
-		//calculate texture point, should be the same as in smooth triangle with baycentric coordinates (localpoint) with the texture edges
 		Float4 bumpMapPoint = Float4(intersection.local().x * textureEdges[0]) + Float4(intersection.local().y * textureEdges[1])
 				+ Float4(intersection.local().z * textureEdges[2]);
-		//LOG_DEBUG(intersection.localPoint.z * textureEdges[2].x);
-//		LOG_DEBUG("bump point x " << bumpMapPoint.x << " y " << bumpMapPoint.y << " z " << bumpMapPoint.z << " w " << bumpMapPoint.w);
 		bumpMapPoint.w = 1;
+
 		//compute color gradient of the texture
 		RGBColor colorX = bumpTexture->getColorDX(Point(bumpMapPoint));
 		RGBColor colorY = bumpTexture->getColorDY(Point(bumpMapPoint));
+
 		//these should be the texture base vectors mapped to world space
-		//TODO fix me
-		Vector worldX = (textureEdges[1] - textureEdges[0]) * colorX.r;
-		Vector worldY = (textureEdges[2] - textureEdges[0]) * colorY.g;
+//		Vector worldX = (textureEdges[1] - textureEdges[0]).normalize() * colorX.r;
+//		Vector worldY = (textureEdges[2] - textureEdges[0]).normalize() * colorY.g;
+		Vector worldX = (triangleBase->edges[1] - triangleBase->edges[0]) * colorX.r;
+		Vector worldY = (triangleBase->edges[2] - triangleBase->edges[0]) * colorY.g;
+
 		//pertub the normal with worldX, worldY and the color gradient
-		//TODO fix me
-		intersection.normalVector = cross(worldX, worldY) * bumpScale;
+//		intersection.normalVector = cross(worldX, worldY).normalize() * bumpScale;
+		intersection.normalVector = intersection.normalVector + worldX + worldY;
 	}
 	return intersection;
 }

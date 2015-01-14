@@ -37,7 +37,7 @@ void a_rendComp();
 #define TEST_INSTANCING false
 #define TEST_CSG false
 #define TEST_DISTRIBUTED false
-#define TEST_SMOOTH true
+#define TEST_SMOOTH false
 #define TEST_BUMP true
 
 #define REND_COMP false
@@ -115,17 +115,17 @@ int main(int argc, char* argv[]) {
 	}
 	if (TEST_SMOOTH) {
 		unsigned int start = clock() / 1000;
-		std::cout << "starting distributed tests\n";
+		std::cout << "starting smoothing tests\n";
 		a_smooth();
 		unsigned int stop = clock() / 1000;
-		std::cout << "distributed tests finished in " << ((stop - start) / 1000) << "seconds\n";
+		std::cout << "smoothing tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (TEST_BUMP) {
 		unsigned int start = clock() / 1000;
-		std::cout << "starting distributed tests\n";
+		std::cout << "starting bumping tests\n";
 		a_bumpmappers();
 		unsigned int stop = clock() / 1000;
-		std::cout << "distributed tests finished in " << ((stop - start) / 1000) << "seconds\n";
+		std::cout << "bumping tests finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (REND_COMP) {
 		unsigned int start = clock() / 1000;

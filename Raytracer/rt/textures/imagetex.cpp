@@ -170,29 +170,34 @@ RGBColor ImageTexture::getColorDX(const Point& coord) {
 //
 //	float derX = (coord.x + 1 / width)
 
-LOG_DEBUG("x: " << coord.x << ", y: " << coord.y);
+//LOG_DEBUG("x: " << coord.x << ", y: " << coord.y);
 	uint lowerX = floorf(coord.x * image.width());
 	uint upperX = ceilf(coord.x * image.width());
 	uint y = roundf(coord.y * (image.height() - 1));
 	//LOG_DEBUG("lowerX " << lowerX << " upperX " << upperX);
 	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
+	if(lowerX == upperX){
+		upperX++;
+	}
 	if (upperX == 0) {
 		return image(upperX, y);
 	}
 	if (lowerX >= image.width() - 1) {
-		//LOG_DEBUG("blubb");
 		return image(lowerX - 1, y);
 	}
 	RGBColor color = image(upperX, y) - image(lowerX, y);//lerp(image(lowerX, y), image(upperX, y), coord.x - lowerX);
-	//LOG_DEBUG("color " << color.r);
 	return color;
 }
+
 RGBColor ImageTexture::getColorDY(const Point& coord) {
 	uint lowerY = floorf(coord.y * image.height());
 	uint upperY = ceilf(coord.y * image.height());
 	uint x = roundf(coord.x * (image.width() - 1));
 	//LOG_DEBUG("lowerY " << lowerY << " upperY " << upperY);
 	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
+	if(lowerY == upperY){
+		upperY++;
+	}
 	if (upperY == 0) {
 		return image(x, upperY);
 	}

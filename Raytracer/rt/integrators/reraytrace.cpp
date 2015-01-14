@@ -69,7 +69,6 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			break;
 
 		case Material::SAMPLING_ALL:
-<<<<<<< HEAD
 //			for (int i = 0; i < world->light.size(); i++) {
 //				LightHit shadowRay = world->light[i]->getLightHit(intersection.hitPoint());
 //				if (dot(intersection.normalVector, shadowRay.direction) > 0) {
@@ -99,10 +98,9 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 //			}
 
 			sample = intersection.solid->material->getSampleReflectance(intersection.hitPoint(), intersection.normalVector,
-=======
-			sample = intersection.solid->material->getSampleReflectance(local, intersection.normalVector,
->>>>>>> branch 'master' of https://github.com/Spide90/Raytracer.git
-					-intersection.ray.d);
+										-intersection.ray.d);
+//			sample = intersection.solid->material->getSampleReflectance(local, intersection.normalVector,
+//					-intersection.ray.d);
 			sampleRay = Ray(intersection.hitPoint() + EPSILON * sample.direction, sample.direction);
 			if (recursionDepth > MAX_RECURSION_DEPTH) {
 				recursionDepth = 0.f;
