@@ -1,4 +1,4 @@
-# Compiled Object files
+﻿# Compiled Object files
 *.slo
 *.lo
 *.o
@@ -7,6 +7,8 @@
 .settings/
 
 *.png
+
+.cproject
 
 build/
 
