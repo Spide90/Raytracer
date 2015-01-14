@@ -17,8 +17,8 @@
 
 namespace rt {
 
-#define EPSILON 0.00001
-#define MAX_RECURSION_DEPTH 100000
+#define EPSILON 0.001
+#define MAX_RECURSION_DEPTH 6
 
 int recursionDepth = 0;
 
@@ -37,7 +37,8 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 			float greyScale = fabs(dot(intersection.ray.d, intersection.normalVector));
 			emission = RGBColor(greyScale, greyScale, greyScale);
 		} else {
-			emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
+			emission = intersection.solid->material->getEmission(intersection.point, intersection.normalVector, -ray.d);
+//			emission = intersection.solid->material->getEmission(local, intersection.normalVector, -ray.d);
 		}
 		Material::SampleReflectance sample;
 		Ray sampleRay;
@@ -54,8 +55,10 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 						if (intersection.solid->material == nullptr) {
 							reflectance = RGBColor(0.5, 0.5, 0.5);
 						} else {
-							reflectance = intersection.solid->material->getReflectance(local,
+							reflectance = intersection.solid->material->getReflectance(intersection.point,
 									intersection.normalVector, -ray.d, shadowRay.direction);
+//							reflectance = intersection.solid->material->getReflectance(local,
+//																intersection.normalVector, -ray.d, shadowRay.direction);
 						}
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
 						RGBColor lightSourceColor = (reflectance * intensity);
