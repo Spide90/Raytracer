@@ -26,7 +26,7 @@ void renderTesselatedSphere(float scale, const char* filename, bool smooth) {
     SimpleGroup scene;
     world.scene = &scene;
 
-    PerspectiveCamera cam(Point(278*scale, 273*scale, -800*scale), Vector(0, 0.5f, 1), Vector(0.1f, 1, 0), 0.686f, 0.686f);
+    Camera* cam = new PerspectiveCamera(Point(278*scale, 273*scale, -800*scale), Vector(0, 0.5f, 1), Vector(0.1f, 1, 0), 0.686f, 0.686f);
 
     if (smooth)
         makeTesselatedSmoothSphere(&scene, Point(300.f,720.f,25.f)*scale, 200.f*scale, 8, 16, nullptr, nullptr);
@@ -35,7 +35,7 @@ void renderTesselatedSphere(float scale, const char* filename, bool smooth) {
 
     RayCastingIntegrator integrator(&world);
 
-    Renderer engine(&cam, &integrator);
+    Renderer engine(cam, &integrator);
     engine.render(img);
     img.writePNG(filename);
 }

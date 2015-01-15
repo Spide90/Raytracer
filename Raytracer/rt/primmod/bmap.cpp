@@ -49,7 +49,7 @@ Intersection BumpMapper::intersect(const Ray& ray, float previousBestDistance) c
 
 		//pertub the normal with worldX, worldY and the color gradient
 //		intersection.normalVector = cross(worldX, worldY).normalize() * bumpScale;
-		intersection.normalVector = intersection.normalVector + worldX + worldY;
+		intersection.normalVector = (intersection.normalVector + worldX + worldY).normalize();
 	}
 	return intersection;
 }

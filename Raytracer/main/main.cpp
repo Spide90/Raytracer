@@ -37,7 +37,7 @@ void a_rendComp();
 #define TEST_INSTANCING false
 #define TEST_CSG false
 #define TEST_DISTRIBUTED false
-#define TEST_SMOOTH false
+#define TEST_SMOOTH true
 #define TEST_BUMP true
 
 #define REND_COMP false
