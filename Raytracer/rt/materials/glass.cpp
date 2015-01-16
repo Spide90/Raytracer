@@ -33,8 +33,9 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 	float nI = 1.f;
 	float nT = eta;
 	Vector unormal = normal;
+	Vector uout = outDir;
 
-	float cosI = dot(unormal, outDir.normalize());
+	float cosI = dot(unormal, uout.normalize());
 	if(cosI < 0.f){
 		unormal = -unormal;
 		nI = eta;
@@ -46,7 +47,7 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 	float sinT = ueta * ueta * (1.f - cosI * cosI);
 
 	if(sinT > 1.f){
-		Vector ri = -outDir + 2 * dot(outDir, unormal)* unormal;
+		Vector ri = -uout + 2 * dot(uout, unormal)* unormal;
 		return SampleReflectance(ri.normalize(), RGBColor(1.f, 1.f, 1.f));
 	}
 
@@ -59,11 +60,11 @@ Material::SampleReflectance GlassMaterial::getSampleReflectance(
 
 	float blubb = random();
 	if (blubb < 0.5){ //reflection
-		Vector ri = -outDir + 2 * dot(outDir, unormal)* unormal;
+		Vector ri = -uout + 2 * dot(uout, unormal)* unormal;
 		return SampleReflectance(ri.normalize(), RGBColor::rep(2.f * r));
 	}
 	else{
-		Vector trans = -outDir * ueta + unormal * (ueta * cosI - cosT);
+		Vector trans = -uout * ueta + unormal * (ueta * cosI - cosT);
 		return SampleReflectance(trans.normalize(), RGBColor::rep((1.f - r) * 2.f));
 	}
 }

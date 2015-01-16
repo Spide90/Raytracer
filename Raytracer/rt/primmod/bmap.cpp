@@ -27,7 +27,7 @@ BumpMapper::BumpMapper(Triangle* base, Texture* bumpmap, const Point& bv1,
 }
 
 BBox BumpMapper::getBounds() const {
-	triangleBase->getBounds();
+	return triangleBase->getBounds();
 }
 
 Intersection BumpMapper::intersect(const Ray& ray,
@@ -91,24 +91,8 @@ Intersection BumpMapper::intersect(const Ray& ray,
 			worldY = (intersection.hitPoint() - hitWorld).normalize();
 		}
 
-
-
-//		Vector worldX =
-//				(triangleBase->edges[1] - triangleBase->edges[0]).normalize();
-//		Vector worldY =
-//				(triangleBase->edges[2] - triangleBase->edges[0]).normalize();
-
-//		Vector newNormal = cross(worldX, worldY)
-//				+ colorX.r * cross(intersection.normal(), worldY)
-//				+ colorY.g * cross(intersection.normal(), worldX);
-//				+ colorX.r * colorY.g
-//						* cross(intersection.normal(), intersection.normal());
-
 		Vector newNormal = intersection.normal() + colorY.r * worldY - colorX.r * worldX;
 
-//pertub the normal with worldX, worldY and the color gradient
-//		intersection.normalVector = cross(worldX, worldY).normalize() * bumpScale;
-//		intersection.normalVector = (intersection.normalVector + worldX + worldY).normalize();
 		intersection.normalVector = newNormal.normalize();
 	}
 	return intersection;
