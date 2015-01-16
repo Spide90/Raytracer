@@ -45,18 +45,68 @@ Intersection BumpMapper::intersect(const Ray& ray,
 		RGBColor colorY = bumpTexture->getColorDY(Point(bumpMapPoint));
 
 		//these should be the texture base vectors mapped to world space
-//		Vector worldX = (textureEdges[1] - textureEdges[0]).normalize() * colorX.r;
-//		Vector worldY = (textureEdges[2] - textureEdges[0]).normalize() * colorY.g;
-		Vector worldX = (triangleBase->edges[1] - triangleBase->edges[0]).normalize();
-		Vector worldY = (triangleBase->edges[2] - triangleBase->edges[0]).normalize();
+		Vector worldX, worldY;
 
-		Vector newNormal = cross(worldX, worldY)
-				- colorX.r * cross(intersection.normal(), worldY)
-				+ colorY.g * cross(intersection.normal(), worldX);
+		{
+			Point bumpX = Point(bumpMapPoint);
+			bumpX.x += 1.f;
+
+			Vector vx = textureEdges[0] - bumpX;
+			Vector vy = textureEdges[1] - bumpX;
+			Vector vz = textureEdges[2] - bumpX;
+
+			float S3 = cross(vx, vy).length() / 2.f;
+			float S2 = cross(vz, vx).length() / 2.f;
+			float S1 = cross(vy, vz).length() / 2.f;
+
+			float S = cross(textureEdges[0] - textureEdges[1],
+					textureEdges[0] - textureEdges[2]).length() / 2.f;
+
+			Point hitPoint(S1 / S, S2 / S, S3 / S);
+
+			Point hitWorld = Point(Float4(triangleBase->edges[0]) * hitPoint.x + Float4(triangleBase->edges[1]) * hitPoint.y + Float4(triangleBase->edges[2]) * hitPoint.z);
+
+			worldX = (hitWorld - intersection.hitPoint()).normalize();
+		}
+
+		{
+			Point bumpY = Point(bumpMapPoint);
+			bumpY.y += 1.f;
+
+			Vector vx = textureEdges[0] - bumpY;
+			Vector vy = textureEdges[1] - bumpY;
+			Vector vz = textureEdges[2] - bumpY;
+
+			float S3 = cross(vx, vy).length() / 2.f;
+			float S2 = cross(vz, vx).length() / 2.f;
+			float S1 = cross(vy, vz).length() / 2.f;
+
+			float S = cross(textureEdges[0] - textureEdges[1],
+					textureEdges[0] - textureEdges[2]).length() / 2.f;
+
+			Point hitPoint(S1 / S, S2 / S, S3 / S);
+
+			Point hitWorld = Point(Float4(triangleBase->edges[0]) * hitPoint.x + Float4(triangleBase->edges[1]) * hitPoint.y + Float4(triangleBase->edges[2]) * hitPoint.z);
+
+			worldY = (intersection.hitPoint() - hitWorld).normalize();
+		}
+
+
+
+//		Vector worldX =
+//				(triangleBase->edges[1] - triangleBase->edges[0]).normalize();
+//		Vector worldY =
+//				(triangleBase->edges[2] - triangleBase->edges[0]).normalize();
+
+//		Vector newNormal = cross(worldX, worldY)
+//				+ colorX.r * cross(intersection.normal(), worldY)
+//				+ colorY.g * cross(intersection.normal(), worldX);
 //				+ colorX.r * colorY.g
 //						* cross(intersection.normal(), intersection.normal());
 
-		//pertub the normal with worldX, worldY and the color gradient
+		Vector newNormal = intersection.normal() + colorY.r * worldY - colorX.r * worldX;
+
+//pertub the normal with worldX, worldY and the color gradient
 //		intersection.normalVector = cross(worldX, worldY).normalize() * bumpScale;
 //		intersection.normalVector = (intersection.normalVector + worldX + worldY).normalize();
 		intersection.normalVector = newNormal.normalize();

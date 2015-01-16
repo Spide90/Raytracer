@@ -20,11 +20,13 @@ ImageTexture::ImageTexture() {
 	i = NEAREST;
 }
 
-ImageTexture::ImageTexture(const Image& image, BorderHandlingType bh, InterpolationType i) :
+ImageTexture::ImageTexture(const Image& image, BorderHandlingType bh,
+		InterpolationType i) :
 		image(image), bh(bh), i(i) {
 }
 
-ImageTexture::ImageTexture(const std::string& filename, BorderHandlingType bh, InterpolationType i) :
+ImageTexture::ImageTexture(const std::string& filename, BorderHandlingType bh,
+		InterpolationType i) :
 		bh(bh), i(i) {
 	image.readPNG(filename);
 }
@@ -38,26 +40,8 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 
 	switch (bh) {
 	case REPEAT:
-//		if (coord.x >= 0) {
-////			tu = coord.x * image.width() >= image.width() ?
-////					(int) (coord.x * image.width()) % image.width() : coord.x * image.width();
-//			tu = coord.x * image.width() >= image.width() ?
-//					(coord.x - floorf(coord.x)) * image.width() : coord.x * image.width();
-//		} else {
-////			tu = (int) (coord.x * image.width()) % image.width();
-//			tu = (coord.x - floorf(coord.x)) * image.width();
-//		}
-
 		tu = (coord.x - floorf(coord.x)) * image.width();
 		tv = (coord.y - floorf(coord.y)) * image.height();
-
-//		if (coord.y >= 0) {
-//			tv = coord.y * image.height() >= image.height() ?
-//					(int) (coord.y * image.height()) % image.height() : coord.y * image.height();
-//		} else {
-//			tv = (int) (coord.y * image.height()) % image.height();
-//		}
-
 		switch (i) {
 		case NEAREST:
 			tu = roundf(tu) == image.width() ? 0 : roundf(tu);
@@ -71,7 +55,8 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 			ftv = floorf(tv);
 			xW = tu - floorf(tu);
 			yW = tv - floorf(tv);
-			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv), image(ctu, ctv), xW, yW);
+			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv),
+					image(ctu, ctv), xW, yW);
 			return color;
 			break;
 		default:
@@ -80,12 +65,14 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 		break;
 	case CLAMP:
 		if (coord.x >= 0) {
-			tu = coord.x * image.width() >= image.width() ? (image.width() - 1) : coord.x * image.width();
+			tu = coord.x * image.width() >= image.width() ?
+					(image.width() - 1) : coord.x * image.width();
 		} else {
 			tu = 0;
 		}
 		if (coord.y >= 0) {
-			tv = coord.y * image.height() >= image.height() ? (image.height() - 1) : coord.y * image.height();
+			tv = coord.y * image.height() >= image.height() ?
+					(image.height() - 1) : coord.y * image.height();
 		} else {
 			tv = 0;
 		}
@@ -93,17 +80,20 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 		case NEAREST:
 			//correct!
 			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu);
-			tv = roundf(tv) == image.height() ? (image.height() - 1) : roundf(tv);
+			tv = roundf(tv) == image.height() ?
+					(image.height() - 1) : roundf(tv);
 			return image(tu, tv);
 			break;
 		case BILINEAR:
 			ctu = ceilf(tu) == image.width() ? (image.width() - 1) : ceilf(tu);
-			ctv = ceilf(tv) == image.height() ? (image.height() - 1) : ceilf(tv);
+			ctv = ceilf(tv) == image.height() ?
+					(image.height() - 1) : ceilf(tv);
 			ftu = floorf(tu);
 			ftv = floorf(tv);
 			xW = tu - floorf(tu);
 			yW = tv - floorf(tv);
-			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv), image(ctu, ctv), xW, yW);
+			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv),
+					image(ctu, ctv), xW, yW);
 			return color;
 			break;
 		default:
@@ -144,7 +134,8 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 //				return image(tu, tv);
 //				break;
 			tu = roundf(tu) == image.width() ? (image.width() - 1) : roundf(tu);
-			tv = roundf(tv) == image.height() ? (image.height() - 1) : roundf(tv);
+			tv = roundf(tv) == image.height() ?
+					(image.height() - 1) : roundf(tv);
 			return image(tu, tv);
 			break;
 		case BILINEAR:
@@ -159,7 +150,8 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 			xW = (tu - floorf(tu));
 			yW = (tv - floorf(tv));
 
-			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv), image(ctu, ctv), xW, yW);
+			color = lerp2d(image(ftu, ftv), image(ctu, ftv), image(ftu, ctv),
+					image(ctu, ctv), xW, yW);
 			return color;
 			break;
 		default:
@@ -172,58 +164,19 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 }
 
 RGBColor ImageTexture::getColorDX(const Point& coord) {
-//	uint width = image.width();
-//
-//	float derX = (coord.x + 1 / width)
-
-//LOG_DEBUG("x: " << coord.x << ", y: " << coord.y;
-
-//	float X = floorf(coord.x * image.width());
-//	float upperX = ceilf(coord.x * image.width());
-//	float Y = coord.y * image.height();
-//	//LOG_DEBUG("lowerX " << lowerX << " upperX " << upperX);
-//	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
-//	if(lowerX > 0.f){
-//		lowerX--;
-//	}
-//	if(lowerX == upperX){
-//		upperX++;
-//	}
-//	if (upperX == 0) {
-//		return image(upperX, y);
-//	}
-//	if (lowerX >= image.width() - 1) {
-//		return image(lowerX - 1, y);
-//	}
-//	RGBColor color = (image(upperX, y) - image(lowerX, y)) / 2.f;//lerp(image(lowerX, y), image(upperX, y), coord.x - lowerX);
-//	float X = coord.x * image.width();
-//	float Y = coord.y * image.height();
-	return (this->getColor(Point(coord.x + (1.f / image.width()), coord.y, 0.f)) - this->getColor(Point(coord.x - (1.f / image.width()), coord.y, 0.f))) / 2.f;
+	return (this->getColor(
+			Point(coord.x + (1.f / (2.f * image.width())), coord.y, 0.f))
+			- this->getColor(
+					Point(coord.x - (1.f / (2.f * image.width())), coord.y,
+							0.f))) / 1.6f;
 }
 
 RGBColor ImageTexture::getColorDY(const Point& coord) {
-//	uint lowerY = floorf(coord.y * image.height());
-//	uint upperY = ceilf(coord.y * image.height());
-//	uint x = roundf(coord.x * (image.width() - 1));
-	//LOG_DEBUG("lowerY " << lowerY << " upperY " << upperY);
-	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
-//	if(lowerY > 0.f){
-//		lowerY--;
-//	}
-//	if(lowerY == upperY){
-//		upperY++;
-//	}
-//	if (upperY == 0) {
-//		return image(x, upperY);
-//	}
-//	if (lowerY >= image.width() - 1) {
-//		return image(x, lowerY - 1);
-//	}
-//	return (image(x, upperY) - image(x, lowerY)) / 2.f;//lerp(image(x, lowerY), image(x, lowerY), coord.y - lowerY);
-
-//	float X = coord.x * image.width();
-//	float Y = coord.y * image.height();
-	return (this->getColor(Point(coord.x, coord.y + (1.f / image.height()), 0.f)) - this->getColor(Point(coord.x, coord.y - (1.f / image.height()), 0.f))) / 2.f;
+	return (this->getColor(
+			Point(coord.x, coord.y + (1.f / (2.f * image.height())), 0.f))
+			- this->getColor(
+					Point(coord.x, coord.y - (1.f / (2.f * image.height())),
+							0.f))) / 1.6f;
 }
 
 }
