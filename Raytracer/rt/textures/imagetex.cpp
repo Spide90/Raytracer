@@ -31,7 +31,6 @@ ImageTexture::ImageTexture(const std::string& filename, BorderHandlingType bh, I
 
 RGBColor ImageTexture::getColor(const Point& coord) {
 	float tu, tv, fl_x, fl_y, xW, yW;
-	//float ctu, ctv, ftu, ftv;
 	unsigned int ctu, ctv, ftu, ftv;
 	RGBColor color;
 	const float EPSILON = 1 / image.width();
@@ -39,19 +38,26 @@ RGBColor ImageTexture::getColor(const Point& coord) {
 
 	switch (bh) {
 	case REPEAT:
-		if (coord.x >= 0) {
-			tu = coord.x * image.width() >= image.width() ?
-					(int) (coord.x * image.width()) % image.width() : coord.x * image.width();
-		} else {
-			tu = (int) (coord.x * image.width()) % image.width();
-		}
+//		if (coord.x >= 0) {
+////			tu = coord.x * image.width() >= image.width() ?
+////					(int) (coord.x * image.width()) % image.width() : coord.x * image.width();
+//			tu = coord.x * image.width() >= image.width() ?
+//					(coord.x - floorf(coord.x)) * image.width() : coord.x * image.width();
+//		} else {
+////			tu = (int) (coord.x * image.width()) % image.width();
+//			tu = (coord.x - floorf(coord.x)) * image.width();
+//		}
 
-		if (coord.y >= 0) {
-			tv = coord.y * image.height() >= image.height() ?
-					(int) (coord.y * image.height()) % image.height() : coord.y * image.height();
-		} else {
-			tv = (int) (coord.y * image.height()) % image.height();
-		}
+		tu = (coord.x - floorf(coord.x)) * image.width();
+		tv = (coord.y - floorf(coord.y)) * image.height();
+
+//		if (coord.y >= 0) {
+//			tv = coord.y * image.height() >= image.height() ?
+//					(int) (coord.y * image.height()) % image.height() : coord.y * image.height();
+//		} else {
+//			tv = (int) (coord.y * image.height()) % image.height();
+//		}
+
 		switch (i) {
 		case NEAREST:
 			tu = roundf(tu) == image.width() ? 0 : roundf(tu);
@@ -170,41 +176,54 @@ RGBColor ImageTexture::getColorDX(const Point& coord) {
 //
 //	float derX = (coord.x + 1 / width)
 
-//LOG_DEBUG("x: " << coord.x << ", y: " << coord.y);
-	uint lowerX = floorf(coord.x * image.width());
-	uint upperX = ceilf(coord.x * image.width());
-	uint y = roundf(coord.y * (image.height() - 1));
-	//LOG_DEBUG("lowerX " << lowerX << " upperX " << upperX);
-	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
-	if(lowerX == upperX){
-		upperX++;
-	}
-	if (upperX == 0) {
-		return image(upperX, y);
-	}
-	if (lowerX >= image.width() - 1) {
-		return image(lowerX - 1, y);
-	}
-	RGBColor color = image(upperX, y) - image(lowerX, y);//lerp(image(lowerX, y), image(upperX, y), coord.x - lowerX);
-	return color;
+//LOG_DEBUG("x: " << coord.x << ", y: " << coord.y;
+
+//	float X = floorf(coord.x * image.width());
+//	float upperX = ceilf(coord.x * image.width());
+//	float Y = coord.y * image.height();
+//	//LOG_DEBUG("lowerX " << lowerX << " upperX " << upperX);
+//	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
+//	if(lowerX > 0.f){
+//		lowerX--;
+//	}
+//	if(lowerX == upperX){
+//		upperX++;
+//	}
+//	if (upperX == 0) {
+//		return image(upperX, y);
+//	}
+//	if (lowerX >= image.width() - 1) {
+//		return image(lowerX - 1, y);
+//	}
+//	RGBColor color = (image(upperX, y) - image(lowerX, y)) / 2.f;//lerp(image(lowerX, y), image(upperX, y), coord.x - lowerX);
+//	float X = coord.x * image.width();
+//	float Y = coord.y * image.height();
+	return (this->getColor(Point(coord.x + (1.f / image.width()), coord.y, 0.f)) - this->getColor(Point(coord.x - (1.f / image.width()), coord.y, 0.f))) / 2.f;
 }
 
 RGBColor ImageTexture::getColorDY(const Point& coord) {
-	uint lowerY = floorf(coord.y * image.height());
-	uint upperY = ceilf(coord.y * image.height());
-	uint x = roundf(coord.x * (image.width() - 1));
+//	uint lowerY = floorf(coord.y * image.height());
+//	uint upperY = ceilf(coord.y * image.height());
+//	uint x = roundf(coord.x * (image.width() - 1));
 	//LOG_DEBUG("lowerY " << lowerY << " upperY " << upperY);
 	//LOG_DEBUG("image width " << image.width() << " -1 " << image.width() - 1);
-	if(lowerY == upperY){
-		upperY++;
-	}
-	if (upperY == 0) {
-		return image(x, upperY);
-	}
-	if (lowerY >= image.width() - 1) {
-		return image(x, lowerY - 1);
-	}
-	return image(x, upperY) - image(x, lowerY);//lerp(image(x, lowerY), image(x, lowerY), coord.y - lowerY);
+//	if(lowerY > 0.f){
+//		lowerY--;
+//	}
+//	if(lowerY == upperY){
+//		upperY++;
+//	}
+//	if (upperY == 0) {
+//		return image(x, upperY);
+//	}
+//	if (lowerY >= image.width() - 1) {
+//		return image(x, lowerY - 1);
+//	}
+//	return (image(x, upperY) - image(x, lowerY)) / 2.f;//lerp(image(x, lowerY), image(x, lowerY), coord.y - lowerY);
+
+//	float X = coord.x * image.width();
+//	float Y = coord.y * image.height();
+	return (this->getColor(Point(coord.x, coord.y + (1.f / image.height()), 0.f)) - this->getColor(Point(coord.x, coord.y - (1.f / image.height()), 0.f))) / 2.f;
 }
 
 }
