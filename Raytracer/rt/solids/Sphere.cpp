@@ -38,21 +38,6 @@ BBox Sphere::getBounds() const {
 
 Intersection Sphere::intersect(const Ray& ray,
 		float previousBestDistance) const {
-//	float a = (ray.d.x * ray.d.x + ray.d.y * ray.d.y + ray.d.z * ray.d.z);
-//	float b = 2
-//			* (ray.d.x * (ray.o.x - center.x) + ray.d.y * (ray.o.y - center.y)
-//					+ ray.d.z * (ray.o.z - center.z));
-//	float c = (ray.o.x - center.x) * (ray.o.x - center.x)
-//			+ (ray.o.y - center.y) * (ray.o.y - center.y)
-//			+ (ray.o.z - center.z) * (ray.o.z - center.z)
-//			- (radius * radius);
-//
-//	float d = b*b - 4*a*c;
-//	if(d < 0.f){
-//		return Intersection::failure();
-//	}
-//	float t0 = (-b - sqrtf(d)) / (2*a);
-//	float t1 = (-b + sqrtf(d)) / (2*a);
 
 	float radius2 = radius * radius;
 	Vector l = center - ray.o;
@@ -70,19 +55,17 @@ Intersection Sphere::intersect(const Ray& ray,
 
 	float t = min(t0, t1);
 	float tMax = max(t0, t1);
-//
-//	float localX = ((ray.o + ray.d * t)-center).length();
-//	float localY = acosf((ray.o + ray.d * t).z / localX);
-//	float localZ = atanf((ray.o + ray.d * t).y / (ray.o + ray.d * t).x);
 
-//	Point local = Point(localX, localY, localZ);
+	if(t < 0.f){
+		t = tMax;
+	}
+	if(t < 0.f){
+		return Intersection::failure();
+	}
+
 	Point local = (ray.o + ray.d * t);
 
 	Vector normal = (local - center).normalize();
-
-//	if ((ray.o - center).length() < (radius + EPSILON)) {
-//		normal = -normal;
-//	}
 
 	if (t < previousBestDistance) {
 		return Intersection(t, ray, this, normal, local, tMax);
