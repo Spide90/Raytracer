@@ -16,7 +16,7 @@
 
 namespace rt {
 
-#define EPSILON 0.0001
+#define EPSILON 0.000001
 
 RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);

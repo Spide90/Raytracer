@@ -56,10 +56,10 @@ Intersection Sphere::intersect(const Ray& ray,
 	float t = min(t0, t1);
 	float tMax = max(t0, t1);
 
-	if(t < 0.f){
+	if(t <= 0.f){
 		t = tMax;
 	}
-	if(t < 0.f){
+	if(t <= 0.f){
 		return Intersection::failure();
 	}
 

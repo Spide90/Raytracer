@@ -36,11 +36,11 @@ void a_rendComp();
 #define TEST_MAPPERS false
 #define TEST_INSTANCING false
 #define TEST_CSG false
-#define TEST_DISTRIBUTED true
+#define TEST_DISTRIBUTED false
 #define TEST_SMOOTH false
 #define TEST_BUMP false
 
-#define REND_COMP false
+#define REND_COMP true
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {

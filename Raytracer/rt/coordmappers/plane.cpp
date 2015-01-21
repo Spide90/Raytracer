@@ -26,4 +26,3 @@ Point PlaneCoordMapper::getCoords(const Intersection& hit) const {
 }
 
 }
-
