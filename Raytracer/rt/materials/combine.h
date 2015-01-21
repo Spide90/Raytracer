@@ -10,7 +10,8 @@ namespace rt {
 class CombineMaterial : public Material {
 public:
 
-	std::vector<std::pair<Material*, float>> materials;
+	std::vector<std::pair<Material*, float>> noSampleMaterials;
+	std::vector<std::pair<Material*, float>> sampleMaterials;
 
     CombineMaterial();
     void add(Material* material, float weight);

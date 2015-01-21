@@ -34,7 +34,6 @@ void Renderer::setSamples(uint samples) {
 }
 
 void Renderer::render(Image& image) {
-	//TODO use samples!
 	std::cout << "start rendering image\n";
 	uint width = image.width();
 	uint height = image.height();
@@ -44,10 +43,10 @@ void Renderer::render(Image& image) {
 				//supersampling
 				RGBColor averageColor = RGBColor::rep(0);
 				for (int sample = 0; sample < sampleCount; sample++) {
-					float sampleX = x + random();
-					float sampleY = y + random();
-					float pointX = 2 * ((sampleX + 0.5) / width) - 1;
-					float pointY = 2 * ((sampleY + 0.5) / height) - 1;
+					float sampleX = x + random(2) - 1;
+					float sampleY = y + random(2) - 1;
+					float pointX = 2 * ((sampleX) / width) - 1;
+					float pointY = 2 * ((sampleY) / height) - 1;
 					Ray ray = camera->getPrimaryRay(pointX, pointY);
 					averageColor = averageColor + integrator->getRadiance(ray);
 				}

@@ -17,24 +17,33 @@ CombineMaterial::CombineMaterial() {
 }
 
 void CombineMaterial::add(Material* material, float weight) {
-	materials.push_back(std::make_pair(material, weight));
+	if (material->useSampling() == SAMPLING_ALL) {
+		sampleMaterials.push_back(std::make_pair(material, weight));
+	} else {
+		noSampleMaterials.push_back(std::make_pair(material, weight));
+	}
 }
 
 RGBColor CombineMaterial::getReflectance(const Point& texPoint, const Vector& normal, const Vector& outDir,
 		const Vector& inDir) const {
 	RGBColor color = RGBColor(0, 0, 0);
-	for (int i = 0; i < materials.size(); i++) {
-		if (materials[i].first->useSampling() != SAMPLING_ALL) {
-			color = color + materials[i].first->getReflectance(texPoint, normal, outDir, inDir) * materials[i].second;
-		}
+	for (int i = 0; i < noSampleMaterials.size(); i++) {
+		color = color
+				+ noSampleMaterials[i].first->getReflectance(texPoint, normal, outDir, inDir)
+						* noSampleMaterials[i].second;
 	}
 	return color;
 }
 
 RGBColor CombineMaterial::getEmission(const Point& texPoint, const Vector& normal, const Vector& outDir) const {
 	RGBColor color = RGBColor(0, 0, 0);
-	for (int i = 0; i < materials.size(); i++) {
-		color = color + materials[i].first->getEmission(texPoint, normal, outDir) * materials[i].second;
+	for (int i = 0; i < noSampleMaterials.size(); i++) {
+		color = color
+				+ noSampleMaterials[i].first->getEmission(texPoint, normal, outDir) * noSampleMaterials[i].second;
+	}
+	for (int i = 0; i < sampleMaterials.size(); i++) {
+		color = color
+				+ sampleMaterials[i].first->getEmission(texPoint, normal, outDir) * sampleMaterials[i].second;
 	}
 	return color;
 }
@@ -42,13 +51,10 @@ RGBColor CombineMaterial::getEmission(const Point& texPoint, const Vector& norma
 Material::SampleReflectance CombineMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
 	SampleReflectance sample = SampleReflectance();
-	for (int i = 0; i < materials.size(); i++) {
-		if (materials[i].first->useSampling() == SAMPLING_ALL) {
-			sample = materials[i].first->getSampleReflectance(texPoint, normal, outDir);
-			sample.reflectance = sample.reflectance * materials[i].second;
-			return sample;
-		}
-	}
+	uint random = rand() % sampleMaterials.size();
+	sample = sampleMaterials[random].first->getSampleReflectance(texPoint, normal, outDir);
+	sample.reflectance = sample.reflectance * sampleMaterials[random].second;
+	return sample;
 	return sample;
 }
 
