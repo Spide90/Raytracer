@@ -1,4 +1,4 @@
-#define DISABLE_COORDMAPPERS
+//#define DISABLE_COORDMAPPERS
 //#define DISABLE_SMOOTH_TRIANGLE
 //#define DISABLE_MATERIALS
 
@@ -380,21 +380,19 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                 break;
             }
             case Obj_MaterialLibrary: {
-#ifndef DISABLE_MATERIALS
                 std::string libname = fileline.fetchString();
                 loadOBJMat(matlib, path, libname);
-#endif
                 break;
             }
             case Obj_Material: {
-#ifndef DISABLE_MATERIALS
                 std::string matname = fileline.fetchString();
                 MatLib::iterator i = matlib->find(matname);
-                if (i != matlib->end())
-                    material = i->second;
-                else
+                if (i != matlib->end()) {
+                	material = i->second;
+                }
+                else {
                     material = nullptr;
-#endif
+                }
                 break;
             }
             case Obj_None: break; //empty line

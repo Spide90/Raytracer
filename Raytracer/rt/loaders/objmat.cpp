@@ -165,6 +165,7 @@ parse_err_found:
         std::cerr << "Error at line " << curLine << "in " << fullname <<std::endl;
     }
     matCreate(dest, material);
+    LOG_DEBUG("materials loaded: " << dest->size());
 }
 
 }
