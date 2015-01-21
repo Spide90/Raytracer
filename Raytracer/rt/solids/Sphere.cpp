@@ -15,9 +15,12 @@
 
 #include <stdio.h>
 
+#define EPSILON 0.0001
+
 namespace rt {
 
-Sphere::Sphere(const Point& center, float radius, CoordMapper* texMapper, Material* material) :
+Sphere::Sphere(const Point& center, float radius, CoordMapper* texMapper,
+		Material* material) :
 		center(center), radius(radius), Solid(texMapper, material) {
 
 }
@@ -33,7 +36,9 @@ BBox Sphere::getBounds() const {
 	return BBox(Point(minX, minY, minZ), Point(maxX, maxY, maxZ));
 }
 
-Intersection Sphere::intersect(const Ray& ray, float previousBestDistance) const {
+Intersection Sphere::intersect(const Ray& ray,
+		float previousBestDistance) const {
+
 	float radius2 = radius * radius;
 	Vector l = center - ray.o;
 	float angle = dot(l, ray.d);
@@ -47,10 +52,23 @@ Intersection Sphere::intersect(const Ray& ray, float previousBestDistance) const
 	float thc = sqrtf(radius2 - d2);
 	float t0 = angle - thc;
 	float t1 = angle + thc;
+
 	float t = min(t0, t1);
 	float tMax = max(t0, t1);
+
+	if(t < 0.f){
+		t = tMax;
+	}
+	if(t < 0.f){
+		return Intersection::failure();
+	}
+
+	Point local = (ray.o + ray.d * t);
+
+	Vector normal = (local - center).normalize();
+
 	if (t < previousBestDistance) {
-		return Intersection(t, ray, this, ((ray.o + ray.d * t)-center).normalize(), ray.o + t * ray.d, tMax);
+		return Intersection(t, ray, this, normal, local, tMax);
 	} else {
 		return Intersection::failure();
 	}
