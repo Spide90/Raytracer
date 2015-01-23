@@ -129,7 +129,7 @@ void FileLine::removeComments() {
 }
 
 void FileLine::skipWhitespace() {
-    while (str.c_str()[pos]==' ' || str.c_str()[pos]=='\t' || str.c_str()[pos]=='\n')   ++pos;
+    while (str.c_str()[pos]==' ' || str.c_str()[pos]=='\t' || str.c_str()[pos]=='\n' || str.c_str()[pos]=='\r')   ++pos;
 }
 
 bool FileLine::match(const char* reference) {
@@ -217,7 +217,7 @@ float FileLine::fetchFloat(float defaultv) {
 std::string FileLine::fetchString() {
     skipWhitespace();
     size_t start = pos;
-    while (str.c_str()[pos]!=' ' && str.c_str()[pos]!='\t' && str.c_str()[pos]!='\n')   ++pos;
+    while (str.c_str()[pos]!=' ' && str.c_str()[pos]!='\t' && str.c_str()[pos]!='\n' && str.c_str()[pos]!='\r')   ++pos;
     return str.substr(start, pos-start);
 }
 
@@ -312,26 +312,26 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                 release_assert(v[0].vidx != 0) << "Error in file " << fileline.filename << ":" << fileline.lineIdx << "." << fileline.pos << " : Vertex index cannot be 0";
                 if (v[0].vidx<0) v[0].vidx = vertices.size() - v[0].vidx; else --v[0].vidx;
                 if (v[0].tidx == 0) skiptex=true;
-                else if (v[0].tidx<0) v[0].tidx = texcoord.size() - v[0].tidx; else --v[0].tidx;
+                else if (v[0].tidx<0) v[0].tidx = texcoord.size() + v[0].tidx; else --v[0].tidx;
                 if (v[0].nidx == 0) skipnormal=true;
-                else if (v[0].nidx<0) v[0].nidx = normals.size() - v[0].nidx; else --v[0].nidx;
+                else if (v[0].nidx<0) v[0].nidx = normals.size() + v[0].nidx; else --v[0].nidx;
 
 
                 v[1] = fileline.fetchVertex();
                 release_assert(v[1].vidx != 0) << "Error in file " << fileline.filename << ":" << fileline.lineIdx << "." << fileline.pos << " : Vertex index cannot be 0";
-                if (v[1].vidx<0) v[1].vidx = vertices.size() - v[1].vidx; else --v[1].vidx;
+                if (v[1].vidx<0) v[1].vidx = vertices.size() + v[1].vidx; else --v[1].vidx;
                 if (v[1].tidx == 0) skiptex=true;
-                else if (v[1].tidx<0) v[1].tidx = texcoord.size() - v[1].tidx; else --v[1].tidx;
+                else if (v[1].tidx<0) v[1].tidx = texcoord.size() + v[1].tidx; else --v[1].tidx;
                 if (v[1].nidx == 0) skipnormal=true;
-                else if (v[1].nidx<0) v[1].nidx = normals.size() - v[1].nidx; else --v[1].nidx;
+                else if (v[1].nidx<0) v[1].nidx = normals.size() + v[1].nidx; else --v[1].nidx;
 
                 v[2] = fileline.fetchVertex();
                 release_assert(v[2].vidx != 0) << "Error in file " << fileline.filename << ":" << fileline.lineIdx << "." << fileline.pos << " : Vertex index cannot be 0";
                 if (v[2].vidx<0) v[2].vidx = vertices.size() - v[2].vidx; else --v[2].vidx;
                 if (v[2].tidx == 0) skiptex=true;
-                else if (v[2].tidx<0) v[2].tidx = texcoord.size() - v[2].tidx; else --v[2].tidx;
+                else if (v[2].tidx<0) v[2].tidx = texcoord.size() + v[2].tidx; else --v[2].tidx;
                 if (v[2].nidx == 0) skipnormal=true;
-                else if (v[2].nidx<0) v[2].nidx = normals.size() - v[2].nidx; else --v[2].nidx;
+                else if (v[2].nidx<0) v[2].nidx = normals.size() + v[2].nidx; else --v[2].nidx;
 
                 while(true) {
                     CoordMapper* mapper = nullptr;

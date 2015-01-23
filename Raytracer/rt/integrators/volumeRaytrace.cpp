@@ -1,11 +1,11 @@
 /*
- * raytrace.cpp
+ * volumeRaytrace.cpp
  *
- *  Created on: 18.11.2014
+ *  Created on: 22.01.2015
  *      Author: chris
  */
 
-#include <rt/integrators/raytrace.h>
+#include <rt/integrators/volumeRaytrace.h>
 #include <rt/integrators/integrator.h>
 #include <core/color.h>
 #include <rt/intersection.h>
@@ -18,7 +18,7 @@ namespace rt {
 
 #define EPSILON 0.000001
 
-RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
+RGBColor VolumeRaytracingIntegrator::getRadiance(const Ray& ray) const {
 	Intersection intersection = world->scene->intersect(ray);
 	if (intersection) {
 		RGBColor color = RGBColor(0, 0, 0);
@@ -49,22 +49,18 @@ RGBColor RayTracingIntegrator::getRadiance(const Ray& ray) const {
 								intersection.normalVector, -ray.d, shadowRay.direction);
 					}
 					RGBColor intensity = world->light[i]->getIntensity(shadowRay);
-					RGBColor lightSourceColor = (reflectance * intensity);
-					color = color + lightSourceColor;
+					RGBColor lightSourceColor = (reflectance * intensity); // * transmittance
+					//+(1 - transmittance) * fog;
+					color = (color + lightSourceColor);
 				}
 			}
 		}
-		/*
-		if (world->ambientLight) {
-			RGBColor reflectance = intersection.solid->material->getReflectance(local, intersection.normalVector, -ray.d,
-					intersection.normal());
-			RGBColor intensity = world->ambientLight->getIntensity(LightHit());
-			RGBColor lightSourceColor = (reflectance * intensity);
-			color = color + lightSourceColor;
-		}*/
-		return (color + emission);
+		RGBColor fog = world->fog->getColor(intersection.hitPoint(), intersection.normal(), Vector(0, 0, 0), Vector(0, 0, 0));
+		float transmittance = world->fog->transmittance(ray.o, intersection.hitPoint());
+		return (color + emission) * transmittance + (1 - transmittance) * fog;;
 	} else {
-		return RGBColor(0, 0, 0);
+		RGBColor fog = world->fog->getColor(intersection.hitPoint(), intersection.normal(), Vector(0, 0, 0), Vector(0, 0, 0));
+		return fog;
 	}
 }
 

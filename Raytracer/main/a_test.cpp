@@ -62,12 +62,12 @@ void a_test() {
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(0.f, 10.f, -50.f);
+	Point camPoint = Point(0.f, 10.f, -100.f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f);
 
 	MatLib materialLibrary;
-	loadOBJ(scene, "models/", "Tree_V10_Final.obj", &materialLibrary);
+	loadOBJ(scene, "models/plane/", "f14d.obj", &materialLibrary);
 
 	scene->rebuildIndex();
 
@@ -76,7 +76,7 @@ void a_test() {
 	world.light.push_back(new DirectionalLight(Vector(0, 0, 1), RGBColor(1, 1, 1)));
 
 	//RayCastingIntegrator integrator(&world);
-	//	RecursiveRayTracingIntegrator integrator(&world);
+	//RecursiveRayTracingIntegrator integrator(&world);
 	RayTracingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
 	engine.render(img);

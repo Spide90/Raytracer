@@ -25,6 +25,10 @@ void a_smooth();
 
 void a_bumpmappers();
 
+void a_volume();
+
+void a_test();
+
 void a_rendComp();
 
 #define TEST_CAMERA false
@@ -39,8 +43,11 @@ void a_rendComp();
 #define TEST_DISTRIBUTED false
 #define TEST_SMOOTH false
 #define TEST_BUMP false
+#define TEST_VOLUME true
 
-#define REND_COMP true
+#define TEST_DEBUG false
+
+#define REND_COMP false
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {
@@ -126,6 +133,20 @@ int main(int argc, char* argv[]) {
 		a_bumpmappers();
 		unsigned int stop = clock() / 1000;
 		std::cout << "bumping tests finished in " << ((stop - start) / 1000) << "seconds\n";
+	}
+	if (TEST_VOLUME) {
+			unsigned int start = clock() / 1000;
+			std::cout << "starting volume tests\n";
+			a_volume();
+			unsigned int stop = clock() / 1000;
+			std::cout << "volume tests finished in " << ((stop - start) / 1000) << "seconds\n";
+		}
+	if (TEST_DEBUG) {
+		unsigned int start = clock() / 1000;
+		std::cout << "starting rendering competition\n";
+		a_test();
+		unsigned int stop = clock() / 1000;
+		std::cout << "rendering competition finished in " << ((stop - start) / 1000) << "seconds\n";
 	}
 	if (REND_COMP) {
 		unsigned int start = clock() / 1000;
