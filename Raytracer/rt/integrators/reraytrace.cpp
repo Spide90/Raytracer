@@ -17,7 +17,7 @@
 
 namespace rt {
 
-#define EPSILON 0.005
+#define EPSILON 0.0001
 #define MAX_RECURSION_DEPTH 15
 
 int recursionDepth = 0;
