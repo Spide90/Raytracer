@@ -53,6 +53,7 @@
 #include <rt/textures/star.h>
 
 #include <rt/volume/AmbientHomogenious.h>
+#include <rt/volume/homogenious.h>
 
 using namespace rt;
 
@@ -174,8 +175,11 @@ void a_rendComp() {
 		Material* moonMat = new GlassMaterial(2.f);
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
 		world.light.push_back(new PointLight(moonCenter, RGBColor(0.5f, 0.5f, 0.5f)));
+		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
+		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
 
-		world.fog = new HomogeniousFog(TheMoon, 0.025, RGBColor(0.96f, 0.02f, 0.02f));
+		Material* whiteMaterial = new LambertianMaterial(blacktex, whitetex);
+		world.fog = new HomogeniousFog(TheMoon, 0.025, whiteMaterial);
 
 //		DummyMaterial* moonMat = new DummyMaterial();
 //		ConstantTexture* blueTex = new ConstantTexture(

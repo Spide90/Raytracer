@@ -47,7 +47,7 @@ void a_horse();
 #define TEST_BUMP false
 #define TEST_VOLUME false
 
-#define TEST_DEBUG true
+#define TEST_DEBUG false
 
 #define REND_COMP true
 #define TEST_HORSE false
