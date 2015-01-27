@@ -112,11 +112,11 @@ void a_volume() {
 	Integrator* integrator;
 
 	if (AMBIENT_HOMOGENIOUS) {
-		fog = new AmbientHomogeniousFog(0.025, RGBColor::rep(0.5));
+		fog = new AmbientHomogeniousFog(scene, 0.025, RGBColor::rep(0.5));
 		integrator = new VolumeRaytracingIntegrator(&world);
 	}
 	if (HOMOGENIOUS) {
-		fog = new HomogeniousFog(0.025, whiteMaterial);
+//		fog = new HomogeniousFog(scene, 0.025, whiteMaterial);
 		integrator = new RayMarchingIntegrator(&world);
 	}
 	if (HETEROGENIOUS) {
@@ -127,7 +127,7 @@ void a_volume() {
 		perlinTex->addOctave(0.125f, 40.0f);
 		LambertianMaterial* perlin = new LambertianMaterial(blacktex, perlinTex);
 
-		fog = new HeterogeniousFog(whiteMaterial);
+		fog = new HeterogeniousFog(scene, whiteMaterial);
 		integrator = new RayMarchingIntegrator(&world);
 	}
 

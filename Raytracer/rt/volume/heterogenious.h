@@ -11,6 +11,7 @@
 #include <rt/volume/fog.h>
 #include <core/color.h>
 #include <rt/materials/material.h>
+#include <rt/primitive.h>
 
 namespace rt {
 
@@ -18,8 +19,9 @@ class HeterogeniousFog: public Fog {
 public:
 
 	Material* fogMaterial;
+	Primitive* prim;
 
-	HeterogeniousFog(Material* material);
+	HeterogeniousFog(Primitive* prim, Material* material);
 
 	virtual RGBColor getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir);
 
@@ -27,6 +29,7 @@ public:
 
 	virtual float getDensity(Point point);
 
+	virtual Primitive* getPrimitive();
 };
 
 }

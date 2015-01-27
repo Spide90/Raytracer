@@ -7,6 +7,7 @@
 
 #include <rt/volume/AmbientHomogenious.h>
 #include <rt/volume/fog.h>
+#include <rt/primitive.h>
 #include <core/point.h>
 #include <core/vector.h>
 #include <core/color.h>
@@ -14,7 +15,7 @@
 
 namespace rt {
 
-AmbientHomogeniousFog::AmbientHomogeniousFog(float density, RGBColor ambientLightColor) : density(density), ambientLightColor(ambientLightColor) {
+AmbientHomogeniousFog::AmbientHomogeniousFog(Primitive* prim, float density, RGBColor ambientLightColor) : prim(prim), density(density), ambientLightColor(ambientLightColor) {
 
 }
 
@@ -29,6 +30,10 @@ float AmbientHomogeniousFog::transmittance(Point origin, Point hitPoint) {
 
 float AmbientHomogeniousFog::getDensity(Point point) {
 	return density;
+}
+
+Primitive* AmbientHomogeniousFog::getPrimitive(){
+	return prim;
 }
 
 }

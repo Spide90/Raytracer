@@ -9,6 +9,7 @@
 #define RT_VOLUME_FOG_H_
 
 #include <core/color.h>
+#include <rt/primitive.h>
 #include <core/point.h>
 
 namespace rt {
@@ -21,6 +22,8 @@ public:
 	virtual float transmittance(Point origin, Point hitPoint) = 0;
 
 	virtual float getDensity(Point point) = 0;
+
+	virtual Primitive* getPrimitive() = 0;
 };
 
 }

@@ -1,4 +1,4 @@
-//#define DISABLE_COORDMAPPERS
+#define DISABLE_COORDMAPPERS
 //#define DISABLE_SMOOTH_TRIANGLE
 //#define DISABLE_MATERIALS
 
@@ -336,6 +336,7 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                 while(true) {
                     CoordMapper* mapper = nullptr;
 #ifndef DISABLE_COORDMAPPERS
+                    LOG_DEBUG("blubb");
                     if (skiptex) {
                         mapper = new WorldMapper();
                     } else if (skipnormal) {
