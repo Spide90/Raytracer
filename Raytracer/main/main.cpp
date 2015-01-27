@@ -45,9 +45,9 @@ void a_rendComp();
 #define TEST_BUMP false
 #define TEST_VOLUME false
 
-#define TEST_DEBUG false
+#define TEST_DEBUG true
 
-#define REND_COMP true
+#define REND_COMP false
 
 int main(int argc, char* argv[]) {
 	if (TEST_CAMERA) {

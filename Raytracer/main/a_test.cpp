@@ -62,16 +62,22 @@ void a_test() {
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(0.f, 10.f, -100.f);
+	Point camPoint = Point(0.f, 0.f, -50.f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f);
 
 	MatLib materialLibrary;
-	loadOBJ(scene, "models/plane/", "f14d.obj", &materialLibrary);
+	loadOBJ(scene, "models/Bell407/", "bell407.obj", &materialLibrary);
+
+	Instance* in = new Instance(scene);
+
+	in->scale(2.5f);
+	in->rotate(Vector(1, 0, 0), M_PI/4);
+	in->rotate(Vector(0, 1, 0), M_PI/4);
 
 	scene->rebuildIndex();
 
-	world.scene = scene;
+	world.scene = in;
 
 	world.light.push_back(new DirectionalLight(Vector(0, 0, 1), RGBColor(1, 1, 1)));
 
