@@ -9,12 +9,13 @@
 #include <rt/volume/fog.h>
 #include <core/color.h>
 #include <rt/materials/material.h>
+#include <rt/primitive.h>
 #include <math.h>
 
 namespace rt {
 
-HeterogeniousFog::HeterogeniousFog(Material* material) :
-		fogMaterial(material) {
+HeterogeniousFog::HeterogeniousFog(Primitive* prim, Material* material) :
+		prim(prim), fogMaterial(material) {
 
 }
 
@@ -32,6 +33,10 @@ float HeterogeniousFog::getDensity(Point point) {
 	n = (n << 13) ^ n;
 	float density(1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
 	return fabs(density / 10.f);
+}
+
+Primitive* HeterogeniousFog::getPrimitive(){
+	return prim;
 }
 
 }
