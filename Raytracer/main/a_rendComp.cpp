@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <math.h>
+#include <float.h>
 
 #include <rt/world.h>
 #include <rt/renderer.h>
@@ -45,6 +46,7 @@
 #include <rt/solids/infiniteplane.h>
 #include <rt/solids/quad.h>
 #include <rt/solids/sphere.h>
+#include <rt/solids/aabox.h>
 
 #include <rt/textures/constant.h>
 #include <rt/textures/imagetex.h>
@@ -172,14 +174,22 @@ void a_rendComp() {
 	{
 		Point moonCenter = Point(4000.f, 4000.f, 20000.f);
 		float moonRadius = 700.f;
-		Material* moonMat = new GlassMaterial(2.f);
-		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
-		world.light.push_back(new PointLight(moonCenter, RGBColor(0.5f, 0.5f, 0.5f)));
+
 		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
 		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
+		Texture* pinktex = new ConstantTexture(RGBColor(0.7f, 0, 0.35f));
 
 		Material* whiteMaterial = new LambertianMaterial(blacktex, whitetex);
-		world.fog = new HomogeniousFog(TheMoon, 0.025, whiteMaterial);
+
+		Material* moonMat = new LambertianMaterial(blacktex, pinktex);//new GlassMaterial(2.f);
+		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
+		world.light.push_back(new PointLight(moonCenter + Point(0, 0, -3000), RGBColor(0.5f, 0.5f, 0.5f) * 10000000));
+
+		BBox box = TheMoon->getBounds();
+
+		AABox* fogBox = new AABox(box.min, box.max, nullptr, nullptr);
+		//AABox* fogBox = new AABox(Point::rep(0), Point::rep(0), nullptr, nullptr);
+		world.fog = new HomogeniousFog(TheMoon, 1, whiteMaterial);
 
 //		DummyMaterial* moonMat = new DummyMaterial();
 //		ConstantTexture* blueTex = new ConstantTexture(
@@ -267,9 +277,10 @@ void a_rendComp() {
 	scene->add(TheSea);
 	scene->add(TheSun);
 	scene->add(TheLandscape);
-	scene->add(TheMoon);
+	//scene->add(TheMoon);
 	scene->add(TheStars);
 	world.scene = scene;
+	//RecursiveRayTracingIntegrator integrator(&world);
 	RayMarchingIntegrator integrator(&world);
 //	RayTracingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);

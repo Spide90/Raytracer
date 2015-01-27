@@ -18,6 +18,7 @@ public:
 
     static Point rep(float v) { return Point(v,v,v); }
 
+    Point operator+(const Point& b) const;
     Vector operator-(const Point& b) const;
 
     bool operator==(const Point& b) const;

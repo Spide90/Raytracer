@@ -19,6 +19,10 @@ Point::Point(const Float4& f4) : x(f4.x), y(f4.y), z(f4.z) {
 	assert(f4.w == 1);
 }
 
+Point Point::operator+(const Point& otherPoint) const {
+	return Point(x + otherPoint.x, y + otherPoint.y, z + otherPoint.z);
+}
+
 Vector Point::operator-(const Point& otherPoint) const {
 	return Vector(x - otherPoint.x, y - otherPoint.y, z - otherPoint.z);
 }
