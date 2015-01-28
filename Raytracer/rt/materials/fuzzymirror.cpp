@@ -45,6 +45,7 @@ Material::SampleReflectance FuzzyMirrorMaterial::getSampleReflectance(
 	Vector dir = (2 * dot(outDir, normal) * normal - outDir);
 	Vector ndir;
 
+	int tries = 0;
 	do{
 	float r1 = sqrt(random()) * tanf(fuzzyAngle);
 	float r2 = random() * M_PI * 2;
@@ -59,7 +60,8 @@ Material::SampleReflectance FuzzyMirrorMaterial::getSampleReflectance(
 
 	Point npoint = center + span1 * x + span2 * y;
 	ndir = (npoint - texPoint).normalize();
-	}while(dot(ndir, normal) <= 0);
+	tries++;
+	}while(dot(ndir, normal) <= 0 && tries < 50);
 
 	return Material::SampleReflectance(ndir,
 			this->getReflectance(texPoint, normal, outDir, ndir));

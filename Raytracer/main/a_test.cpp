@@ -58,16 +58,16 @@
 using namespace rt;
 
 void a_test() {
-	Image img(800, 800);
+	Image img(1920, 1080);
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(0.f, 0.f, -50.f);
+	Point camPoint = Point(0.f, 0.f, -100.f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f);
 
 	MatLib materialLibrary;
-	loadOBJ(scene, "models/Bell407/", "bell407.obj", &materialLibrary);
+	loadOBJ(scene, "models/", "heli.obj", &materialLibrary);
 
 	Instance* in = new Instance(scene);
 
@@ -77,7 +77,7 @@ void a_test() {
 
 	scene->rebuildIndex();
 
-	world.scene = in;
+	world.scene = scene;
 
 	world.light.push_back(new DirectionalLight(Vector(0, 0, 1), RGBColor(1, 1, 1)));
 

@@ -39,6 +39,7 @@ void Renderer::render(Image& image) {
 	uint height = image.height();
 	for (uint y = 0; y < height; y++) {
 		for (uint x = 0; x < width; x++) {
+			LOG_DEBUG("next point: " << x << ", " << y);
 			if (sampleCount > 1) {
 				//supersampling
 				RGBColor averageColor = RGBColor::rep(0);
@@ -52,6 +53,9 @@ void Renderer::render(Image& image) {
 				}
 				image(x, y) = averageColor / sampleCount;
 			} else {
+				if (x == 188 && y == 304) {
+					LOG_DEBUG("blubb");
+				}
 				//normal raytracing
 				float pointX = 2 * ((x + 0.5) / width) - 1;
 				float pointY = 2 * ((y + 0.5) / height) - 1;
