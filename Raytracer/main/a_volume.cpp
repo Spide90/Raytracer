@@ -64,9 +64,9 @@
 
 using namespace rt;
 
-#define AMBIENT_HOMOGENIOUS true
+#define AMBIENT_HOMOGENIOUS false
 #define HOMOGENIOUS false
-#define HETEROGENIOUS false
+#define HETEROGENIOUS true
 
 void a_volume() {
 	Image img(800, 800);

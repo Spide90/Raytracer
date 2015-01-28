@@ -65,6 +65,7 @@ using namespace rt;
 #define MOON true
 #define STARS true
 #define DEBUGLIGHT false
+#define HELI true
 
 void a_rendComp() {
 	Image img(800, 600);
@@ -75,6 +76,7 @@ void a_rendComp() {
 	BVH* TheLandscape = new BVH();
 	BVH* TheMoon = new BVH();
 	BVH* TheStars = new BVH();
+	BVH* TheHeli = new BVH();
 
 	Point camPoint = Point(-0.3f, 53.5f, -20.f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
@@ -183,13 +185,10 @@ void a_rendComp() {
 
 		Material* moonMat = new LambertianMaterial(blacktex, pinktex);//new GlassMaterial(2.f);
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
-		world.light.push_back(new PointLight(moonCenter + Point(0, 0, -3000), RGBColor(0.5f, 0.5f, 0.5f) * 10000000));
-
+		world.light.push_back(new PointLight(moonCenter + Point(0, 0, -3000), RGBColor(0.96f, 0.02f, 0.02f) * 10000000));
 		BBox box = TheMoon->getBounds();
 
-		AABox* fogBox = new AABox(box.min, box.max, nullptr, nullptr);
-		//AABox* fogBox = new AABox(Point::rep(0), Point::rep(0), nullptr, nullptr);
-		world.fog = new HomogeniousFog(TheMoon, 1, whiteMaterial);
+		world.fog = new HomogeniousFog(TheMoon, 0.25, whiteMaterial);
 
 //		DummyMaterial* moonMat = new DummyMaterial();
 //		ConstantTexture* blueTex = new ConstantTexture(
@@ -247,40 +246,48 @@ void a_rendComp() {
 						Vector(0.f, 0.f, -1.f), nullptr, stars));
 	}
 
-	//DEBUG LIGHT
-	if(DEBUGLIGHT){
-	world.light.push_back(
-			new DirectionalLight(Vector(0.f, -1.f, 0.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0.f, 1.f, 0.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	world.light.push_back(
-			new DirectionalLight(Vector(1.f, 0.f, 0.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	world.light.push_back(
-			new DirectionalLight(Vector(-1.f, 0.f, 0.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0.f, 0.f, -1.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0.f, 0.f, 1.f),
-					RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+	if(HELI){
+		MatLib materialLibrary;
+		loadOBJ(TheHeli, "models/", "Mi_24.obj", &materialLibrary);
+		TheHeli->rebuildIndex();
+		Instance* in = new Instance(TheHeli);
+		in->scale(0.20f);
+		in->rotate(Vector(0, 1, 0), -9*M_PI/14);
+		in->rotate(Vector(1, 0, 0), -M_PI/7);
+		in->translate(Vector(15.0f, 50.f, 80.f));
 	}
 
-	//The Tree(s)
-//	{
-//		loadOBJ(scene, "models/", "cow.obj");
-//	}
+	//DEBUG LIGHT
+	if(DEBUGLIGHT){
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, -1.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 1.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(1.f, 0.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 0.f, -1.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 0.f, 1.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+	}
 
 	scene->add(TheSea);
 	scene->add(TheSun);
 	scene->add(TheLandscape);
 	//scene->add(TheMoon);
 	scene->add(TheStars);
+	scene->add(TheHeli);
+
 	world.scene = scene;
-	//RecursiveRayTracingIntegrator integrator(&world);
+//	RecursiveRayTracingIntegrator integrator(&world);
 	RayMarchingIntegrator integrator(&world);
 //	RayTracingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
