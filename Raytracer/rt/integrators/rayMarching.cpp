@@ -37,7 +37,6 @@ namespace rt {
 int MarchRecursionDepth = 0;
 
 RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
-	LOG_DEBUG("recursion depth: " << MarchRecursionDepth);
 	Intersection intersection = world->scene->intersect(ray);
 	if (intersection) {
 		RGBColor color = RGBColor(0, 0, 0);

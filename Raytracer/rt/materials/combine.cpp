@@ -51,10 +51,11 @@ RGBColor CombineMaterial::getEmission(const Point& texPoint, const Vector& norma
 Material::SampleReflectance CombineMaterial::getSampleReflectance(const Point& texPoint, const Vector& normal,
 		const Vector& outDir) const {
 	SampleReflectance sample = SampleReflectance();
-	uint random = rand() % sampleMaterials.size();
-	sample = sampleMaterials[random].first->getSampleReflectance(texPoint, normal, outDir);
-	sample.reflectance = sample.reflectance * sampleMaterials[random].second;
-	return sample;
+	if (sampleMaterials.size() != 0) {
+		uint random = rand() % sampleMaterials.size();
+		sample = sampleMaterials[random].first->getSampleReflectance(texPoint, normal, outDir);
+		sample.reflectance = sample.reflectance * sampleMaterials[random].second;
+	}
 	return sample;
 }
 
