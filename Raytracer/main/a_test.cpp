@@ -75,16 +75,16 @@ void a_test() {
 	loadOBJ(heli, "models/", "heli.obj", &materialLibrary);
 	heli->rebuildIndex();
 
-//	Instance* in = new Instance(heli);
-//
+	Instance* in = new Instance(heli);
+
 //	in->scale(0.20f);
-////	in->rotate(Vector(1, 0, 0), 3*M_PI/2);
+//	in->rotate(Vector(1, 0, 0), 3*M_PI/2);
 //	in->rotate(Vector(0, 1, 0), -9*M_PI/14);
 //	in->rotate(Vector(1, 0, 0), -M_PI/7);
-////	in->rotate(Vector(0, 1, 0), -M_PI/7);
+//	in->rotate(Vector(0, 1, 0), -M_PI/7);
 //	in->translate(Vector(15.0f, 50.f, 80.f));
 
-	scene->add(heli);
+	scene->add(in);
 
 	scene->rebuildIndex();
 
