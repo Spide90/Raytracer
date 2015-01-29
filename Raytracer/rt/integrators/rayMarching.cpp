@@ -130,6 +130,9 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 		}
 		MarchRecursionDepth = 0;
 
+		if (!world->fog) {
+			return color + emission;
+		}
 		/*
 		 RGBColor fog = world->fog->modulateColor(ray.o, intersection.hitPoint());
 		 float transmittance = world->fog->transmittance(ray.o, intersection.hitPoint());
@@ -172,6 +175,7 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 			return (color + emission);
 		}
 	} else {
+		if (!world->fog) return RGBColor(0, 0, 0);
 		Intersection i1 = world->fog->getPrimitive()->intersect(ray);
 		if (i1) {
 			RGBColor fogColor = RGBColor::rep(0);

@@ -63,7 +63,7 @@ void a_test() {
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(-0.3f, 53.5f, -20.f);
+	Point camPoint = Point(-0.3f, 53.5f, -220.f);
 //	Point camPoint = Point(-120.3f, 30.5f, -0.3f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f * (4.f / 3.f));
@@ -105,8 +105,8 @@ void a_test() {
 
 	//RayCastingIntegrator integrator(&world);
 //	RecursiveRayTracingIntegrator integrator(&world);
-	RayTracingIntegrator integrator(&world);
-//	RayMarchingIntegrator integrator(&world);
+	//RayTracingIntegrator integrator(&world);
+	RayMarchingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
 	engine.render(img);
 	img.writePNG("test.png");
