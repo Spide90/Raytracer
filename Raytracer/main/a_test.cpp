@@ -104,8 +104,8 @@ void a_test() {
 			new DirectionalLight(Vector(-1, 0, 0), RGBColor(1, 1, 1)));
 
 	//RayCastingIntegrator integrator(&world);
-	RecursiveRayTracingIntegrator integrator(&world);
-//	RayTracingIntegrator integrator(&world);
+//	RecursiveRayTracingIntegrator integrator(&world);
+	RayTracingIntegrator integrator(&world);
 //	RayMarchingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
 	engine.render(img);
