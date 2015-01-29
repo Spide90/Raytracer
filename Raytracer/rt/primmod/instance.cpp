@@ -81,7 +81,7 @@ Intersection Instance::intersect(const Ray& ray,
 	intersection.distance *= 1/length;
 	intersection.ray = ray;
 	intersection.point = transformation * intersection.point;
-	intersection.localPoint = transformation * intersection.localPoint;
+	//intersection.localPoint = transformation * intersection.localPoint;
 	intersection.normalVector = (inverseTransformation.transpose()
 			* intersection.normalVector).normalize();
 	return intersection;
