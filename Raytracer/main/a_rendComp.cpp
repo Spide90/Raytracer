@@ -63,15 +63,15 @@
 using namespace rt;
 
 #define SEA true
-#define SUN true
+#define SUN false
 #define LANDSCAPE true
 #define LEFTRIGHT true
-#define MOON true
-#define STARS true
+#define MOON false
+#define STARS false
 #define DEBUGLIGHT false
 #define HELI false
 #define FOG true
-#define TREES true
+#define TREES false
 #define FILECUT false
 
 void a_rendComp() {
@@ -186,68 +186,22 @@ void a_rendComp() {
 
 		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
 		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
-		Texture* pinktex = new ConstantTexture(RGBColor(0.7f, 0, 0.35f));
+		Texture* redtex = new ConstantTexture(RGBColor(0.7f, 0, 0.35f));
 
-		Material* whiteMaterial = new LambertianMaterial(blacktex, whitetex);
-
-		Material* moonMat = new LambertianMaterial(blacktex, pinktex); //new GlassMaterial(2.f);
+		Material* moonMat = new LambertianMaterial(blacktex, redtex); //new GlassMaterial(2.f);
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
 		world.light.push_back(
 				new PointLight(moonCenter + Point(0, 0, -3000),
 						RGBColor(0.96f, 0.02f, 0.02f) * 10000000));
 
-		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f),
+		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(0.5f, 0.5f, 0.5f),
 						RGBColor(0.96f, 0.02f, 0.02f));
-				perlinMoon->addOctave(0.5f, 5.0f);
-				perlinMoon->addOctave(0.25f, 10.0f);
-				perlinMoon->addOctave(0.125f, 20.0f);
-				perlinMoon->addOctave(0.125f, 40.0f);
+		perlinMoon->addOctave(0.5f, 5.0f);
+		perlinMoon->addOctave(0.25f, 10.0f);
+		perlinMoon->addOctave(0.125f, 20.0f);
+		perlinMoon->addOctave(0.125f, 40.0f);
 
 		world.fog = new HeterogeniousFog(0.25, TheMoon, perlinMoon);
-
-//		DummyMaterial* moonMat = new DummyMaterial();
-//		ConstantTexture* blueTex = new ConstantTexture(
-//				RGBColor(0.02f, 0.02f, 0.96f));
-//		ConstantTexture* blackTex = new ConstantTexture(
-//				RGBColor(0.f, 0.f, 0.f));
-//		ConstantTexture* redTex = new ConstantTexture(
-//				RGBColor(0.96f, 0.02f, 0.02f));
-//		Material* moonMat1 = new LambertianMaterial(blackTex, redTex);
-//		Material* moonMat2 = new LambertianMaterial(blueTex, redTex);
-//		ConstructiveSolidGeometry* csg1 = new ConstructiveSolidGeometry(
-//				ConstructiveSolidGeometry::DIFFERENCE);
-//		Point center1 = Point(4000.f, 4000.f, 20000.f);
-//		Point center2 = Point(4100.f, 4060.f, 19700.f);
-//		Vector vec = (center1 - center2);
-//		csg1->add(new Sphere(center1, 700.f, nullptr, moonMat1));
-//		csg1->add(new Sphere(center2, 700.f, nullptr, moonMat));
-//		TheMoon->add(csg1);
-//		Vector camTOmoon = (center1 - camPoint) / (center1.z - camPoint.z);
-//		Point discCenter = camPoint + 50000.f * camTOmoon
-//				+ Vector(-40.f, -40.f, 0);
-//		TheMoon->add(
-//				new Disc(discCenter, -camTOmoon.normalize(), 1800.f, nullptr,
-//						moonMat1));
-//		world.light.push_back(
-//				new SpotLight(camPoint + 49500.f * camTOmoon,
-//						discCenter - (camPoint + 49500.f * camTOmoon), pi,
-//						0.25f, RGBColor::rep(253.f * 20000000.f / 255.f)));
-//		Vector sLight = Vector(-1.f, -1.f, 0.f).normalize();
-//		world.light.push_back(
-//				new PointLight(
-//						(center1 + sLight * 2000 + Vector(0.f, 0.f, 1000.f)),
-//						RGBColor::rep(253.f * 5000000.f / 255.f)));
-//		Vector sLight1 = Vector(0.f, -1.f, 0.f).normalize();
-//		world.light.push_back(
-//				new PointLight(
-//						(center1 + sLight1 * 2000 + Vector(0.f, 0.f, 2000.f)),
-//						RGBColor::rep(253.f * 12000000.f / 255.f)));
-//		Vector sLight2 = Vector(-1.f, 0.f, 0.f).normalize();
-//		world.light.push_back(
-//				new PointLight(
-//						(center1 + sLight2 * 2000 + Vector(0.f, 0.f, 0.f)),
-//						RGBColor::rep(253.f * 2000000.f / 255.f)));
-		scene->add(TheMoon);
 	}
 
 	//The stars
@@ -356,38 +310,36 @@ void a_rendComp() {
 			file >> coord.x >> coord.y >> coord.z;
 			itree->translate(coord);
 			scene->add(itree);
-			break;
+//			break;
 		}
 		file.close();
 	}
 
 	//DEBUG LIGHT
-//	if (DEBUGLIGHT) {
-//		world.light.push_back(
-//				new DirectionalLight(Vector(0.f, -1.f, 0.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//		world.light.push_back(
-//				new DirectionalLight(Vector(0.f, 1.f, 0.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//		world.light.push_back(
-//				new DirectionalLight(Vector(1.f, 0.f, 0.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//		world.light.push_back(
-//				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//		world.light.push_back(
-//				new DirectionalLight(Vector(0.f, 0.f, -1.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//		world.light.push_back(
-//				new DirectionalLight(Vector(0.f, 0.f, 1.f),
-//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-//	}
+	if (DEBUGLIGHT) {
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, -1.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 1.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(1.f, 0.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 0.f, -1.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		world.light.push_back(
+				new DirectionalLight(Vector(0.f, 0.f, 1.f),
+						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+	}
 
 	scene->rebuildIndex();
 	world.scene = scene;
-//	RecursiveRayTracingIntegrator integrator(&world);
 	RayMarchingIntegrator integrator(&world);
-//	RayTracingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
 	engine.setSamples(1.f);
 	engine.render(img);
