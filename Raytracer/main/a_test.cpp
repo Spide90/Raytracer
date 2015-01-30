@@ -74,7 +74,7 @@ void a_test() {
 */
 	MatLib materialLibrary;
 	BVH* heli = new BVH();
-	loadOBJ(heli, "models/Bell407/", "bell407-cut.obj", &materialLibrary);
+	loadOBJ(heli, "models/Bell407/", "bell407-cut2obj.obj", &materialLibrary);
 	heli->rebuildIndex();
 
 	Instance* in = new Instance(heli);
@@ -105,7 +105,7 @@ void a_test() {
 	//RayTracingIntegrator integrator(&world);
 	RayMarchingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
-	engine.render(img);
 	engine.setSamples(30);
+	engine.render(img);
 	img.writePNG("test.png");
 }

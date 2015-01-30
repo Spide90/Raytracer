@@ -313,6 +313,7 @@ void loadOBJ(Group* dest, const std::string& path, const std::string& filename, 
 		matlib = new MatLib;
 
 	Group* rotorGroup = nullptr;
+	std::string rotorGroupName;
 
 	std::vector<std::string> matFiles;
 
@@ -485,50 +486,189 @@ void loadOBJ(Group* dest, const std::string& path, const std::string& filename, 
 		}
 		case Obj_Object:
 			groupName = fileline.fetchString();
-			LOG_DEBUG("group: " << groupName);
+			//LOG_DEBUG("groupName: " << groupName);
 			if (groupName.find("rotor.012") != std::string::npos) {
 				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.012";
 					rotorGroup = new BVH();
 				} else {
 					LOG_DEBUG("adding group");
-					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 10));
-					rotorGroup = nullptr;
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
 				}
 				break;
 			}
 			if (groupName.find("rotor.001") != std::string::npos) {
 				if (rotorGroup == nullptr) {
 					rotorGroup = new BVH();
+					rotorGroupName = "rotor.001";
 				} else {
 					LOG_DEBUG("adding group");
-					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 10));
-					rotorGroup = nullptr;
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
 				}
 				break;
 			}
 			if (groupName.find("rotor.016") != std::string::npos) {
 				if (rotorGroup == nullptr) {
 					rotorGroup = new BVH();
+					rotorGroupName = "rotor.016";
 				} else {
 					LOG_DEBUG("adding group");
-					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 10));
-					rotorGroup = nullptr;
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
 				}
 				break;
 			}
 			if (groupName.find("rotor.014") != std::string::npos) {
 				if (rotorGroup == nullptr) {
 					rotorGroup = new BVH();
+					rotorGroupName = "rotor.014";
 				} else {
 					LOG_DEBUG("adding group");
-					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 10));
-					rotorGroup = nullptr;
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.020") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.020";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.021") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.021";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.022") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.022";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.023") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.023";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.024") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.024";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.025") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.025";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.026") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.026";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
+				}
+				break;
+			}
+			if (groupName.find("rotor.027") != std::string::npos) {
+				if (rotorGroup == nullptr) {
+					rotorGroupName = "rotor.027";
+					rotorGroup = new BVH();
+				} else {
+					LOG_DEBUG("adding group");
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+					rotorGroup = new BVH();
 				}
 				break;
 			}
 			if (rotorGroup != nullptr) {
-				LOG_DEBUG("adding rotor " << rotorGroup);
-				dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.1));
+
+				if (rotorGroupName.find("rotor.014") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(0, 1, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.001") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.016") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(0, -1, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.012") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.020") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.021") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.022") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.023") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.024") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.025") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.026") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
+				if (rotorGroupName.find("rotor.027") != std::string::npos) {
+					LOG_DEBUG("adding rotor " << rotorGroup);
+					dest->add(new MotionBlur(rotorGroup, Vector(-1, 0, 0), 0.25));
+				}
 				rotorGroup = nullptr;
 			}
 			break;
