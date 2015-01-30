@@ -28,6 +28,7 @@ FracLand::FracLand(Point vertices[3], int lod, float roughConst, float height,
 	edges[0] = vertices[0];
 	edges[1] = vertices[1];
 	edges[2] = vertices[2];
+	isFracLand = true;
 }
 
 FracLand::FracLand(const Point& v1, const Point& v2, const Point& v3, int lod,
@@ -36,6 +37,7 @@ FracLand::FracLand(const Point& v1, const Point& v2, const Point& v3, int lod,
 	edges[0] = v1;
 	edges[1] = v2;
 	edges[2] = v3;
+	isFracLand = true;
 }
 
 /* returns a value in range -1 to 1 */
@@ -65,7 +67,7 @@ Intersection FracLand::intersect(const Ray& ray,
 		return Intersection::failure();
 	} else {
 		if (lod == 0) {
-			Triangle tria(edges[0], edges[1], edges[2], texMapper, material);
+			Triangle tria(edges[0], edges[1], edges[2], texMapper, material, true);
 			return tria.intersect(ray, previousBestDistance);
 		} else {
 			Point m1 = Point((Float4(edges[0]) + Float4(edges[1])) * 0.5);

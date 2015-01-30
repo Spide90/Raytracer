@@ -13,6 +13,7 @@
 #include <rt/lights/light.h>
 #include <rt/solids/solid.h>
 #include <rt/materials/material.h>
+#include <rt/solids/fracLand.h>
 
 #include <rt/materials/combine.h>
 #include <rt/materials/dummy.h>
@@ -31,7 +32,7 @@
 namespace rt {
 
 #define EPSILON 0.0001
-#define STEP_SIZE 100.f
+#define STEP_SIZE 200.f
 #define MAX_RECURSION_DEPTH 15
 
 int MarchRecursionDepth = 0;
@@ -68,10 +69,20 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 						if (intersection.solid->material == nullptr) {
 							reflectance = RGBColor(0.5, 0.5, 0.5);
 						} else {
-							reflectance = intersection.solid->material->getReflectance(local,
-									intersection.normalVector, -ray.d, shadowRay.direction);
-							//							reflectance = intersection.solid->material->getReflectance(local,
-							//																intersection.normalVector, -ray.d, shadowRay.direction);
+							if(intersection.solid->isFracLand){
+								reflectance =
+										intersection.solid->material->getReflectance(
+												intersection.hitPoint(),
+												intersection.normalVector,
+												-ray.d, shadowRay.direction);
+							}
+							else{
+								reflectance =
+										intersection.solid->material->getReflectance(local,
+												intersection.normalVector, -ray.d, shadowRay.direction);
+							}
+//														reflectance = intersection.solid->material->getReflectance(local,
+//																							intersection.normalVector, -ray.d, shadowRay.direction);
 						}
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
 						RGBColor lightSourceColor = (reflectance * intensity);

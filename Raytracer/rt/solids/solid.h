@@ -17,6 +17,8 @@ class Solid : public Primitive {
 public:
     Material* material;
     CoordMapper* texMapper;
+    bool isFracLand = false;
+
     explicit Solid(CoordMapper* texMapper = nullptr, Material* material = nullptr);
 	virtual Point sample() const = 0;
     virtual float getArea() const = 0;

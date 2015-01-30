@@ -35,6 +35,15 @@ Triangle::Triangle(const Point& v1, const Point& v2, const Point& v3,
 	edges[2] = v3;
 }
 
+Triangle::Triangle(const Point& v1, const Point& v2, const Point& v3,
+		CoordMapper* texMapper, Material* material, bool is) :
+		Solid(texMapper, material) {
+	edges[0] = v1;
+	edges[1] = v2;
+	edges[2] = v3;
+	isFracLand = is;
+}
+
 BBox Triangle::getBounds() const {
 	float minX = std::min(edges[0].x, std::min(edges[1].x, edges[2].x));
 	float minY = std::min(edges[0].y, std::min(edges[1].y, edges[2].y));
