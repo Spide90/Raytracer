@@ -11,6 +11,7 @@ public:
 
 	Primitive* primitve;
 	Matrix transformation;
+	Matrix inverseTransformation;
 
 	Material* material;
 	CoordMapper* coordMapper;

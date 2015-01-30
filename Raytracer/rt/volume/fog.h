@@ -17,7 +17,7 @@ namespace rt {
 class Fog {
 public:
 
-	virtual RGBColor getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir) = 0;
+	virtual RGBColor getColor(Point hitPoint) = 0;
 
 	virtual float transmittance(Point origin, Point hitPoint) = 0;
 

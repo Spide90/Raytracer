@@ -14,13 +14,13 @@
 
 namespace rt {
 
-HomogeniousFog::HomogeniousFog(Primitive* prim, float density, Material* material) :
-		prim(prim), density(density), fogMaterial(material) {
+HomogeniousFog::HomogeniousFog(Primitive* prim, float density, RGBColor fogColor) :
+		prim(prim), density(density),  fogColor(fogColor){
 
 }
 
-RGBColor HomogeniousFog::getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir) {
-	return fogMaterial->getReflectance(hitPoint, normal, outDir, inDir);
+RGBColor HomogeniousFog::getColor(Point hitPoint) {
+	return fogColor;
 }
 
 float HomogeniousFog::transmittance(Point origin, Point hitPoint) {

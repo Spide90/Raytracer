@@ -12,15 +12,17 @@
 #include <rt/primitive.h>
 #include <math.h>
 
+#include <core/random.h>
+
 namespace rt {
 
-HeterogeniousFog::HeterogeniousFog(Primitive* prim, Material* material) :
-		prim(prim), fogMaterial(material) {
+HeterogeniousFog::HeterogeniousFog(float density, Primitive* prim, Texture* fogTexture) :
+		prim(prim), fogTexture(fogTexture), density(density) {
 
 }
 
-RGBColor HeterogeniousFog::getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir) {
-	return fogMaterial->getReflectance(hitPoint, normal, inDir, outDir);
+RGBColor HeterogeniousFog::getColor(Point hitPoint) {
+	return fogTexture->getColor(hitPoint);
 }
 
 float HeterogeniousFog::transmittance(Point origin, Point hitPoint) {
@@ -29,10 +31,7 @@ float HeterogeniousFog::transmittance(Point origin, Point hitPoint) {
 }
 
 float HeterogeniousFog::getDensity(Point point) {
-	int n = point.x + point.y * 57 + point.z * 997;
-	n = (n << 13) ^ n;
-	float density(1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
-	return fabs(density / 10.f);
+	return density;
 }
 
 Primitive* HeterogeniousFog::getPrimitive(){

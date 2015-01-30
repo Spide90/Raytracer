@@ -19,12 +19,12 @@ class HomogeniousFog: public Fog {
 public:
 
 	float density;
-	Material* fogMaterial;
+	RGBColor fogColor;
 	Primitive* prim;
 
-	HomogeniousFog(Primitive* prim, float density, Material* material);
+	HomogeniousFog(Primitive* prim, float density, RGBColor fogColor);
 
-	virtual RGBColor getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir);
+	virtual RGBColor getColor(Point hitPoint);
 
 	virtual float transmittance(Point origin, Point hitPoint);
 

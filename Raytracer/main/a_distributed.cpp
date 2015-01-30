@@ -18,7 +18,6 @@
 #include <rt/lights/arealight.h>
 
 #include <rt/textures/imagetex.h>
-#include <rt/materials/motionblur.h>
 
 
 #include <rt/lights/pointlight.h>
@@ -97,7 +96,7 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
 
 }
 
-void renderMotionBlur() {
+/*void renderMotionBlur() {
 
 	//right
 	Vector motionBlurDirection = Vector(0.1, 0, 0);
@@ -132,7 +131,7 @@ void renderMotionBlur() {
 
 	engine.render(img);
 	img.writePNG("a9-5.png");
-}
+}*/
 
 void a_distributed() {
     PerspectiveCamera* cam = new PerspectiveCamera(Point(0.278f, 0.273f, -0.800f), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
@@ -150,5 +149,5 @@ void a_distributed() {
     a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
     //a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
 //    a9renderCornellbox(0.001f, "a9-4.png", dofcam, sphereMaterial2, floorMaterial2, 1000);
-    renderMotionBlur();
+    //renderMotionBlur();
 }

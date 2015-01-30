@@ -19,7 +19,7 @@ AmbientHomogeniousFog::AmbientHomogeniousFog(Primitive* prim, float density, RGB
 
 }
 
-RGBColor AmbientHomogeniousFog::getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir) {
+RGBColor AmbientHomogeniousFog::getColor(Point hitPoint) {
 	return ambientLightColor;
 }
 

@@ -94,7 +94,7 @@ RGBColor RecursiveRayTracingIntegrator::getRadiance(const Ray& ray) const {
 					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 					if (!shadowRayIntersection) {
 						RGBColor reflectance = intersection.solid->material->getReflectance(
-								intersection.hitPoint(), intersection.normalVector, -ray.d, shadowRay.direction);
+								local, intersection.normalVector, -ray.d, shadowRay.direction);
 						RGBColor emission = intersection.solid->material->getEmission(local,
 								intersection.normalVector, -ray.d);
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);

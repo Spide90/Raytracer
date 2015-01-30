@@ -9,6 +9,7 @@
 #include <fstream>
 #include <rt/solids/triangle.h>
 #include <set>
+#include <rt/groups/bvh.h>
 
 #ifndef DISABLE_COORDMAPPERS
 #include <rt/coordmappers/world.h>
@@ -18,6 +19,9 @@
 #ifndef DISABLE_SMOOTH_TRIANGLE
 #include <rt/solids/striangle.h>
 #endif
+
+#include <string.h>
+#include <rt/primmod/motionblur.h>
 
 namespace rt {
 
@@ -260,6 +264,9 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
     else
         matlib = new MatLib;
 
+    Group* rotorGroup = nullptr;
+
+
     std::vector<std::string> matFiles;
 
     std::vector<Float3> vertices;
@@ -274,6 +281,7 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
 
     size_t numfaces = 0;
     size_t lineIdx = 0;
+    std::string groupName;
     while (!fileline.eof()) {
         fileline.nextLine();
         fileline.removeComments();
@@ -366,7 +374,11 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
 #else
                     t = new Triangle(Point(vertices[v[0].vidx]), Point(vertices[v[1].vidx]), Point(vertices[v[2].vidx]), mapper, material);
 #endif
-                    dest->add(t);
+                    if (rotorGroup != nullptr) {
+                    	rotorGroup->add(t);
+                    } else {
+                    	dest->add(t);
+                    }
 
                     v[1] = v[2];
                     v[2] = fileline.fetchVertex();
@@ -379,6 +391,20 @@ void loadOBJ( Group* dest, const std::string& path, const std::string& filename,
                 }
                 break;
             }
+            case Obj_Group:
+            	groupName = fileline.fetchString();
+            	LOG_DEBUG("group: " << groupName);
+            	if (groupName.find("rotor") != std::string::npos) {
+            		if (rotorGroup == nullptr) {
+            			rotorGroup = new BVH();
+            		} else {
+            			dest->add(new MotionBlur(rotorGroup, Vector(1, 0, 0), 2));
+            			rotorGroup = nullptr;
+            		}
+            	} else {
+            		rotorGroup = nullptr;
+            	}
+            	break;
             case Obj_MaterialLibrary: {
                 std::string libname = fileline.fetchString();
                 loadOBJMat(matlib, path, libname);

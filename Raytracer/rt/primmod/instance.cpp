@@ -9,6 +9,7 @@ namespace rt {
 Instance::Instance(Primitive* content) :
 		primitve(content) {
 	transformation = Matrix::identity();
+	inverseTransformation = transformation.invert();
 }
 
 Primitive* Instance::content() {
@@ -17,12 +18,14 @@ Primitive* Instance::content() {
 
 void Instance::reset() {
 	transformation = Matrix::identity();
+	inverseTransformation = transformation.invert();
 }
 
 void Instance::translate(const Vector& t) {
 	Matrix translateMatrix(Float4(1, 0, 0, t.x), Float4(0, 1, 0, t.y),
 			Float4(0, 0, 1, t.z), Float4(0, 0, 0, 1));
 	transformation = product(translateMatrix, transformation);
+	inverseTransformation = transformation.invert();
 }
 
 void Instance::rotate(const Vector& axis, float angle) {
@@ -46,19 +49,21 @@ void Instance::rotate(const Vector& axis, float angle) {
 	rot2 = rot2 * (1/(axis.length()*axis.length()));
 	rot1 = rot1 * (1/axis.length());
 	transformation = product(scaleMatrix + (rot1 + rot2), transformation);
-
+	inverseTransformation = transformation.invert();
 }
 
 void Instance::scale(float scale) {
 	Matrix scaleMatrix(Float4(scale, 0, 0, 0), Float4(0, scale, 0, 0),
 			Float4(0, 0, scale, 0), Float4(0, 0, 0, 1));
 	transformation = product(scaleMatrix, transformation);
+	inverseTransformation = transformation.invert();
 }
 
 void Instance::scale(const Vector& scale) {
 	Matrix scaleMatrix(Float4(scale.x, 0, 0, 0), Float4(0, scale.y, 0, 0),
 			Float4(0, 0, scale.z, 0), Float4(0, 0, 0, 1));
 	transformation = product(scaleMatrix, transformation);
+	inverseTransformation = transformation.invert();
 }
 
 BBox Instance::getBounds() const {
@@ -69,7 +74,6 @@ BBox Instance::getBounds() const {
 
 Intersection Instance::intersect(const Ray& ray,
 		float previousBestDistance) const {
-	Matrix inverseTransformation = transformation.invert();
 	Vector transformedDirection = inverseTransformation * ray.d;
 	float length = transformedDirection.length();
 	float transformedDistance = previousBestDistance * length;

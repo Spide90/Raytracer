@@ -47,6 +47,7 @@
 #include <rt/solids/infiniteplane.h>
 #include <rt/solids/sphere.h>
 #include <rt/solids/quad.h>
+#include <rt/solids/aabox.h>
 
 #include <rt/textures/constant.h>
 #include <rt/textures/imagetex.h>
@@ -116,7 +117,8 @@ void a_volume() {
 		integrator = new VolumeRaytracingIntegrator(&world);
 	}
 	if (HOMOGENIOUS) {
-//		fog = new HomogeniousFog(scene, 0.025, whiteMaterial);
+		AABox* fogBox = new AABox(Point(11, -11, -11), Point(-11, 11, 11), nullptr, nullptr);
+		fog = new HomogeniousFog(fogBox, 0.005, RGBColor(0.7f, 0.7f, 0.7f));
 		integrator = new RayMarchingIntegrator(&world);
 	}
 	if (HETEROGENIOUS) {
@@ -125,9 +127,9 @@ void a_volume() {
 		perlinTex->addOctave(0.25f, 10.0f);
 		perlinTex->addOctave(0.125f, 20.0f);
 		perlinTex->addOctave(0.125f, 40.0f);
-		LambertianMaterial* perlin = new LambertianMaterial(blacktex, perlinTex);
 
-		fog = new HeterogeniousFog(scene, whiteMaterial);
+		Sphere* fogBox = new Sphere(Point(0, 0, 0), 15, nullptr, nullptr);
+		fog = new HeterogeniousFog(0.025, fogBox, perlinTex);
 		integrator = new RayMarchingIntegrator(&world);
 	}
 

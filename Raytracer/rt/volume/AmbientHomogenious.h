@@ -20,7 +20,7 @@ public:
 
 	AmbientHomogeniousFog(Primitive* prim, float density, RGBColor ambientLightColor);
 
-	virtual RGBColor getColor(Point hitPoint, Vector normal, Vector inDir, Vector outDir);
+	virtual RGBColor getColor(Point hitPoint);
 
 	virtual float transmittance(Point origin, Point hitPoint);
 

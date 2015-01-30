@@ -143,8 +143,7 @@ RGBColor VolumeRaytracingIntegrator::getRadiance(const Ray& ray) const {
 		}
 		VolRecursionDepth = 0;
 		if (world->fog->getPrimitive()->intersect(ray)) {
-			RGBColor fog = world->fog->getColor(intersection.hitPoint(),
-					intersection.normal(), Vector(0, 0, 0), Vector(0, 0, 0));
+			RGBColor fog = world->fog->getColor(intersection.hitPoint());
 			float transmittance = world->fog->transmittance(ray.o,
 					intersection.hitPoint());
 			return (color + emission) * transmittance
@@ -153,8 +152,7 @@ RGBColor VolumeRaytracingIntegrator::getRadiance(const Ray& ray) const {
 			return color + emission;
 		}
 	} else {
-		RGBColor fog = world->fog->getColor(intersection.hitPoint(),
-				intersection.normal(), Vector(0, 0, 0), Vector(0, 0, 0));
+		RGBColor fog = world->fog->getColor(intersection.hitPoint());
 		return fog;
 	}
 }

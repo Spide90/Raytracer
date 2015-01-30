@@ -103,8 +103,8 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 							shadowRay.direction);
 					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
 					if (!shadowRayIntersection) {
-						RGBColor reflectance = intersection.solid->material->getReflectance(
-								intersection.hitPoint(), intersection.normalVector, -ray.d, shadowRay.direction);
+						RGBColor reflectance = intersection.solid->material->getReflectance(local,
+								intersection.normalVector, -ray.d, shadowRay.direction);
 						RGBColor emission = intersection.solid->material->getEmission(local,
 								intersection.normalVector, -ray.d);
 						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
@@ -141,9 +141,9 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 		if (i1) {
 			RGBColor fogColor = RGBColor::rep(0);
 			float transmittance = 1;
-			float enterDistance = i1.distance;
-			float exitDistance = i1.exitDistance == i1.distance ? intersection.distance : i1.exitDistance;
-			//float exitDistance = std::min(i1.exitDistance, intersection.distance);
+			float enterDistance = 0;			//i1.distance;
+			//float exitDistance = i1.exitDistance == i1.distance ? intersection.distance : i1.exitDistance;
+			float exitDistance = intersection.distance;			//std::min(i1.exitDistance, intersection.distance);
 			while (enterDistance < exitDistance) {
 				float stepSize = std::min(STEP_SIZE, exitDistance - enterDistance);
 				Point deltaPoint = ray.o + (enterDistance + stepSize / 2) * ray.d;
@@ -151,69 +151,61 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 				RGBColor deltaColor = RGBColor(0, 0, 0);
 				for (int i = 0; i < world->light.size(); i++) {
 					LightHit shadowRay = world->light[i]->getLightHit(deltaPoint);
-					if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-						Ray shadow = Ray(deltaPoint + EPSILON * shadowRay.direction, shadowRay.direction);
-						Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
-						if (!shadowRayIntersection) {
-							RGBColor reflectance = world->fog->getColor(deltaPoint, intersection.normalVector,
-									-ray.d, shadowRay.direction);
-							RGBColor intensity = world->light[i]->getIntensity(shadowRay);
-							RGBColor lightSourceColor = (reflectance * intensity);
-							deltaColor = (deltaColor + lightSourceColor);
-						}
+					Ray shadow = Ray(deltaPoint + EPSILON * shadowRay.direction, shadowRay.direction);
+					Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
+					if (!shadowRayIntersection) {
+						RGBColor intensity = world->light[i]->getIntensity(shadowRay);
+						RGBColor lightSourceColor = (intensity);
+						deltaColor = (deltaColor + lightSourceColor);
 					}
 				}
-				fogColor = fogColor + transmittance * (1 - deltaTransmittance) * deltaColor;
+				fogColor = fogColor
+						+ transmittance * (1 - deltaTransmittance) * deltaColor * world->fog->getColor(deltaPoint);
 				transmittance *= deltaTransmittance;
 				enterDistance += STEP_SIZE;
 			}
-			/*RGBColor fog = world->fog->modulateColor(ray.o, intersection.hitPoint());
-			 float trans = world->fog->transmittance(ray.o, intersection.hitPoint());
-			 return (color + emission) * trans + (1 - trans) * fog;*/
+			//LOG_DEBUG("fogcolor " << fogColor.r << ", " << fogColor.g << ", " << fogColor.b);
 			return (color + emission) + fogColor;
 		} else {
 			return (color + emission);
 		}
 	} else {
-		if (!world->fog) return RGBColor(0, 0, 0);
-		Intersection i1 = world->fog->getPrimitive()->intersect(ray);
-		if (i1) {
-			RGBColor fogColor = RGBColor::rep(0);
-			float transmittance = 1;
-			float enterDistance = i1.distance;
-			float exitDistance = i1.exitDistance == i1.distance ? intersection.distance : i1.exitDistance;
-//			float exitDistance = std::min(i1.exitDistance, intersection.distance);
-			while (enterDistance < exitDistance) {
-				float stepSize = std::min(STEP_SIZE, exitDistance - enterDistance);
-				Point deltaPoint = ray.o + (enterDistance + stepSize / 2) * ray.d;
-				float deltaTransmittance = exp(-world->fog->getDensity(deltaPoint) * stepSize);
-				RGBColor deltaColor = RGBColor(0, 0, 0);
-				for (int i = 0; i < world->light.size(); i++) {
-					LightHit shadowRay = world->light[i]->getLightHit(deltaPoint);
-					if (dot(intersection.normalVector, shadowRay.direction) > 0) {
-						Ray shadow = Ray(deltaPoint + EPSILON * shadowRay.direction, shadowRay.direction);
-						Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
-						if (!shadowRayIntersection) {
-							RGBColor reflectance = world->fog->getColor(deltaPoint, intersection.normalVector,
-									-ray.d, shadowRay.direction);
-							RGBColor intensity = world->light[i]->getIntensity(shadowRay);
-							RGBColor lightSourceColor = (reflectance * intensity);
-							deltaColor = (deltaColor + lightSourceColor);
-						}
-					}
-				}
-				fogColor = fogColor + transmittance * (1 - deltaTransmittance) * deltaColor;
-				transmittance *= deltaTransmittance;
-				enterDistance += STEP_SIZE;
-			}
-			/*RGBColor fog = world->fog->modulateColor(ray.o, intersection.hitPoint());
-			 float trans = world->fog->transmittance(ray.o, intersection.hitPoint());
-			 return (color + emission) * trans + (1 - trans) * fog;*/
-			return fogColor;
-		}
-		RGBColor fog = world->fog->getColor(intersection.hitPoint(), Vector(0, 0, 0), Vector(0, 0, 0),
-				Vector(0, 0, 0));
-		return fog;
+		//if (!world->fog)
+		return RGBColor(0, 0, 0);
+
+		/*Intersection i1 = world->fog->getPrimitive()->intersect(ray);
+		 if (i1) {
+		 RGBColor fogColor = RGBColor::rep(0);
+		 float transmittance = 1;
+		 float enterDistance = i1.distance;
+		 //float exitDistance = i1.exitDistance == i1.distance ? intersection.distance : i1.exitDistance;
+		 float exitDistance = std::min(i1.exitDistance, intersection.distance);
+		 while (enterDistance < exitDistance) {
+		 float stepSize = std::min(STEP_SIZE, exitDistance - enterDistance);
+		 Point deltaPoint = ray.o + (enterDistance + stepSize / 2) * ray.d;
+		 float deltaTransmittance = exp(-world->fog->getDensity(deltaPoint) * stepSize);
+		 RGBColor deltaColor = RGBColor(0, 0, 0);
+		 for (int i = 0; i < world->light.size(); i++) {
+		 LightHit shadowRay = world->light[i]->getLightHit(deltaPoint);
+		 if (dot(intersection.normalVector, shadowRay.direction) > 0) {
+		 Ray shadow = Ray(deltaPoint + EPSILON * shadowRay.direction, shadowRay.direction);
+		 Intersection shadowRayIntersection = world->scene->intersect(shadow, shadowRay.distance);
+		 if (!shadowRayIntersection) {
+		 RGBColor reflectance = world->fog->getColor(deltaPoint);
+		 RGBColor intensity = world->light[i]->getIntensity(shadowRay);
+		 RGBColor lightSourceColor = (reflectance * intensity);
+		 deltaColor = (deltaColor + lightSourceColor);
+		 }
+		 }
+		 }
+		 fogColor = fogColor + transmittance * (1 - deltaTransmittance) * deltaColor;
+		 transmittance *= deltaTransmittance;
+		 enterDistance += STEP_SIZE;
+		 }
+		 return fogColor;
+		 }
+		 RGBColor fog = world->fog->getColor(intersection.hitPoint());*/
+		//return fog;
 	}
 }
 
