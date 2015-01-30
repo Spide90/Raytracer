@@ -30,7 +30,7 @@ RGBColor MountainTexture::getColor(const Point& coord) {
 //		return ImageGetColor(snow_image, snow_bh, snow_i, coord);
 //	}
 	if(coord.y > 80.f){
-		RGBColor ret = ((coord.y - 80.f) / 15.f * RGBColor(1.f, 1.f, 1.f) + color).clamp();
+		RGBColor ret = (((coord.y - 80.f) / 15.f) * RGBColor(1.f, 1.f, 1.f) + color).clamp();
 		return ret;
 	}
 	else{

@@ -62,16 +62,17 @@
 
 using namespace rt;
 
-#define SEA true
+#define SEA false
 #define SUN false
-#define LANDSCAPE true
+#define LANDSCAPE false
 #define LEFTRIGHT true
 #define MOON false
 #define STARS false
-#define DEBUGLIGHT false
+#define DEBUGLIGHT true
+#define DLALL false
 #define HELI false
-#define FOG true
-#define TREES false
+#define FOG false
+#define TREES true
 #define FILECUT false
 
 void a_rendComp() {
@@ -161,7 +162,7 @@ void a_rendComp() {
 							new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
 									Vector(-1.f, 0.0f, 1.f)), landscape));
 			Instance *rightMountain = new Instance(rightMountainGroup);
-			rightMountain->translate(Vector(-3.f, -15.f, 0.f));
+			rightMountain->translate(Vector(-2.8f, -20.f, 0.f));
 			TheLandscape->add(rightMountain);
 		}
 		world.light.push_back(
@@ -184,15 +185,10 @@ void a_rendComp() {
 		Point moonCenter = Point(4000.f, 4000.f, 20000.f);
 		float moonRadius = 700.f;
 
-		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
-		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
-		Texture* redtex = new ConstantTexture(RGBColor(0.7f, 0, 0.35f));
-
-		Material* moonMat = new LambertianMaterial(blacktex, redtex); //new GlassMaterial(2.f);
-		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
+		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, nullptr));
 		world.light.push_back(
 				new PointLight(moonCenter + Point(0, 0, -3000),
-						RGBColor(0.96f, 0.02f, 0.02f) * 10000000));
+						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
 
 		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(0.5f, 0.5f, 0.5f),
 						RGBColor(0.96f, 0.02f, 0.02f));
@@ -227,9 +223,10 @@ void a_rendComp() {
 		in->rotate(Vector(0, 1, 0), -9 * M_PI / 14);
 		in->rotate(Vector(1, 0, 0), -M_PI / 7);
 		in->translate(Vector(15.0f, 50.f, 80.f));
-		scene->add(TheHeli);
+		scene->add(in);
 	}
 
+	//The Fog
 	if (FOG) {
 		MatLib materialLibrary;
 		BVH* TheFog = new BVH();
@@ -237,33 +234,24 @@ void a_rendComp() {
 		TheFog->rebuildIndex();
 
 		Instance* in = new Instance(TheFog);
-		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
-		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
 
 		in->scale(10.00f);
-//		in->rotate(Vector(1, 0, 0), 3*M_PI/2);
-//		in->rotate(Vector(0, 1, 0), M_PI);
 		Point p = Point(15.0f, 50.f, 100.f);
 		Vector v = Vector(15.0f, 50.f, 100.f);
-		Vector w = (p - camPoint).normalize();
-		in->translate((p - Point(0.f, 0.f, 0.f)) + w * 0.f);
+		in->translate(p - Point(0.f, 0.f, 0.f));
 
-		PerlinTexture* perlinTex = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f),
-				RGBColor(0.5f, 0.5f, 1.0f));
-		perlinTex->addOctave(0.5f, 5.0f);
-		perlinTex->addOctave(0.25f, 10.0f);
-		perlinTex->addOctave(0.125f, 20.0f);
-		perlinTex->addOctave(0.125f, 40.0f);
+		PerlinTexture* perlinTex = new PerlinTexture(RGBColor::rep(0.f),
+				RGBColor::rep(0.75f));
+		float a = 1.f;
+		float b = 2.5f;
+		perlinTex->addOctave(a, b);
+		perlinTex->addOctave(a*a, b*2.f);
+		perlinTex->addOctave(a*a*a, b*4.f);
+		perlinTex->addOctave(a*a*a, b*8.f);
 
-		BVH* Fugger = new BVH();
-		Fugger->add(in);
-		Fugger->rebuildIndex();
-
-		Fog* fog;
-		fog = new HeterogeniousFog(0.0125f, Fugger, perlinTex);
-		world.fog = fog;
-
-//		scene->add(in);
+		Fog* fog = new HeterogeniousFog(0.0025, in, perlinTex);
+		world.fog=fog;
+		world.light.push_back(new PointLight(Point(0.f, 35.f, 200.f), RGBColor::rep(1.f)));
 	}
 
 	if (FILECUT) {
@@ -305,12 +293,13 @@ void a_rendComp() {
 
 		std::ifstream file("trees3");
 		while (!file.eof()) {
+			LOG_DEBUG("test");
 			Vector coord;
 			Instance* itree = new Instance(in);
 			file >> coord.x >> coord.y >> coord.z;
 			itree->translate(coord);
 			scene->add(itree);
-//			break;
+			break;
 		}
 		file.close();
 	}
@@ -320,21 +309,27 @@ void a_rendComp() {
 		world.light.push_back(
 				new DirectionalLight(Vector(0.f, -1.f, 0.f),
 						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 1.f, 0.f),
+		if(DLALL){
+			world.light.push_back(
+					new DirectionalLight(Vector(0.f, 1.f, 0.f),
+							RGBColor(253.f / 255.f, 253.f / 255.f,
+									253.f / 255.f)));
+			world.light.push_back(
+					new DirectionalLight(Vector(1.f, 0.f, 0.f),
+							RGBColor(253.f / 255.f, 253.f / 255.f,
+									253.f / 255.f)));
+			world.light.push_back(
+					new DirectionalLight(Vector(-1.f, 0.f, 0.f),
+							RGBColor(253.f / 255.f, 253.f / 255.f,
+									253.f / 255.f)));
+			world.light.push_back(
+					new DirectionalLight(Vector(0.f, 0.f, -1.f),
+							RGBColor(253.f / 255.f, 253.f / 255.f,
+									253.f / 255.f)));
+			world.light.push_back(
+					new DirectionalLight(Vector(0.f, 0.f, 1.f),
 						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(1.f, 0.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 0.f, -1.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 0.f, 1.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+		}
 	}
 
 	scene->rebuildIndex();
