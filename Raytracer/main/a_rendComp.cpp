@@ -62,16 +62,16 @@
 
 using namespace rt;
 
-#define SEA false
-#define SUN false
-#define LANDSCAPE false
+#define SEA true
+#define SUN true
+#define LANDSCAPE true
 #define LEFTRIGHT true
-#define MOON false
-#define STARS false
-#define DEBUGLIGHT true
+#define MOON true
+#define STARS true
+#define DEBUGLIGHT false
 #define DLALL false
-#define HELI false
-#define FOG false
+#define HELI true
+#define FOG true
 #define TREES true
 #define FILECUT false
 
@@ -108,6 +108,7 @@ void a_rendComp() {
 		TheSea->add(
 				new InfinitePlane(Point(0.0f, 10.0f, 0.018),
 						Vector(0.f, 1.f, 0.f), nullptr, seaGround));
+		TheSea->rebuildIndex();
 		scene->add(TheSea);
 	}
 
@@ -125,6 +126,7 @@ void a_rendComp() {
 				new PointLight(camPoint + (100000.f - radius - 2000.f) * vec,
 						RGBColor(253.f * scale / 255.f, 184.f * scale / 255.f,
 								19.f * scale / 255.f)));
+		TheSun->rebuildIndex();
 		scene->add(TheSun);
 	}
 
@@ -176,6 +178,7 @@ void a_rendComp() {
 		world.light.push_back(
 				new PointLight(Point(0.f, 1000.f, 0.f),
 						RGBColor::rep(253.f * 3000000.f / 255.f)));
+		TheLandscape->rebuildIndex();
 		scene->add(TheLandscape);
 	}
 
@@ -186,6 +189,7 @@ void a_rendComp() {
 		float moonRadius = 700.f;
 
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, nullptr));
+		TheMoon->rebuildIndex();
 		world.light.push_back(
 				new PointLight(moonCenter + Point(0, 0, -3000),
 						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
@@ -210,6 +214,7 @@ void a_rendComp() {
 		TheStars->add(
 				new InfinitePlane(Point(0.f, 0.f, 1000000.f),
 						Vector(0.f, 0.f, -1.f), nullptr, stars));
+		TheStars->rebuildIndex();
 		scene->add(TheStars);
 	}
 
@@ -284,24 +289,25 @@ void a_rendComp() {
 	}
 
 	if (TREES) {
+		BVH* TheTree = new BVH();
 		BVH* TheTrees = new BVH();
 		Material* dummy = new DummyMaterial();
 		MatLib materialLibrary;
-		loadOBJ(TheTrees, "models/needle01/", "needle01.obj", &materialLibrary);
-
-		Instance* in = new Instance(TheTrees);
+		loadOBJ(TheTree, "models/", "oakTree.obj", &materialLibrary);
+		TheTree->rebuildIndex();
 
 		std::ifstream file("trees3");
 		while (!file.eof()) {
-			LOG_DEBUG("test");
 			Vector coord;
-			Instance* itree = new Instance(in);
+			Instance* itree = new Instance(TheTree);
 			file >> coord.x >> coord.y >> coord.z;
+			itree->scale(50.f);
 			itree->translate(coord);
-			scene->add(itree);
-			break;
+			TheTrees->add(itree);
 		}
 		file.close();
+		TheTrees->rebuildIndex();
+		scene->add(TheTrees);
 	}
 
 	//DEBUG LIGHT
