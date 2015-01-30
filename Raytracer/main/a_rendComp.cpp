@@ -5,6 +5,8 @@
 #include <cmath>
 #include <math.h>
 #include <float.h>
+#include <iostream>
+#include <fstream>
 
 #include <rt/world.h>
 #include <rt/renderer.h>
@@ -55,36 +57,35 @@
 #include <rt/textures/star.h>
 
 #include <rt/volume/AmbientHomogenious.h>
+#include <rt/volume/heterogenious.h>
 #include <rt/volume/homogenious.h>
 
 using namespace rt;
 
 #define SEA true
 #define SUN true
-#define LANDSCAPE false
+#define LANDSCAPE true
+#define LEFTRIGHT true
 #define MOON true
 #define STARS true
 #define DEBUGLIGHT false
-#define HELI true
+#define HELI false
+#define FOG true
+#define TREES true
+#define FILECUT false
 
 void a_rendComp() {
 	Image img(800, 600);
 	World world;
 	BVH* scene = new BVH();
-	BVH* TheSea = new BVH();
-	BVH* TheSun = new BVH();
-	BVH* TheLandscape = new BVH();
-	BVH* TheMoon = new BVH();
-	BVH* TheStars = new BVH();
-	BVH* TheHeli = new BVH();
 
 	Point camPoint = Point(-0.3f, 53.5f, -20.f);
 	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f * (4.f / 3.f));
 
 //	The Sea
-	if(SEA)
-	{
+	if (SEA) {
+		BVH* TheSea = new BVH();
 		ConstantTexture* groundTex = new ConstantTexture(
 				RGBColor(25.f, 25.f, 112.f) * (1 / 255.f));
 		PerlinTexture* perlinTex = new PerlinTexture(
@@ -106,12 +107,12 @@ void a_rendComp() {
 		TheSea->add(
 				new InfinitePlane(Point(0.0f, 10.0f, 0.018),
 						Vector(0.f, 1.f, 0.f), nullptr, seaGround));
-
+		scene->add(TheSea);
 	}
 
 //The Sun
-	if(SUN)
-	{
+	if (SUN) {
+		BVH* TheSun = new BVH();
 		DummyMaterial* dummy = new DummyMaterial();
 		Point center = Point(-18000.f, 26000.f, 100000.f);
 		Vector vec = (center - camPoint).normalize();
@@ -123,39 +124,46 @@ void a_rendComp() {
 				new PointLight(camPoint + (100000.f - radius - 2000.f) * vec,
 						RGBColor(253.f * scale / 255.f, 184.f * scale / 255.f,
 								19.f * scale / 255.f)));
+		scene->add(TheSun);
 	}
 
 	//The Landscape
-	if(LANDSCAPE)
-	{
+	if (LANDSCAPE) {
+		BVH* TheLandscape = new BVH();
 		ConstantTexture* blackTex = new ConstantTexture(
 				RGBColor(0.f, 0.f, 0.f));
-		MountainTexture* landTex = new MountainTexture();
+		MountainTexture* landTex = new MountainTexture(
+				RGBColor(139.f / 255.f, 69.f / 255.f, 19.f / 255.f),
+				"models/snow-texture.png", MountainTexture::MIRROR,
+				MountainTexture::NEAREST);
 		Material* landscape = new LambertianMaterial(blackTex, landTex);
 		TheLandscape->add(
 				new FracLand(Point(800.f, 0.f, 1000.f),
 						Point(-800.f, 0.f, 1000.f), Point(0.f, 0.f, 0.f), 12,
 						0.55, 125.f,
 						new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
-							Vector(-1.f, 0.0f, 1.f)), landscape));
-		BVH* leftMountainGroup = new BVH();
-		leftMountainGroup->add(
-				new FracLand(Point(20.f, 20.f, 0.f), Point(-10.f, 20.f, 0.f),
-						Point(-10.f, 20.f, -40.f), 12, 0.5f, 60.f,
-						new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
 								Vector(-1.f, 0.0f, 1.f)), landscape));
-		Instance *leftMountain = new Instance(leftMountainGroup);
-		leftMountain->translate(Vector(1.6f, 0.f, 0.f));
-		TheLandscape->add(leftMountain);
-		BVH* rightMountainGroup = new BVH();
-		rightMountainGroup->add(
-				new FracLand(Point(-30.f, 20.f, 0.f), Point(0.f, 20.f, 0.f),
-						Point(-10.f, 20.f, -40.f), 12, 0.5f, 60.f,
-						new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
-								Vector(-1.f, 0.0f, 1.f)), landscape));
-		Instance *rightMountain = new Instance(rightMountainGroup);
-		rightMountain->translate(Vector(-3.3f, -7.5f, 0.f));
-		TheLandscape->add(rightMountain);
+		if (LEFTRIGHT) {
+			BVH* leftMountainGroup = new BVH();
+			leftMountainGroup->add(
+					new FracLand(Point(20.f, 20.f, 0.f),
+							Point(-10.f, 20.f, 0.f), Point(-10.f, 20.f, -40.f),
+							12, 0.5f, 60.f,
+							new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
+									Vector(-1.f, 0.0f, 1.f)), landscape));
+			Instance *leftMountain = new Instance(leftMountainGroup);
+			leftMountain->translate(Vector(1.6f, 0.f, 0.f));
+			TheLandscape->add(leftMountain);
+			BVH* rightMountainGroup = new BVH();
+			rightMountainGroup->add(
+					new FracLand(Point(-30.f, 20.f, 0.f), Point(0.f, 20.f, 0.f),
+							Point(-10.f, 20.f, -40.f), 12, 0.5f, 60.f,
+							new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
+									Vector(-1.f, 0.0f, 1.f)), landscape));
+			Instance *rightMountain = new Instance(rightMountainGroup);
+			rightMountain->translate(Vector(-3.f, -15.f, 0.f));
+			TheLandscape->add(rightMountain);
+		}
 		world.light.push_back(
 				new PointLight(Point(-0.5f, 53.5f, -20.f),
 						RGBColor(253.f * 400.f / 255.f, 253.f * 400.f / 255.f,
@@ -166,14 +174,13 @@ void a_rendComp() {
 								253.f * 300.f / 255.f)));
 		world.light.push_back(
 				new PointLight(Point(0.f, 1000.f, 0.f),
-						RGBColor(253.f * 3000000.f / 255.f,
-								253.f * 3000000.f / 255.f,
-								253.f * 3000000.f / 255.f)));
+						RGBColor::rep(253.f * 3000000.f / 255.f)));
+		scene->add(TheLandscape);
 	}
 
 //The Moon
-	if(MOON)
-	{
+	if (MOON) {
+		BVH* TheMoon = new BVH();
 		Point moonCenter = Point(4000.f, 4000.f, 20000.f);
 		float moonRadius = 700.f;
 
@@ -183,12 +190,20 @@ void a_rendComp() {
 
 		Material* whiteMaterial = new LambertianMaterial(blacktex, whitetex);
 
-		Material* moonMat = new LambertianMaterial(blacktex, pinktex);//new GlassMaterial(2.f);
+		Material* moonMat = new LambertianMaterial(blacktex, pinktex); //new GlassMaterial(2.f);
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, moonMat));
-		world.light.push_back(new PointLight(moonCenter + Point(0, 0, -3000), RGBColor(0.96f, 0.02f, 0.02f) * 10000000));
-		BBox box = TheMoon->getBounds();
+		world.light.push_back(
+				new PointLight(moonCenter + Point(0, 0, -3000),
+						RGBColor(0.96f, 0.02f, 0.02f) * 10000000));
 
-		world.fog = new HomogeniousFog(TheMoon, 0.25, whiteMaterial);
+		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f),
+						RGBColor(0.96f, 0.02f, 0.02f));
+				perlinMoon->addOctave(0.5f, 5.0f);
+				perlinMoon->addOctave(0.25f, 10.0f);
+				perlinMoon->addOctave(0.125f, 20.0f);
+				perlinMoon->addOctave(0.125f, 40.0f);
+
+		world.fog = new HeterogeniousFog(0.25, TheMoon, perlinMoon);
 
 //		DummyMaterial* moonMat = new DummyMaterial();
 //		ConstantTexture* blueTex = new ConstantTexture(
@@ -232,11 +247,12 @@ void a_rendComp() {
 //				new PointLight(
 //						(center1 + sLight2 * 2000 + Vector(0.f, 0.f, 0.f)),
 //						RGBColor::rep(253.f * 2000000.f / 255.f)));
+		scene->add(TheMoon);
 	}
 
 	//The stars
-	if(STARS)
-	{
+	if (STARS) {
+		BVH* TheStars = new BVH();
 		StarTexture* starTex = new StarTexture();
 		ConstantTexture* blackTex = new ConstantTexture(
 				RGBColor(0.f, 0.f, 0.f));
@@ -244,48 +260,130 @@ void a_rendComp() {
 		TheStars->add(
 				new InfinitePlane(Point(0.f, 0.f, 1000000.f),
 						Vector(0.f, 0.f, -1.f), nullptr, stars));
+		scene->add(TheStars);
 	}
 
-	if(HELI){
+	if (HELI) {
+		BVH* TheHeli = new BVH();
 		MatLib materialLibrary;
 		loadOBJ(TheHeli, "models/", "Mi_24.obj", &materialLibrary);
 		TheHeli->rebuildIndex();
 		Instance* in = new Instance(TheHeli);
 		in->scale(0.20f);
-		in->rotate(Vector(0, 1, 0), -9*M_PI/14);
-		in->rotate(Vector(1, 0, 0), -M_PI/7);
+		in->rotate(Vector(0, 1, 0), -9 * M_PI / 14);
+		in->rotate(Vector(1, 0, 0), -M_PI / 7);
 		in->translate(Vector(15.0f, 50.f, 80.f));
+		scene->add(TheHeli);
+	}
+
+	if (FOG) {
+		MatLib materialLibrary;
+		BVH* TheFog = new BVH();
+		loadOBJ(TheFog, "models/", "fog2.obj", &materialLibrary);
+		TheFog->rebuildIndex();
+
+		Instance* in = new Instance(TheFog);
+		Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
+		Texture* whitetex = new ConstantTexture(RGBColor::rep(1.0f));
+
+		in->scale(10.00f);
+//		in->rotate(Vector(1, 0, 0), 3*M_PI/2);
+//		in->rotate(Vector(0, 1, 0), M_PI);
+		Point p = Point(15.0f, 50.f, 100.f);
+		Vector v = Vector(15.0f, 50.f, 100.f);
+		Vector w = (p - camPoint).normalize();
+		in->translate((p - Point(0.f, 0.f, 0.f)) + w * 0.f);
+
+		PerlinTexture* perlinTex = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f),
+				RGBColor(0.5f, 0.5f, 1.0f));
+		perlinTex->addOctave(0.5f, 5.0f);
+		perlinTex->addOctave(0.25f, 10.0f);
+		perlinTex->addOctave(0.125f, 20.0f);
+		perlinTex->addOctave(0.125f, 40.0f);
+
+		BVH* Fugger = new BVH();
+		Fugger->add(in);
+		Fugger->rebuildIndex();
+
+		Fog* fog;
+		fog = new HeterogeniousFog(0.0125f, Fugger, perlinTex);
+		world.fog = fog;
+
+//		scene->add(in);
+	}
+
+	if (FILECUT) {
+		float threshold = 10.f;
+		bool whileout = false;
+		std::ifstream fileIn("trees2");
+		std::ofstream fileOut("trees3");
+		std::vector<Point> treeList;
+		while (!fileIn.eof()) {
+			Point coord;
+			fileIn >> coord.x >> coord.y >> coord.z;
+			for (int i = 0; i < treeList.size(); i++) {
+				if ((treeList[i] - coord).length() < threshold) {
+					whileout = true;
+					break;
+				}
+			}
+			if (whileout) {
+				whileout = false;
+				continue;
+			}
+			treeList.push_back(coord);
+		}
+		for (int i; i < treeList.size(); i++) {
+			fileOut << treeList[i].x << " " << treeList[i].y << " "
+					<< treeList[i].z << "\n";
+		}
+		fileIn.close();
+		fileOut.close();
+	}
+
+	if (TREES) {
+		BVH* TheTrees = new BVH();
+		Material* dummy = new DummyMaterial();
+		MatLib materialLibrary;
+		loadOBJ(TheTrees, "models/needle01/", "needle01.obj", &materialLibrary);
+
+		Instance* in = new Instance(TheTrees);
+
+		std::ifstream file("trees3");
+		while (!file.eof()) {
+			Vector coord;
+			Instance* itree = new Instance(in);
+			file >> coord.x >> coord.y >> coord.z;
+			itree->translate(coord);
+			scene->add(itree);
+			break;
+		}
+		file.close();
 	}
 
 	//DEBUG LIGHT
-	if(DEBUGLIGHT){
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, -1.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 1.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(1.f, 0.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 0.f, -1.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-		world.light.push_back(
-				new DirectionalLight(Vector(0.f, 0.f, 1.f),
-						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
-	}
+//	if (DEBUGLIGHT) {
+//		world.light.push_back(
+//				new DirectionalLight(Vector(0.f, -1.f, 0.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//		world.light.push_back(
+//				new DirectionalLight(Vector(0.f, 1.f, 0.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//		world.light.push_back(
+//				new DirectionalLight(Vector(1.f, 0.f, 0.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//		world.light.push_back(
+//				new DirectionalLight(Vector(-1.f, 0.f, 0.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//		world.light.push_back(
+//				new DirectionalLight(Vector(0.f, 0.f, -1.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//		world.light.push_back(
+//				new DirectionalLight(Vector(0.f, 0.f, 1.f),
+//						RGBColor(253.f / 255.f, 253.f / 255.f, 253.f / 255.f)));
+//	}
 
-	scene->add(TheSea);
-	scene->add(TheSun);
-	scene->add(TheLandscape);
-	//scene->add(TheMoon);
-	scene->add(TheStars);
-	scene->add(TheHeli);
-
+	scene->rebuildIndex();
 	world.scene = scene;
 //	RecursiveRayTracingIntegrator integrator(&world);
 	RayMarchingIntegrator integrator(&world);

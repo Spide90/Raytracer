@@ -31,7 +31,7 @@
 namespace rt {
 
 #define EPSILON 0.0001
-#define STEP_SIZE 2.f
+#define STEP_SIZE 100.f
 #define MAX_RECURSION_DEPTH 15
 
 int MarchRecursionDepth = 0;
