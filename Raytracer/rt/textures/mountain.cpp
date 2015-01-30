@@ -26,10 +26,9 @@ MountainTexture::MountainTexture(const RGBColor& color, const std::string& snow_
 }
 
 RGBColor MountainTexture::getColor(const Point& coord) {
-	if(coord.y > 95.f){
-//		RGBColor ret = ((coord.y - 80.f) / 15.f * RGBColor(1.f, 1.f, 1.f) + color).clamp();
-		return ImageGetColor(snow_image, snow_bh, snow_i, coord);
-	}
+//	if(coord.y > 95.f){
+//		return ImageGetColor(snow_image, snow_bh, snow_i, coord);
+//	}
 	if(coord.y > 80.f){
 		RGBColor ret = ((coord.y - 80.f) / 15.f * RGBColor(1.f, 1.f, 1.f) + color).clamp();
 		return ret;
