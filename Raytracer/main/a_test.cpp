@@ -64,7 +64,7 @@ void a_test() {
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(0.f, 0.f, -100.f);
+	Point camPoint = Point(0.f, 0.f, -3.f);
 	PerspectiveCamera cam = PerspectiveCamera(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f * (4.f / 3.f));
 
@@ -74,7 +74,7 @@ void a_test() {
 */
 	MatLib materialLibrary;
 	BVH* heli = new BVH();
-	loadOBJ(heli, "models/Bell407/", "bell407-cut2obj.obj", &materialLibrary);
+	loadOBJ(heli, "models/", "oakTree.obj", &materialLibrary);
 	heli->rebuildIndex();
 
 	Instance* in = new Instance(heli);
