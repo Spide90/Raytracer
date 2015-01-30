@@ -39,6 +39,7 @@ void Renderer::render(Image& image) {
 	uint height = image.height();
 	for (uint y = 0; y < height; y++) {
 		for (uint x = 0; x < width; x++) {
+			//LOG_DEBUG("currentPixel: " << x << ", " << y);
 			if (sampleCount > 1) {
 				//supersampling
 				RGBColor averageColor = RGBColor::rep(0);

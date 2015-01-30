@@ -56,6 +56,7 @@
 
 #include <rt/integrators/casting.h>
 
+
 using namespace rt;
 
 void a_test() {
@@ -63,45 +64,41 @@ void a_test() {
 	World world;
 	BVH* scene = new BVH();
 
-	Point camPoint = Point(-0.3f, 53.5f, -220.f);
-//	Point camPoint = Point(-120.3f, 30.5f, -0.3f);
-	PerspectiveCamera cam(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
+	Point camPoint = Point(0.f, 0.f, -100.f);
+	PerspectiveCamera cam = PerspectiveCamera(camPoint, Vector(0, 0, 1), Vector(0, 1, 0), 0.686f,
 			0.686f * (4.f / 3.f));
-//	PerspectiveCamera cam(camPoint, Vector(1, 0, 0), Vector(0, 1, 0), 0.686f,
-//				0.686f * (4.f / 3.f));
 
+	/*Point camPoint = Point(0.f, 0.f, -20.f);
+	PerspectiveCamera cam = PerspectiveCamera(camPoint, Vector(0, 0, 1), Vector(0, -1, 0), 0.686f,
+			0.686f * (4.f / 3.f));
+*/
 	MatLib materialLibrary;
 	BVH* heli = new BVH();
-	loadOBJ(heli, "models/", "heli.obj", &materialLibrary);
+	loadOBJ(heli, "models/Bell407/", "bell407-cut.obj", &materialLibrary);
 	heli->rebuildIndex();
 
 	Instance* in = new Instance(heli);
 
-//	in->scale(0.20f);
-//	in->rotate(Vector(1, 0, 0), 3*M_PI/2);
-//	in->rotate(Vector(0, 1, 0), -9*M_PI/14);
-//	in->rotate(Vector(1, 0, 0), -M_PI/7);
-//	in->rotate(Vector(0, 1, 0), -M_PI/7);
-//	in->translate(Vector(15.0f, 50.f, 80.f));
+	in->scale(5.f);
+	in->rotate(Vector(1, 0, 0), 3 * M_PI / 2);
+	in->rotate(Vector(0, 1, 0), -9 * M_PI / 14);
+	in->rotate(Vector(1, 0, 0), -M_PI / 7);
+	in->rotate(Vector(0, 1, 0), -M_PI / 7);
+	//in->translate(Vector(15.0f, 50.f, 80.f));
 
-	scene->add(in);
+	scene->add(heli);
 
 	scene->rebuildIndex();
 
-	world.scene = scene;
+	world.scene = in;
 
-	world.light.push_back(
-			new DirectionalLight(Vector(0, 0, 1), RGBColor(1, 1, 1)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0, 1, 0), RGBColor(1, 1, 1)));
-	world.light.push_back(
-			new DirectionalLight(Vector(1, 0, 0), RGBColor(1, 1, 1)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0, 0, -1), RGBColor(1, 1, 1)));
-	world.light.push_back(
-			new DirectionalLight(Vector(0, -1, 0), RGBColor(1, 1, 1)));
-	world.light.push_back(
-			new DirectionalLight(Vector(-1, 0, 0), RGBColor(1, 1, 1)));
+
+	world.light.push_back(new DirectionalLight(Vector(0, 0, 1), RGBColor(1, 1, 1)));
+	world.light.push_back(new DirectionalLight(Vector(0, 1, 0), RGBColor(1, 1, 1)));
+	world.light.push_back(new DirectionalLight(Vector(1, 0, 0), RGBColor(1, 1, 1)));
+	world.light.push_back(new DirectionalLight(Vector(0, 0, -1), RGBColor(1, 1, 1)));
+	world.light.push_back(new DirectionalLight(Vector(0, -1, 0), RGBColor(1, 1, 1)));
+	world.light.push_back(new DirectionalLight(Vector(-1, 0, 0), RGBColor(1, 1, 1)));
 
 	//RayCastingIntegrator integrator(&world);
 //	RecursiveRayTracingIntegrator integrator(&world);
@@ -109,5 +106,6 @@ void a_test() {
 	RayMarchingIntegrator integrator(&world);
 	Renderer engine(&cam, &integrator);
 	engine.render(img);
+	engine.setSamples(30);
 	img.writePNG("test.png");
 }

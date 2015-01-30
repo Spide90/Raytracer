@@ -30,7 +30,7 @@
 
 namespace rt {
 
-#define EPSILON 0.000001
+#define EPSILON 0.0001
 #define STEP_SIZE 2.f
 #define MAX_RECURSION_DEPTH 15
 
@@ -68,7 +68,7 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 						if (intersection.solid->material == nullptr) {
 							reflectance = RGBColor(0.5, 0.5, 0.5);
 						} else {
-							reflectance = intersection.solid->material->getReflectance(intersection.point,
+							reflectance = intersection.solid->material->getReflectance(local,
 									intersection.normalVector, -ray.d, shadowRay.direction);
 							//							reflectance = intersection.solid->material->getReflectance(local,
 							//																intersection.normalVector, -ray.d, shadowRay.direction);
@@ -137,7 +137,7 @@ RGBColor RayMarchingIntegrator::getRadiance(const Ray& ray) const {
 		 RGBColor fog = world->fog->modulateColor(ray.o, intersection.hitPoint());
 		 float transmittance = world->fog->transmittance(ray.o, intersection.hitPoint());
 		 return (color + emission) * transmittance + (1 - transmittance) * fog;*/
-		Intersection i1 = world->fog->getPrimitive()->intersect(ray);
+		Intersection i1 = world->fog->getPrimitive()->intersect(ray, intersection.distance);
 		if (i1) {
 			RGBColor fogColor = RGBColor::rep(0);
 			float transmittance = 1;

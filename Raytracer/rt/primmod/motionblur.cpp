@@ -14,15 +14,12 @@
 
 #include <core/random.h>
 #include <math.h>
+#include <rt/ray.h>
 
 namespace rt {
 
 MotionBlur::MotionBlur(Primitive* primitive, Vector movementDirection, float timeInterval) :
-		primitive(primitive), timeInterval(timeInterval) {
-	/*this->movementDirection = Matrix::identity;
-	Matrix translateMatrix(Float4(1, 0, 0, movementDirection.x), Float4(0, 1, 0, movementDirection.y),
-			Float4(0, 0, 1, movementDirection.z), Float4(0, 0, 0, 1));
-	movementDirection = product(translateMatrix, this->movementDirection);;*/
+		primitive(primitive), movementDirection(movementDirection), timeInterval(timeInterval) {
 }
 
 BBox MotionBlur::getBounds() const {
@@ -31,8 +28,12 @@ BBox MotionBlur::getBounds() const {
 
 Intersection MotionBlur::intersect(const Ray& ray, float previousBestDistance) const {
 	Vector blurDirection = movementDirection * random(timeInterval);
-	//TODO
-
+	Ray blurredRay(ray.o, (ray.d + blurDirection).normalize());
+	Intersection intersection = primitive->intersect(blurredRay, previousBestDistance);
+	if (intersection) {
+		intersection.ray = ray;
+	}
+	return intersection;
 
 }
 

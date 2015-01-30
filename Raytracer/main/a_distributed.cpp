@@ -24,6 +24,8 @@
 
 #include <rt/integrators/raytrace.h>
 
+#include <rt/primmod/motionblur.h>
+
 using namespace rt;
 
 namespace {
@@ -96,7 +98,7 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
 
 }
 
-/*void renderMotionBlur() {
+void renderMotionBlur() {
 
 	//right
 	Vector motionBlurDirection = Vector(0.1, 0, 0);
@@ -107,16 +109,17 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
 	//forward not visible because we look in this direction
 	//Vector motionBlurDirection = Vector(0, 0, 0.1);
 
-    Image img(400, 400);
+    Image img(800, 600);
     World world;
     SimpleGroup* scene = new SimpleGroup();
 
     Texture* blacktex = new ConstantTexture(RGBColor::rep(0.0f));
     Texture* stoneTex = new ImageTexture("models/stones_diffuse.png", ImageTexture::REPEAT, ImageTexture::NEAREST);
 
-    MotionBlurMaterial* mat = new MotionBlurMaterial(blacktex, stoneTex, motionBlurDirection);
+    Material* mat = new LambertianMaterial(blacktex, stoneTex);
 
-    scene->add(new Sphere(Point(0.f, 0.0f, 5.0f), 1.0f, nullptr, mat));
+
+    scene->add(new MotionBlur(new Sphere(Point(0.f, 0.0f, 5.0f), 1.0f, nullptr, mat), motionBlurDirection, 1));
 
     world.light.push_back(new PointLight(Point(0.f,0.f,0.f),RGBColor(40,40,40)));
 
@@ -131,7 +134,7 @@ void a9renderCornellbox(float scale, const char* filename, Camera* cam, Material
 
 	engine.render(img);
 	img.writePNG("a9-5.png");
-}*/
+}
 
 void a_distributed() {
     PerspectiveCamera* cam = new PerspectiveCamera(Point(0.278f, 0.273f, -0.800f), Vector(0, 0, 1), Vector(0, 1, 0), 0.686f, 0.686f);
@@ -146,8 +149,8 @@ void a_distributed() {
     Material* sphereMaterial2 = new GlassMaterial(2.0f);
 
     //a9renderCornellbox(0.001f, "a9-1.png", cam, sphereMaterial1, floorMaterial1, 30);
-    a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
+   // a9renderCornellbox(0.001f, "a9-2.png", cam, sphereMaterial2, floorMaterial2, 30);
     //a9renderCornellbox(0.001f, "a9-3.png", dofcam, sphereMaterial2, floorMaterial2, 30);
 //    a9renderCornellbox(0.001f, "a9-4.png", dofcam, sphereMaterial2, floorMaterial2, 1000);
-    //renderMotionBlur();
+    renderMotionBlur();
 }
