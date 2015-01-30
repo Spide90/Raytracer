@@ -16,6 +16,9 @@
 #include <core/float4.h>
 #include <math.h>
 
+#include <iostream>
+#include <fstream>
+
 namespace rt {
 
 FracLand::FracLand(Point vertices[3], int lod, float roughConst, float height,
@@ -120,6 +123,20 @@ Intersection FracLand::intersect(const Ray& ray,
 					}
 				}
 			}
+
+//			float threshold = 0.95f;
+//			float high = 60.f;
+//			float low = 40.f;
+//			if (noiseFrac(min.hitPoint().x, min.hitPoint().y, min.hitPoint().z)
+//					> threshold && min.hitPoint().y < high
+//					&& min.hitPoint().y > low) {
+//				std::ofstream file;
+//				file.open("trees2", std::ios::app);
+//				file << min.hitPoint().x << " " << min.hitPoint().y << " "
+//						<< min.hitPoint().z << "\n";
+//				file.close();
+//			}
+
 			min.solid = this;
 			return min;
 		}
