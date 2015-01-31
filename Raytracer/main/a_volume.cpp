@@ -122,6 +122,10 @@ void a_volume() {
 		integrator = new RayMarchingIntegrator(&world);
 	}
 	if (HETEROGENIOUS) {
+		MatLib materialLibrary;
+		BVH* TheFog = new BVH();
+		loadOBJ(TheFog, "models/", "fog2.obj", &materialLibrary);
+		TheFog->rebuildIndex();
 		PerlinTexture* perlinTex = new PerlinTexture(RGBColor(1.0f, 1.0f, 0.9f), RGBColor(0.5f, 0.5f, 1.0f));
 		perlinTex->addOctave(0.5f, 5.0f);
 		perlinTex->addOctave(0.25f, 10.0f);
@@ -129,11 +133,11 @@ void a_volume() {
 		perlinTex->addOctave(0.125f, 40.0f);
 
 		Sphere* fogBox = new Sphere(Point(0, 0, 0), 15, nullptr, nullptr);
-		fog = new HeterogeniousFog(0.025, fogBox, perlinTex);
+		fog = new HeterogeniousFog(0.025, TheFog, perlinTex);
 		integrator = new RayMarchingIntegrator(&world);
 	}
 
-	world.fog = fog;
+//	world.fog = fog;
 
 	//world.ambientLight = new AmbientLight(RGBColor(1, 1, 1));
 	world.light.push_back(new PointLight(Point(-5, -5, -5), RGBColor(200, 200, 200)));

@@ -13,7 +13,7 @@ namespace rt {
     Primitive* scene;
 	typedef std::vector<Light*> LightVector;
     LightVector light;
-    Fog* fog;
+    std::vector<Fog*> fogs;
 
 }
 

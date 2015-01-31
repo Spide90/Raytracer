@@ -13,7 +13,7 @@ public:
 	typedef std::vector<Light*> LightVector;
     LightVector light;
     //AmbientLight* ambientLight = nullptr;
-    Fog* fog = nullptr;
+    std::vector<Fog*> fogs;
 
 };
 }

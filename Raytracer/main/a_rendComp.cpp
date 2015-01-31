@@ -63,16 +63,16 @@
 using namespace rt;
 
 #define SEA true
-#define SUN true
+#define SUN false
 #define LANDSCAPE true
-#define LEFTRIGHT true
-#define MOON true
-#define STARS true
+#define LEFTRIGHT false
+#define MOON false
+#define STARS false
 #define DEBUGLIGHT false
-#define DLALL false
-#define HELI true
+#define DLALL true
+#define HELI false
 #define FOG true
-#define TREES true
+#define TREES false
 #define FILECUT false
 
 void a_rendComp() {
@@ -164,7 +164,7 @@ void a_rendComp() {
 							new PlaneCoordMapper(Vector(1.f, 0.0f, 1.f),
 									Vector(-1.f, 0.0f, 1.f)), landscape));
 			Instance *rightMountain = new Instance(rightMountainGroup);
-			rightMountain->translate(Vector(-2.8f, -20.f, 0.f));
+			rightMountain->translate(Vector(-2.0f, -20.f, 0.f));
 			TheLandscape->add(rightMountain);
 		}
 		world.light.push_back(
@@ -190,18 +190,23 @@ void a_rendComp() {
 
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, nullptr));
 		TheMoon->rebuildIndex();
+//		world.light.push_back(
+//				new PointLight(moonCenter,
+//						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
 		world.light.push_back(
 				new PointLight(moonCenter + Point(0, 0, -3000),
 						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
-
+		Texture* blackTex = new ConstantTexture(RGBColor::rep(0.f));
+		Material* discMat = new LambertianMaterial(blackTex, blackTex);
+		scene->add(new Disc(moonCenter + 800*(moonCenter - camPoint), (moonCenter - camPoint).normalize(), moonRadius, nullptr, discMat));
 		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(0.5f, 0.5f, 0.5f),
 						RGBColor(0.96f, 0.02f, 0.02f));
 		perlinMoon->addOctave(0.5f, 5.0f);
 		perlinMoon->addOctave(0.25f, 10.0f);
 		perlinMoon->addOctave(0.125f, 20.0f);
 		perlinMoon->addOctave(0.125f, 40.0f);
-
-		world.fog = new HeterogeniousFog(0.25, TheMoon, perlinMoon);
+		Fog* fog = new HeterogeniousFog(0.25, TheMoon, perlinMoon);
+		world.fogs.push_back(fog);
 	}
 
 	//The stars
@@ -221,13 +226,16 @@ void a_rendComp() {
 	if (HELI) {
 		BVH* TheHeli = new BVH();
 		MatLib materialLibrary;
-		loadOBJ(TheHeli, "models/", "Mi_24.obj", &materialLibrary);
+		loadOBJ(TheHeli, "models/Bell407/", "bell407-cut2obj.obj", &materialLibrary);
 		TheHeli->rebuildIndex();
 		Instance* in = new Instance(TheHeli);
-		in->scale(0.20f);
-		in->rotate(Vector(0, 1, 0), -9 * M_PI / 14);
-		in->rotate(Vector(1, 0, 0), -M_PI / 7);
-		in->translate(Vector(15.0f, 50.f, 80.f));
+		in->scale(4.0f);
+		in->rotate(Vector(0, 1, 0), M_PI / 2);
+		in->rotate(Vector(1, 0, 0), M_PI / 2);
+		in->rotate(Vector(0, 0, 1), M_PI / 2);
+		in->rotate(Vector(0, 1, 0), 5*M_PI / 8);
+		in->rotate(Vector(1, 0, 0), -M_PI / 6);
+		in->translate(Vector(-35.0f, 60.f, 100.f));
 		scene->add(in);
 	}
 
@@ -255,7 +263,7 @@ void a_rendComp() {
 		perlinTex->addOctave(a*a*a, b*8.f);
 
 		Fog* fog = new HeterogeniousFog(0.0025, in, perlinTex);
-		world.fog=fog;
+		world.fogs.push_back(fog);
 		world.light.push_back(new PointLight(Point(0.f, 35.f, 200.f), RGBColor::rep(1.f)));
 	}
 
@@ -301,7 +309,9 @@ void a_rendComp() {
 			Vector coord;
 			Instance* itree = new Instance(TheTree);
 			file >> coord.x >> coord.y >> coord.z;
-			itree->scale(50.f);
+			float kappa = (coord.z - 200.f) / 400.f;
+			float scale = 20.f * (1 - kappa) + kappa * 12.5f;
+			itree->scale(scale);
 			itree->translate(coord);
 			TheTrees->add(itree);
 		}
