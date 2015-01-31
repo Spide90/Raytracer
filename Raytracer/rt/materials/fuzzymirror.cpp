@@ -63,6 +63,7 @@ Material::SampleReflectance FuzzyMirrorMaterial::getSampleReflectance(
 	tries++;
 	}while(dot(ndir, normal) <= 0 && tries < 50);
 
+
 	return Material::SampleReflectance(ndir,
 			this->getReflectance(texPoint, normal, outDir, ndir));
 }

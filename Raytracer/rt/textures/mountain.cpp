@@ -22,7 +22,7 @@ MountainTexture::MountainTexture(const RGBColor& color, const Image& snow_image,
 }
 MountainTexture::MountainTexture(const RGBColor& color, const std::string& snow_filename, BorderHandlingTypeMountain snow_bh,
 		InterpolationTypeMountain snow_i) : color(color), snow_bh(snow_bh), snow_i(snow_i){
-	snow_image.readPNG(snow_filename);
+	//snow_image.readPNG(snow_filename);
 }
 
 RGBColor MountainTexture::getColor(const Point& coord) {
