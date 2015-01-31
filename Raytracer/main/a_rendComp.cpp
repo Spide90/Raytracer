@@ -71,8 +71,8 @@ using namespace rt;
 #define DEBUGLIGHT false
 #define DLALL true
 #define HELI false
-#define FOG true
-#define TREES false
+#define FOG false
+#define TREES true
 #define FILECUT false
 
 void a_rendComp() {
@@ -190,15 +190,16 @@ void a_rendComp() {
 
 		TheMoon->add(new Sphere(moonCenter, moonRadius, nullptr, nullptr));
 		TheMoon->rebuildIndex();
-//		world.light.push_back(
-//				new PointLight(moonCenter,
-//						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
 		world.light.push_back(
-				new PointLight(moonCenter + Point(0, 0, -3000),
+				new PointLight(moonCenter,
 						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
+//		world.light.push_back(
+//				new PointLight(moonCenter + Vector(0, 0, -3000),
+//						RGBColor(0.96f, 0.02f, 0.02f) * 200000000));
 		Texture* blackTex = new ConstantTexture(RGBColor::rep(0.f));
+//		Texture* blueTex = new ConstantTexture(RGBColor(0.f, 0.f, 1.f));
 		Material* discMat = new LambertianMaterial(blackTex, blackTex);
-		scene->add(new Disc(moonCenter + 800*(moonCenter - camPoint), (moonCenter - camPoint).normalize(), moonRadius, nullptr, discMat));
+		scene->add(new Disc(moonCenter + 800*(moonCenter - camPoint).normalize(), (moonCenter - camPoint).normalize(), moonRadius, nullptr, discMat));
 		PerlinTexture* perlinMoon = new PerlinTexture(RGBColor(0.5f, 0.5f, 0.5f),
 						RGBColor(0.96f, 0.02f, 0.02f));
 		perlinMoon->addOctave(0.5f, 5.0f);
@@ -268,7 +269,7 @@ void a_rendComp() {
 	}
 
 	if (FILECUT) {
-		float threshold = 10.f;
+		float threshold = 5.f;
 		bool whileout = false;
 		std::ifstream fileIn("trees2");
 		std::ofstream fileOut("trees3");
@@ -311,7 +312,7 @@ void a_rendComp() {
 			file >> coord.x >> coord.y >> coord.z;
 			float kappa = (coord.z - 200.f) / 400.f;
 			float scale = 20.f * (1 - kappa) + kappa * 12.5f;
-			itree->scale(scale);
+			itree->scale(scale / 2.f);
 			itree->translate(coord);
 			TheTrees->add(itree);
 		}

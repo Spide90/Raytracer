@@ -126,19 +126,31 @@ Intersection FracLand::intersect(const Ray& ray,
 				}
 			}
 
-//			float threshold = 0.95f;
-//			float high = 60.f;
-//			float low = 40.f;
-//			if (noiseFrac(min.hitPoint().x, min.hitPoint().y, min.hitPoint().z)
-//					> threshold && min.hitPoint().y < high
-//					&& min.hitPoint().y > low) {
-//				std::ofstream file;
-//				file.open("trees2", std::ios::app);
-//				file << min.hitPoint().x << " " << min.hitPoint().y << " "
-//						<< min.hitPoint().z << "\n";
-//				file.close();
+//			float th2 = 0.50f;
+//			float th1 = 0.80f;
+//			float high1 = 58.f;
+//			float high2 = 45.f;
+//			float low = 32.5f;
+//			if(min.hitPoint().y > low){
+//				if(min.hitPoint().y < high2){
+//					if (noiseFrac(min.hitPoint().x, min.hitPoint().y, min.hitPoint().z) > th2){
+//						std::ofstream file;
+//						file.open("trees2", std::ios::app);
+//						file << min.hitPoint().x << " " << min.hitPoint().y << " " << min.hitPoint().z << "\n";
+//						file.close();
+//					}
+//				}
+//				else if(min.hitPoint().y < high1){
+//					if (noiseFrac(min.hitPoint().x, min.hitPoint().y,
+//							min.hitPoint().z) > th1) {
+//						std::ofstream file;
+//						file.open("trees2", std::ios::app);
+//						file << min.hitPoint().x << " " << min.hitPoint().y
+//								<< " " << min.hitPoint().z << "\n";
+//						file.close();
+//					}
+//				}
 //			}
-
 			min.solid = this;
 			return min;
 		}
